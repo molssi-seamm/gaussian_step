@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.gaussian &#8212; SEAMM Gaussian Plug-in 2023.2.26 documentation</title>
+    <title>gaussian_step.gaussian &#8212; SEAMM Gaussian Plug-in 2023.2.26.1 documentation</title>
   
   
   
@@ -833,7 +833,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">exe</span>
 
-        <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat&quot;</span>
+        <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat &gt; output.txt&quot;</span>
 
         <span class="n">local</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">ExecLocal</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">local</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
@@ -842,23 +842,13 @@
             <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
             <span class="n">return_files</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;output.txt&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;CheckPoint.chk&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Test.FChk&quot;</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="n">in_situ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="c1"># result = local.run(</span>
-        <span class="c1">#     cmd=[exe],</span>
-        <span class="c1">#     files=files,</span>
-        <span class="c1">#     input_data=files[&quot;input.dat&quot;],</span>
-        <span class="c1">#     return_files=[</span>
-        <span class="c1">#         &quot;CheckPoint.chk&quot;,</span>
-        <span class="c1">#         &quot;Test.FChk&quot;,</span>
-        <span class="c1">#     ],</span>
-        <span class="c1">#     in_situ=True,</span>
-        <span class="c1">#     directory=directory,</span>
-        <span class="c1"># )</span>
 
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running Gaussian&quot;</span><span class="p">)</span>
@@ -873,7 +863,7 @@
         <span class="c1"># Analyze the results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span>
             <span class="n">fchk</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;Test.FChk&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(),</span>
-            <span class="n">output</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(),</span>
+            <span class="n">output</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;output.txt&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(),</span>
         <span class="p">)</span>
 
         <span class="c1"># Add other citations here or in the appropriate place in the code.</span>
