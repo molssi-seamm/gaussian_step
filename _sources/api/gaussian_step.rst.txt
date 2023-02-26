@@ -1,0 +1,117 @@
+gaussian\_step package
+======================
+
+Submodules
+----------
+
+gaussian\_step.energy module
+----------------------------
+
+.. automodule:: gaussian_step.energy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.energy\_parameters module
+----------------------------------------
+
+.. automodule:: gaussian_step.energy_parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.energy\_step module
+----------------------------------
+
+.. automodule:: gaussian_step.energy_step
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.gaussian module
+------------------------------
+
+.. automodule:: gaussian_step.gaussian
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.gaussian\_parameters module
+------------------------------------------
+
+.. automodule:: gaussian_step.gaussian_parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.gaussian\_step module
+------------------------------------
+
+.. automodule:: gaussian_step.gaussian_step
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.metadata module
+------------------------------
+
+.. automodule:: gaussian_step.metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.optimization module
+----------------------------------
+
+.. automodule:: gaussian_step.optimization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.optimization\_parameters module
+----------------------------------------------
+
+.. automodule:: gaussian_step.optimization_parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.optimization\_step module
+----------------------------------------
+
+.. automodule:: gaussian_step.optimization_step
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.tk\_energy module
+--------------------------------
+
+.. automodule:: gaussian_step.tk_energy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.tk\_gaussian module
+----------------------------------
+
+.. automodule:: gaussian_step.tk_gaussian
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.tk\_optimization module
+--------------------------------------
+
+.. automodule:: gaussian_step.tk_optimization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: gaussian_step
+   :members:
+   :undoc-members:
+   :show-inheritance:
