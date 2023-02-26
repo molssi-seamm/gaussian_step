@@ -416,7 +416,7 @@ class Gaussian(seamm.Node):
         else:
             cmd = exe
 
-        cmd += " < input.dat"
+        cmd += " < input.dat > output.txt"
 
         local = seamm.ExecLocal()
         result = local.run(
@@ -425,23 +425,13 @@ class Gaussian(seamm.Node):
             files=files,
             env=env,
             return_files=[
+                "output.txt",
                 "CheckPoint.chk",
                 "Test.FChk",
             ],
             in_situ=True,
             directory=directory,
         )
-        # result = local.run(
-        #     cmd=[exe],
-        #     files=files,
-        #     input_data=files["input.dat"],
-        #     return_files=[
-        #         "CheckPoint.chk",
-        #         "Test.FChk",
-        #     ],
-        #     in_situ=True,
-        #     directory=directory,
-        # )
 
         if result is None:
             logger.error("There was an error running Gaussian")
@@ -456,7 +446,7 @@ class Gaussian(seamm.Node):
         # Analyze the results
         self.analyze(
             fchk=result["Test.FChk"]["data"].splitlines(),
-            output=result["stdout"].splitlines(),
+            output=result["output.txt"]["data"].splitlines(),
         )
 
         # Add other citations here or in the appropriate place in the code.
