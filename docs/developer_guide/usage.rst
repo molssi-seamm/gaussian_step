@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use the Gaussian Step in a project::
+To use the Gaussian plug-in in a project::
 
     import gaussian_step

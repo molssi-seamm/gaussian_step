@@ -14,17 +14,13 @@ SEAMM Gaussian Plug-in
    :target: https://codecov.io/gh/molssi-seamm/gaussian_step
    :alt: Code Coverage
 
-.. image:: https://img.shields.io/lgtm/grade/python/g/molssi-seamm/gaussian_step.svg?logo=lgtm&logoWidth=18
-   :target: https://lgtm.com/projects/g/molssi-seamm/gaussian_step/context:python
+.. image:: https://github.com/molssi-seamm/gaussian_step/workflows/CodeQL/badge.svg
+   :target: https://github.com/molssi-seamm/gaussian_step/security/code-scanning
    :alt: Code Quality
 
-.. image:: https://github.com/molssi-seamm/gaussian_step/workflows/Documentation/badge.svg
+.. image:: https://github.com/molssi-seamm/gaussian_step/workflows/Release/badge.svg
    :target: https://molssi-seamm.github.io/gaussian_step/index.html
    :alt: Documentation Status
-
-.. image:: https://pyup.io/repos/github/molssi-seamm/gaussian_step/shield.svg
-   :target: https://pyup.io/repos/github/molssi-seamm/gaussian_step/
-   :alt: Updates for Dependencies
 
 .. image:: https://img.shields.io/pypi/v/gaussian_step.svg
    :target: https://pypi.python.org/pypi/gaussian_step

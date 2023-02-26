@@ -7,8 +7,8 @@ on:
       - "main"
 
 jobs:
-  ci:
-    name: CI
+  release:
+    name: Release
     uses: molssi-seamm/devops/.github/workflows/Release.yaml@main
     with:
       src : gaussian_step

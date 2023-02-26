@@ -3,7 +3,8 @@ name: BranchCI
 on:
   push:
     branches-ignore:
-      - "main"
+      - 'main'
+      - 'master'
 
 jobs:
   branch-ci:

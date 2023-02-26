@@ -84,13 +84,13 @@ setup(
             'Gaussian = gaussian_step:GaussianStep',
         ],
         'org.molssi.seamm.gaussian': [
-            # You will need something like the following for substeps
-            # Energy = gaussian_step:EnergyStep
+            'Energy = gaussian_step:EnergyStep',
+            'Optimization = gaussian_step:OptimizationStep'
         ],
 
         'org.molssi.seamm.gaussian.tk': [
-            # You will need something like the following for substeps
-            # Energy = gaussian_step:EnergyStep
+            'Energy = gaussian_step:EnergyStep',
+            'Optimization = gaussian_step:OptimizationStep'
         ],
     }
 )

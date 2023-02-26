@@ -3,12 +3,10 @@
 """The graphical part of a Gaussian step"""
 
 import pprint  # noqa: F401
-import tkinter as tk
 
 import gaussian_step  # noqa: F401
 import seamm
 from seamm_util import ureg, Q_, units_class  # noqa: F401
-
 
 
 class TkGaussian(seamm.TkNode):
@@ -47,7 +45,7 @@ class TkGaussian(seamm.TkNode):
         self,
         tk_flowchart=None,
         node=None,
-        namespace="org.molssi.seamm.gaussian_step.tk",
+        namespace="org.molssi.seamm.gaussian.tk",
         canvas=None,
         x=None,
         y=None,
@@ -125,9 +123,7 @@ class TkGaussian(seamm.TkNode):
         self.dialog.geometry(f"{w}x{h}+{x}+{y}")
 
         self.tk_subflowchart = seamm.TkFlowchart(
-            master=frame,
-            flowchart=self.node.subflowchart,
-            namespace=self.namespace
+            master=frame, flowchart=self.node.subflowchart, namespace=self.namespace
         )
         self.tk_subflowchart.draw()
 
@@ -228,8 +224,7 @@ class TkGaussian(seamm.TkNode):
         """
 
         super().update_flowchart(
-            flowchart=self.node.subflowchart,
-            tk_flowchart=self.tk_subflowchart
+            flowchart=self.node.subflowchart, tk_flowchart=self.tk_subflowchart
         )
 
     def from_flowchart(self, tk_flowchart=None, flowchart=None):
@@ -250,8 +245,7 @@ class TkGaussian(seamm.TkNode):
         """
 
         super().from_flowchart(
-            flowchart=self.node.subflowchart,
-            tk_flowchart=self.tk_subflowchart
+            flowchart=self.node.subflowchart, tk_flowchart=self.tk_subflowchart
         )
 
     def handle_help(self):
