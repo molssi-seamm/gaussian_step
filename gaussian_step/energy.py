@@ -2,31 +2,46 @@
 
 """Setup and run Gaussian"""
 
+import csv
 import logging
+from pathlib import Path
 import textwrap
 
+import numpy as np
 from tabulate import tabulate
 
 import gaussian_step
+from .substep import Substep
 import seamm
 import seamm.data
 from seamm_util import units_class
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
 printer = printing.getPrinter("gaussian")
 
 
-class Energy(seamm.Node):
-    def __init__(self, flowchart=None, title="Energy", extension=None):
+class Energy(Substep):
+    def __init__(
+        self,
+        flowchart=None,
+        title="Energy",
+        extension=None,
+        module=__name__,
+        logger=logger,
+    ):
         """Initialize the node"""
 
         logger.debug("Creating Energy {}".format(self))
 
         super().__init__(
-            flowchart=flowchart, title=title, extension=extension, logger=logger
+            flowchart=flowchart,
+            title=title,
+            extension=extension,
+            module=__name__,
+            logger=logger,
         )
 
         self._method = None
@@ -38,31 +53,7 @@ class Energy(seamm.Node):
 
         self.description = "A single point energy calculation"
 
-    @property
-    def header(self):
-        """A printable header for this section of output"""
-        return "Step {}: {}".format(".".join(str(e) for e in self._id), self.title)
-
-    @property
-    def method(self):
-        """The method ... HF, DFT, ... used."""
-        return self._method
-
-    @method.setter
-    def method(self, value):
-        self._method = value
-
-    @property
-    def version(self):
-        """The semantic version of this module."""
-        return gaussian_step.__version__
-
-    @property
-    def git_revision(self):
-        """The git version of this module."""
-        return gaussian_step.__git_revision__
-
-    def description_text(self, P=None, calculation_type="Single-point energy"):
+    def description_text(self, P=None, calculation="Single-point energy"):
         """Prepare information about what this node will do"""
 
         if not P:
@@ -73,8 +64,18 @@ class Energy(seamm.Node):
         else:
             method = P["advanced_method"]
 
+        if not self.is_expr(method) and method not in gaussian_step.methods:
+            # See if it matches the keyword part
+            for key, mdata in gaussian_step.methods.items():
+                if method == mdata["method"]:
+                    method = key
+                    if P["level"] == "recommended":
+                        self.parameters["method"].value = method
+                    else:
+                        self.parameters["advanced_method"].value = method
+
         if self.is_expr(method):
-            text = f"{calculation_type} using method given by {method}."
+            text = f"{calculation} using method given by {method}."
         elif (
             method in gaussian_step.methods
             and gaussian_step.methods[method]["method"] == "DFT"
@@ -84,7 +85,7 @@ class Energy(seamm.Node):
             else:
                 functional = P["advanced_functional"]
             basis = P["basis"]
-            text = f"{calculation_type} using {method} using {functional}"
+            text = f"{calculation} using {method} using {functional}"
             if (
                 len(gaussian_step.dft_functionals[functional]["dispersion"]) > 1
                 and P["dispersion"] != "none"
@@ -92,7 +93,7 @@ class Energy(seamm.Node):
                 text += f" with the {P['dispersion']} dispersion correction"
             text += f", using the {basis} basis set."
         else:
-            text = f"{calculation_type} using {method}."
+            text = f"{calculation} using {method}."
 
         # Spin
         if P["spin-restricted"] == "default":
@@ -108,16 +109,51 @@ class Energy(seamm.Node):
             text += "eigenstate will be determined by {P['spin-restricted']}"
         else:
             text += (
-                " The spin will not be restricted and the result  may not be a "
+                " The spin will not be restricted and the result may not be a "
                 "proper eigenstate."
             )
 
+        # Plotting
+        plots = []
+        if P["total density"]:
+            plots.append("total density")
+        # if P["difference density"]:
+        #     plots.append("difference density")
+        if P["total spin density"]:
+            plots.append("spin density")
+        if P["orbitals"]:
+            if len(plots) > 0:
+                text += f"\nThe {', '.join(plots)} and orbitals "
+                text += f"{P['selected orbitals']} will be plotted."
+            else:
+                text += f"\nThe orbitals {P['selected orbitals']} will be plotted."
+
+        text += (
+            " The final structure and any charges, etc. will "
+            f"{P['structure handling'].lower()} "
+        )
+
+        confname = P["configuration name"]
+        if confname == "use SMILES string":
+            text += "using SMILES as its name."
+        elif confname == "use Canonical SMILES string":
+            text += "using canonical SMILES as its name."
+        elif confname == "keep current name":
+            text += "keeping the current name."
+        elif confname == "optimized with {model}":
+            text += "with 'optimized with <model>' as its name."
+        elif confname == "use configuration number":
+            text += "using the index of the configuration (1, 2, ...) as its name."
+        else:
+            confname = confname.replace("{model}", "<model>")
+            text += f"with '{confname}' as its name."
+
         return self.header + "\n" + __(text, **P, indent=4 * " ").__str__()
 
-    def get_input(self, calculation_type="energy", restart=None):
-        """Get the input for an energy calculation for Gaussian"""
+    def run(self, keywords=set()):
+        """Run a single-point Gaussian calculation."""
 
-        _, configuration = self.get_system_configuration(None)
+        _, starting_configuration = self.get_system_configuration(None)
 
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
@@ -128,10 +164,10 @@ class Energy(seamm.Node):
             if isinstance(PP[key], units_class):
                 PP[key] = "{:~P}".format(PP[key])
 
-        self.description = []
-        self.description.append(__(self.description_text(PP), **PP, indent=self.indent))
+        # Print what we are doing
+        printer.important(__(self.description_text(PP), indent=self.indent))
 
-        keywords = []
+        # keywords = []
 
         # Figure out what we are doing!
         if P["level"] == "recommended":
@@ -139,11 +175,24 @@ class Energy(seamm.Node):
         else:
             method_string = P["advanced_method"]
 
-        method_data = gaussian_step.methods[method_string]
-        method = method_data["method"]
+        # If we don't recognize the string presume (hope?) it is a Gaussian method
+        if method_string in gaussian_step.methods:
+            method_data = gaussian_step.methods[method_string]
+            method = method_data["method"]
+        else:
+            # See if it matches the keyword part
+            for key, mdata in gaussian_step.methods.items():
+                if method_string == mdata["method"]:
+                    method_string = key
+                    method_data = mdata
+                    method = method_data["method"]
+                    break
+            else:
+                method_data = {}
+                method = method_string
 
         # How to handle spin restricted.
-        multiplicity = configuration.spin_multiplicity
+        multiplicity = starting_configuration.spin_multiplicity
         spin_restricted = P["spin-restricted"]
         if spin_restricted == "default":
             if multiplicity == 1:
@@ -164,42 +213,76 @@ class Energy(seamm.Node):
             functional_data = gaussian_step.dft_functionals[functional]
             if restricted:
                 if multiplicity == 1:
-                    keywords.append(f"R{functional_data['name']}/{basis}")
+                    keywords.add(f"R{functional_data['name']}/{basis}")
                 else:
-                    keywords.append(f"RO{functional_data['name']}/{basis}")
+                    keywords.add(f"RO{functional_data['name']}/{basis}")
             else:
-                keywords.append(f"U{functional_data['name']}/{basis}")
+                keywords.add(f"U{functional_data['name']}/{basis}")
             if len(functional_data["dispersion"]) > 1 and P["dispersion"] != "none":
-                keywords.append(f"EmpiricalDispersion={P['dispersion']}")
-        else:
+                keywords.add(f"EmpiricalDispersion={P['dispersion']}")
+        elif method == "HF":
             if restricted:
                 if multiplicity == 1:
-                    keywords.append(f"RHF/{basis}")
+                    keywords.add(f"RHF/{basis}")
                 else:
-                    keywords.append(f"ROHF/{basis}")
+                    keywords.add(f"ROHF/{basis}")
             else:
-                keywords.append(f"UHF/{basis}")
+                keywords.add(f"UHF/{basis}")
+        elif method[0:2] == "MP":
+            if restricted and multiplicity != 1 and isinstance(self, Energy):
+                keywords.add(f"RO{method}/{basis}")
+            else:
+                keywords.add(f"{method}/{basis}")
+        elif method in ("CCSD", "CCSD(T)"):
+            if restricted and multiplicity != 1 and isinstance(self, Energy):
+                keywords.add(f"RO{method}/{basis}")
+            else:
+                keywords.add(f"{method}/{basis}")
+        elif method in ("CBS-4M", "CBS-QB3"):
+            if isinstance(self, Energy):
+                if restricted and multiplicity != 1:
+                    keywords.add(f"RO{method}")
+                else:
+                    keywords.add(f"{method}")
+            else:
+                raise ValueError("CBS methods are only for single-point calculations.")
+        elif method == "CBS-APNO":
+            if isinstance(self, Energy):
+                keywords.add(f"{method}")
+            else:
+                raise ValueError("CBS methods are only for single-point calculations.")
+        elif method in ("G1", "G2", "G3", "G4"):
+            if isinstance(self, Energy):
+                keywords.add(f"{method}")
+            else:
+                raise ValueError(
+                    "Gaussian composite methods are only for single-point calculations."
+                )
+        else:
+            keywords.add(f"{method}/{basis}")
 
         if "freeze core" in method_data:
             if method_data["freeze core?"] and P["freeze-cores"] == "no":
-                keywords.append("FULL")
+                keywords.add("FULL")
 
         if P["maximum iterations"] != "default":
-            keywords.append(f"MaxCycle={P['maximum iterations']}")
+            keywords.add(f"MaxCycle={P['maximum iterations']}")
         if P["convergence"] != "default":
-            keywords.append("Conver={P['convergence']}")
+            keywords.add("Conver={P['convergence']}")
 
-        return keywords
+        data = self.run_gaussian(keywords)
 
-    def analyze(self, indent="", data={}, out=[], table=None):
+        # Follow instructions for where to put the coordinates,
+        system, configuration = self.get_system_configuration(
+            P=P, same_as=starting_configuration, model=self.model
+        )
+
+        self.analyze(data=data)
+
+    def analyze(self, indent="", data={}, table=None):
         """Parse the output and generating the text output and store the
         data in variables for other stages to access
         """
-
-        # P = self.parameters.current_values_to_dict(
-        #     context=seamm.flowchart_variables._data
-        # )
-
         text = ""
         if table is None:
             table = {
@@ -212,15 +295,84 @@ class Energy(seamm.Node):
         if "Total Energy" not in data:
             text += "Gaussian did not produce the energy. Something is wrong!"
 
-        for key in ("Total Energy", "Virial Ratio", "RMS Density"):
-            tmp = data[key]
-            mdata = metadata[key]
-            table["Property"].append(key)
-            table["Value"].append(f"{tmp:{mdata['format']}}")
-            if "units" in mdata:
-                table["Units"].append(mdata["units"])
-            else:
-                table["Units"].append("")
+        for key in (
+            "Total Energy",
+            "Virial Ratio",
+            "RMS Density",
+            "Cluster Energy with triples",
+            "Cluster Energy",
+            "MP5 Energy",
+            "MP4 Energy",
+            "MP4SDQ Energy",
+            "MP4DQ Energy",
+            "MP3 Energy",
+            "MP2 Energy",
+        ):
+            if key in data:
+                tmp = data[key]
+                mdata = metadata[key]
+                table["Property"].append(key)
+                table["Value"].append(f"{tmp:{mdata['format']}}")
+                if "units" in mdata:
+                    table["Units"].append(mdata["units"])
+                else:
+                    table["Units"].append("")
+
+        keys = [
+            ("metadata/symmetry_detected", "Symmetry"),
+            ("metadata/symmetry_used", "Symmetry used"),
+        ]
+        if "E(β-homo)" in data:
+            for letter in ("α", "β"):
+                keys.extend(
+                    [
+                        (f"E({letter}-homo)", f"{letter}-HOMO Energy"),
+                        (f"E({letter}-lumo)", f"{letter}-LUMO Energy"),
+                        (f"E({letter}-gap)", f"{letter}-Gap"),
+                        (f"Sym({letter}-homo)", f"{letter}-HOMO Symmetry"),
+                        (f"Sym({letter}-lumo)", f"{letter}-LUMO Symmetry"),
+                    ]
+                )
+        else:
+            keys.extend(
+                [
+                    ("E(homo)", "HOMO Energy"),
+                    ("E(lumo)", "LUMO Energy"),
+                    ("E(gap)", "Gap"),
+                    ("Sym(homo)", "HOMO Symmetry"),
+                    ("Sym(lumo)", "LUMO Symmetry"),
+                ]
+            )
+        keys.extend(
+            [
+                ("dipole_moment_magnitude", "Dipole moment"),
+            ]
+        )
+        for key, name in keys:
+            if key in data:
+                tmp = data[key]
+                mdata = metadata[key]
+                table["Property"].append(name)
+                table["Value"].append(f"{tmp:{mdata['format']}}")
+                if "units" in mdata:
+                    table["Units"].append(mdata["units"])
+                else:
+                    table["Units"].append("")
+
+        for key, name in (
+            ("metadata/cpu_time", "CPU time"),
+            ("metadata/wall_time", "Wall-clock time"),
+        ):
+            if key in data:
+                tmp = data[key]
+                table["Property"].append(name)
+                if ":" in tmp:
+                    units = ""
+                else:
+                    units = "s"
+                    tmp = f"{float(tmp):.2f}"
+                table["Value"].append(tmp)
+                table["Units"].append(units)
 
         tmp = tabulate(
             table,
@@ -239,4 +391,130 @@ class Energy(seamm.Node):
             text += "\n\n"
         text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
 
+        if "Composite/summary" in data:
+            text += "\n\n\n"
+            text += textwrap.indent(data["Composite/summary"], self.indent + 4 * " ")
+
+        if "atomcharges/mulliken" in data:
+            text_lines = ["\n"]
+            directory = Path(self.directory)
+            system, configuration = self.get_system_configuration(None)
+            symbols = configuration.atoms.asymmetric_symbols
+            atoms = configuration.atoms
+            symmetry = configuration.symmetry
+
+            # Add to atoms (in coordinate table)
+            if "charge" not in atoms:
+                atoms.add_attribute(
+                    "charge", coltype="float", configuration_dependent=True
+                )
+            if symmetry.n_symops == 1:
+                chgs = data["atomcharges/mulliken"]
+            else:
+                chgs, delta = symmetry.symmetrize_atomic_scalar(data["ATOM_CHARGES"])
+                delta = np.array(delta)
+                max_delta = np.max(abs(delta))
+                text_lines.append(
+                    "The maximum difference of the charges of symmetry related atoms "
+                    f"was {max_delta:.4f}\n"
+                )
+            atoms["charge"][0:] = chgs
+
+            # Print the charges and dump to a csv file
+            chg_tbl = {
+                "Atom": [*range(1, len(symbols) + 1)],
+                "Element": symbols,
+                "Charge": [],
+            }
+            with open(directory / "atom_properties.csv", "w", newline="") as fd:
+                writer = csv.writer(fd)
+                if "atomspins/mulliken" in data:
+                    # Sum to atom spins...
+                    spins = data["atomspins/mulliken"]
+
+                    # Add to atoms (in coordinate table)
+                    if "spin" not in atoms:
+                        atoms.add_attribute(
+                            "spin", coltype="float", configuration_dependent=True
+                        )
+                        if symmetry.n_symops == 1:
+                            atoms["spin"][0:] = spins
+                        else:
+                            spins, delta = symmetry.symmetrize_atomic_scalar(spins)
+                            atoms["spins"][0:] = spins
+                            delta = np.array(delta)
+                            max_delta = np.max(abs(delta))
+                            text_lines.append(
+                                " The maximum difference of the spins of symmetry "
+                                f"related atoms was {max_delta:.4f}.\n"
+                            )
+
+                    header = "        Atomic charges and spins"
+                    chg_tbl["Spin"] = []
+                    writer.writerow(["Atom", "Element", "Charge", "Spin"])
+                    for atom, symbol, q, s in zip(
+                        range(1, len(symbols) + 1),
+                        symbols,
+                        chgs,
+                        spins,
+                    ):
+                        q = f"{q:.3f}"
+                        s = f"{s:.3f}"
+
+                        writer.writerow([atom, symbol, q, s])
+
+                        chg_tbl["Charge"].append(q)
+                        chg_tbl["Spin"].append(s)
+                else:
+                    header = "        Atomic charges"
+                    writer.writerow(["Atom", "Element", "Charge"])
+                    for atom, symbol, q in zip(
+                        range(1, len(symbols) + 1),
+                        symbols,
+                        chgs,
+                    ):
+                        q = f"{q:.2f}"
+                        writer.writerow([atom, symbol, q])
+
+                        chg_tbl["Charge"].append(q)
+            if len(symbols) <= int(self.options["max_atoms_to_print"]):
+                text_lines.append(header)
+                if "Spin" in chg_tbl:
+                    text_lines.append(
+                        tabulate(
+                            chg_tbl,
+                            headers="keys",
+                            tablefmt="rounded_outline",
+                            colalign=("center", "center", "decimal", "decimal"),
+                            disable_numparse=True,
+                        )
+                    )
+                else:
+                    text_lines.append(
+                        tabulate(
+                            chg_tbl,
+                            headers="keys",
+                            tablefmt="rounded_outline",
+                            colalign=("center", "center", "decimal"),
+                            disable_numparse=True,
+                        )
+                    )
+                text += "\n\n"
+                text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
+
         printer.normal(text)
+
+        text = self.make_plots(data)
+        if text != "":
+            printer.normal(__(text, indent=self.indent + 4 * " "))
+
+        text = (
+            "The structure and charges, etc. were placed in configuration "
+            f"'{system.name}/{configuration.name}'."
+        )
+        printer.normal("")
+        printer.normal(__(text, indent=self.indent + 4 * " "))
+        printer.normal("")
+
+        # Put any requested results into variables or tables
+        self.store_results(data=data, create_tables=True)

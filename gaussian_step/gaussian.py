@@ -4,14 +4,13 @@
 """
 
 import logging
+import pkg_resources
 from pathlib import Path
 import pprint  # noqa: F401
-import string
 import sys
 
-import psutil
-
 import gaussian_step
+import molsystem
 import seamm
 from seamm_util import ureg, Q_  # noqa: F401
 import seamm_util.printing as printing
@@ -25,9 +24,15 @@ from seamm_util.printing import FormattedText as __
 # "printer" sends output to the file "step.out" in this steps working
 # directory, and is used for all normal output from this step.
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
 printer = printing.getPrinter("Gaussian")
+
+# Add this module's properties to the standard properties
+path = Path(pkg_resources.resource_filename(__name__, "data/"))
+csv_file = path / "properties.csv"
+if path.exists():
+    molsystem.add_properties_from_file(csv_file)
 
 
 def humanize(memory, suffix="B", kilo=1024):
@@ -195,6 +200,13 @@ class Gaussian(seamm.Node):
         # Options for Gaussian
         parser.add_argument(
             parser_name,
+            "--max-atoms-to-print",
+            default=25,
+            help="Maximum number of atoms to print charges, etc.",
+        )
+
+        parser.add_argument(
+            parser_name,
             "--gaussian-path",
             default="",
             help="the path to the Gaussian executable",
@@ -298,182 +310,27 @@ class Gaussian(seamm.Node):
         seamm.Node
             The next node object in the flowchart.
         """
-        printer.important(self.header)
-        printer.important("")
-
         # Create the directory
         directory = Path(self.directory)
         directory.mkdir(parents=True, exist_ok=True)
 
-        # Get the system & configuration
-        system, configuration = self.get_system_configuration(None)
-
-        # Access the options
-        options = self.options
-        seamm_options = self.global_options
-
-        # Work out how many cores and how much memory to use
-        n_cores = psutil.cpu_count(logical=False)
-        self.logger.info("The number of cores is {}".format(n_cores))
-
-        # How many threads to use
-        if seamm_options["parallelism"] not in ("openmp", "any"):
-            n_threads = 1
-        else:
-            if options["ncores"] == "available":
-                n_threads = n_cores
-            else:
-                n_threads = int(options["ncores"])
-            if n_threads > n_cores:
-                n_threads = n_cores
-            if n_threads < 1:
-                n_threads = 1
-            if seamm_options["ncores"] != "available":
-                n_threads = min(n_threads, int(seamm_options["ncores"]))
-        self.logger.info(f"Psi4 will use {n_threads} threads.")
-
-        # How much memory to use
-        svmem = psutil.virtual_memory()
-
-        if seamm_options["memory"] == "all":
-            mem_limit = svmem.total
-        elif seamm_options["memory"] == "available":
-            # For the default, 'available', use in proportion to number of
-            # cores used
-            mem_limit = svmem.total * (n_threads / n_cores)
-        else:
-            mem_limit = dehumanize(seamm_options["memory"])
-
-        if options["memory"] == "all":
-            memory = svmem.total
-        elif options["memory"] == "available":
-            # For the default, 'available', use in proportion to number of
-            # cores used
-            memory = svmem.total * (n_threads / n_cores)
-        else:
-            memory = dehumanize(options["memory"])
-
-        memory = min(memory, mem_limit)
-
-        # Apply a minimum of 800 MB
-        min_memory = dehumanize("800 MB")
-        if min_memory > memory:
-            memory = min_memory
-
-        # Gaussian allows no decimal points.
-        memory = humanize(memory, kilo=1000)
-
         # The node after this one, to return at end
         next_node = super().run(printer)
+
+        printer.important(self.header)
+        printer.important("")
 
         # Get the first real node
         node = self.subflowchart.get_node("1").next()
 
-        lines = []
-        lines.append("%Chk=CheckPoint")
-        lines.append(f"%Mem={memory}")
-        lines.append(f"%NProcShared={n_threads}")
-        keywords = set()
         while node is not None:
-            keywords = keywords.union(node.get_input())
+            if node.is_runable:
+                node.run()
             node = node.next()
-        keywords.add("FormCheck=ForceCart")
-
-        lines.append("# " + " ".join(keywords))
-        lines.append(" ")
-        lines.append(f"{system.name}/{configuration.name}")
-        lines.append(" ")
-        lines.append(f"{configuration.charge}    {configuration.spin_multiplicity}")
-
-        # Atoms with coordinates
-        symbols = configuration.atoms.symbols
-        XYZs = configuration.atoms.coordinates
-        for symbol, xyz in zip(symbols, XYZs):
-            x, y, z = xyz
-            lines.append(f"{symbol:2}   {x:10.6f} {y:10.6f} {z:10.6f}")
-        lines.append(" ")
-
-        files = {"input.dat": "\n".join(lines)}
-        logger.info("input.dat:\n" + files["input.dat"])
-
-        exe = options["gaussian_exe"]
-        exe_path = options["gaussian_path"]
-        if exe_path != "":
-            exe = f"{exe_path}/{exe}"
-
-        printer.important(
-            self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
-            f"up to {memory} of memory.\n"
-        )
-
-        if options["gaussian_root"] != "":
-            env = {"g09root": options["gaussian_root"]}
-        else:
-            env = {}
-
-        if options["gaussian_environment"] != "":
-            cmd = f". {options['gaussian_environment']} ; {exe}"
-        else:
-            cmd = exe
-
-        cmd += " < input.dat > output.txt"
-
-        local = seamm.ExecLocal()
-        result = local.run(
-            shell=True,
-            cmd=cmd,
-            files=files,
-            env=env,
-            return_files=[
-                "output.txt",
-                "CheckPoint.chk",
-                "Test.FChk",
-            ],
-            in_situ=True,
-            directory=directory,
-        )
-
-        if result is None:
-            logger.error("There was an error running Gaussian")
-            return None
-
-        logger.debug("\n" + pprint.pformat(result))
-
-        logger.info("stdout:\n" + result["stdout"])
-        if result["stderr"] != "":
-            logger.warning("stderr:\n" + result["stderr"])
-
-        # Analyze the results
-        self.analyze(
-            fchk=result["Test.FChk"]["data"].splitlines(),
-            output=result["output.txt"]["data"].splitlines(),
-        )
-
-        # Add other citations here or in the appropriate place in the code.
-        # Add the bibtex to data/references.bib, and add a self.reference.cite
-        # similar to the above to actually add the citation to the references.
-        if "G version" in self._data:
-            data = self._data
-            try:
-                template = string.Template(self._bibliography[data["G version"]])
-                citation = template.substitute(
-                    month=data["G month"],
-                    version=data["G revision"],
-                    year=data["G year"],
-                )
-                self.references.cite(
-                    raw=citation,
-                    alias="Gaussian",
-                    module="gaussian_step",
-                    level=1,
-                    note="The principle Gaussian citation.",
-                )
-            except Exception:
-                pass
 
         return next_node
 
-    def analyze(self, indent="", fchk=[], output=[], **kwargs):
+    def analyze(self, indent="", fchk=[], output=[], configuration=None, **kwargs):
         """Do any analysis of the output from this step.
 
         Also print important results to the local step.out file using
@@ -494,12 +351,9 @@ class Gaussian(seamm.Node):
         while node is not None:
             for value in node.description:
                 printer.important(value)
-            node.analyze(data=self._data)
+            node.analyze(data=self._data, configuration=configuration)
             printer.normal("")
             node = node.next()
-
-        # Put any requested results into variables or tables
-        self.store_results(data=self._data, create_tables=True)
 
         # Update the structure
         if "Current cartesian coordinates" in self._data:
@@ -521,180 +375,3 @@ class Gaussian(seamm.Node):
                 self.indent + "    Updated the system with the structure from Gaussian",
             )
             printer.important("")
-
-    def parse_fchk(self, lines):
-        """Process the data of a formatted Chk file given as lines of data.
-
-        Parameters
-        ----------
-        lines : iterable
-            The data of the file as an iterable.
-        """
-        data = self._data
-
-        it = iter(lines)
-        # Ignore first potentially truncated title line
-        next(it)
-
-        # Type line (A10,A30,A30)
-        line = next(it)
-        data["calculation"] = line[0:10].strip()
-        data["method"] = line[10:40].strip()
-        data["basis"] = line[40:70].strip()
-
-        # The rest of the file consists of a line defining the data.
-        # If the data is a scalar, it is on the control line, otherwise it follows
-        while True:
-            try:
-                line = next(it)
-            except StopIteration:
-                break
-            key = line[0:40].strip()
-            code = line[43]
-            is_array = line[47:49] == "N="
-            if is_array:
-                count = int(line[49:61].strip())
-                value = []
-                if code == "I":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 6 * 12, 12):
-                            value.append(int(line[pos : pos + 12].strip()))
-                            i += 1
-                            if i == count:
-                                break
-                elif code == "R":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 5 * 16, 16):
-                            value.append(float(line[pos : pos + 16].strip()))
-                            i += 1
-                            if i == count:
-                                break
-                elif code == "C":
-                    value = ""
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 5 * 12, 12):
-                            value += line[pos : pos + 12]
-                            i += 1
-                            if i == count:
-                                break
-                    value = value.rstrip()
-                elif code == "H":
-                    value = ""
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 9 * 8, 8):
-                            value += line[pos : pos + 8]
-                            i += 1
-                            if i == count:
-                                break
-                    value = value.rstrip()
-                elif code == "L":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(72):
-                            value.append(line[pos] == "T")
-                            i += 1
-                            if i == count:
-                                break
-            else:
-                if code == "I":
-                    value = int(line[49:].strip())
-                elif code == "R":
-                    value = float(line[49:].strip())
-                elif code == "C":
-                    value = line[49:].strip()
-                elif code == "L":
-                    value = line[49] == "T"
-            data[key] = value
-
-    def parse_output(self, lines):
-        """Process the output given as lines of data.
-
-        Parameters
-        ----------
-        lines : iterable
-            The data of the file as an iterable.
-        """
-        data = self._data
-
-        # Find the date and version of Gaussian
-        # Gaussian 09:  EM64M-G09RevE.01 30-Nov-2015
-        it = iter(lines)
-        for line in it:
-            if "Cite this work" in line:
-                for line in it:
-                    if "**********************" in line:
-                        line = next(it)
-                        if "Gaussian" in line:
-                            try:
-                                _, version, revision, date = line.split()
-                                _, month, year = date.split("-")
-                                revision = revision.split("Rev")[1]
-                                data["G revision"] = revision
-                                data["G version"] = f"G{version.strip(':')}"
-                                data["G month"] = month
-                                data["G year"] = year
-                            except Exception as e:
-                                logger.warning(
-                                    f"Could not find the Gaussian citation: {e}"
-                                )
-                            break
-                break
-
-        # And the optimization steps, if any.
-        it = iter(lines)
-        n_steps = 0
-        max_force = []
-        rms_force = []
-        max_displacement = []
-        rms_displacement = []
-        for line in it:
-            if line == "         Item               Value     Threshold  Converged?":
-                n_steps += 1
-                converged = True
-
-                tmp1, tmp2, value, threshold, criterion = next(it).split()
-                if tmp1 == "Maximum" and tmp2 == "Force":
-                    max_force.append(float(value))
-                    data["Maximum Force Threshold"] = float(threshold)
-                    if criterion != "YES":
-                        converged = False
-
-                tmp1, tmp2, value, threshold, criterion = next(it).split()
-                if tmp1 == "RMS" and tmp2 == "Force":
-                    rms_force.append(float(value))
-                    data["RMS Force Threshold"] = float(threshold)
-                    if criterion != "YES":
-                        converged = False
-
-                tmp1, tmp2, value, threshold, criterion = next(it).split()
-                if tmp1 == "Maximum" and tmp2 == "Displacement":
-                    max_displacement.append(float(value))
-                    data["Maximum Displacement Threshold"] = float(threshold)
-                    if criterion != "YES":
-                        converged = False
-
-                tmp1, tmp2, value, threshold, criterion = next(it).split()
-                if tmp1 == "RMS" and tmp2 == "Displacement":
-                    rms_displacement.append(float(value))
-                    data["RMS Displacement Threshold"] = float(threshold)
-                    if criterion != "YES":
-                        converged = False
-
-        data["Geometry Optimization Converged"] = converged
-        data["Maximum Force"] = max_force[-1]
-        data["RMS Force"] = rms_force[-1]
-        data["Maximum Displacement"] = max_displacement[-1]
-        data["RMS Displacement"] = rms_displacement[-1]
-        data["Maximum Force Trajectory"] = max_force
-        data["RMS Force Trajectory"] = rms_force
-        data["Maximum Displacement Trajectory"] = max_displacement
-        data["RMS Displacement Trajectory"] = rms_displacement

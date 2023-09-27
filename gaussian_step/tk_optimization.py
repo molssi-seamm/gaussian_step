@@ -12,7 +12,7 @@ import gaussian_step
 # import seamm
 import seamm_widgets as sw
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 
 
 class TkOptimization(gaussian_step.TkEnergy):
@@ -32,15 +32,6 @@ class TkOptimization(gaussian_step.TkEnergy):
         Keyword arguments:
         """
         self.results_widgets = []
-
-        # Set the logging level for this module if requested
-        # if 'gaussian_tk_optimization_log_level' in self.options:
-        #     my_logger.setLevel(self.options.gaussian_tk_optimization_log_level)
-        #     my_logger.critical(
-        #         'Set log level to {}'.format(
-        #             self.options.gaussian_tk_optimization_log_level
-        #         )
-        #     )
 
         super().__init__(
             tk_flowchart=tk_flowchart,
@@ -109,14 +100,23 @@ class TkOptimization(gaussian_step.TkEnergy):
 
     def reset_dialog(self, widget=None):
         """Layout the widgets, letting our parents go first."""
-        rows = super().reset_dialog()
+        frame = self["frame"]
+        for slave in frame.grid_slaves():
+            slave.grid_forget()
 
-        self["optimization"].grid(row=0, column=1, rowspan=rows, sticky=tk.N)
-        # row += 1
-
+        row = 0
+        self["calculation"].grid(row=row, column=0)
+        row += 1
+        self.reset_calculation()
+        self["convergence frame"].grid(row=row, column=0)
+        row += 1
+        self.reset_convergence()
+        self["optimization"].grid(row=row, column=0)
+        row += 1
         self.reset_optimization()
+        self["structure frame"].grid(row=row, column=0)
 
-        return rows
+        return row
 
     def reset_optimization(self, widget=None):
         frame = self["optimization"]

@@ -1,0 +1,2 @@
+Property,Type,Units,Description,URL
+total energy#Gaussian#{model},float,eV,"The {model} total energy (electronic + nuclear).",

@@ -7,7 +7,7 @@ import logging
 import seamm
 import pprint  # noqa: F401
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 
 
 class GaussianParameters(seamm.Parameters):

@@ -10,22 +10,35 @@ from tabulate import tabulate
 import gaussian_step
 import seamm
 import seamm.data
-from seamm_util import units_class
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __
+from seamm_util import Q_
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
 printer = printing.getPrinter("gaussian")
 
 
 class Optimization(gaussian_step.Energy):
-    def __init__(self, flowchart=None, title="Optimization", extension=None):
+    def __init__(
+        self,
+        flowchart=None,
+        title="Optimization",
+        extension=None,
+        module=__name__,
+        logger=logger,
+    ):
         """Initialize the node"""
 
         logger.debug("Creating Optimization {}".format(self))
 
-        super().__init__(flowchart=flowchart, title=title, extension=extension)
+        super().__init__(
+            flowchart=flowchart,
+            title=title,
+            extension=extension,
+            module=__name__,
+            logger=logger,
+        )
 
         self._calculation = "optimization"
         self._model = None
@@ -34,13 +47,13 @@ class Optimization(gaussian_step.Energy):
 
         self.description = "A geometry optimization"
 
-    def description_text(self, P=None):
+    def description_text(self, P=None, calculation="Geometry optimization"):
         """Prepare information about what this node will do"""
 
         if not P:
             P = self.parameters.values_to_dict()
 
-        text = super().description_text(P=P, calculation_type="Geometry optimization")
+        text = super().description_text(P=P, calculation=calculation)
 
         coordinates = P["coordinates"]
         added = f"\nThe geometry optimization will use {coordinates} coordinates,"
@@ -60,23 +73,13 @@ class Optimization(gaussian_step.Energy):
 
         return text + "\n" + __(added, **P, indent=4 * " ").__str__()
 
-    def get_input(self, calculation_type="optimize"):
-        """Get the input for an optimization calculation for Gaussian"""
+    def run(self, keywords=set()):
+        """Run an optimization calculation with Gaussian"""
         _, configuration = self.get_system_configuration()
-
-        # references = self.parent.references
 
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
         )
-        # Have to fix formatting for printing...
-        PP = dict(P)
-        for key in PP:
-            if isinstance(PP[key], units_class):
-                PP[key] = "{:~P}".format(PP[key])
-
-        self.description = []
-        self.description.append(__(self.description_text(PP), **PP, indent=self.indent))
 
         subkeywords = []
         convergence = gaussian_step.optimization_convergence[P["geometry convergence"]]
@@ -113,17 +116,12 @@ class Optimization(gaussian_step.Energy):
                 f"Don't recognize optimization coordinates '{coordinates}'"
             )
 
-        if len(subkeywords) == 0:
-            keywords = []
-        elif len(subkeywords) == 1:
-            keywords = [f"Opt={subkeywords[0]}"]
-        else:
-            keywords = [f"Opt=({','.join(subkeywords)})"]
+        if len(subkeywords) == 1:
+            keywords.add(f"Opt={subkeywords[0]}")
+        elif len(subkeywords) > 1:
+            keywords.add(f"Opt=({','.join(subkeywords)})")
 
-        # Add in the input from the energy part of things
-        keywords.extend(super().get_input(calculation_type=calculation_type))
-
-        return keywords
+        super().run(keywords=keywords)
 
     def analyze(self, indent="", data={}, out=[], table=None):
         """Parse the output and generating the text output and store the
@@ -134,6 +132,7 @@ class Optimization(gaussian_step.Energy):
         )
 
         text = ""
+
         if table is None:
             table = {
                 "Property": [],
@@ -141,79 +140,82 @@ class Optimization(gaussian_step.Energy):
                 "Units": [],
             }
 
-        metadata = gaussian_step.metadata["results"]
+        # metadata = gaussian_step.metadata["results"]
         if "Total Energy" not in data:
             text += "Gaussian did not produce the energy. Something is wrong!"
 
-        # Information about the optimization
-        n_steps = data["Optimization Number of geometries"][0]
-        if data["Geometry Optimization Converged"]:
-            text += f"The geometry optimization converged in {n_steps} steps."
+        # Get the system & configuration
+        _, configuration = self.get_system_configuration(None)
+
+        if configuration.n_atoms == 1:
+            text += "System is an atom, so nothing to optimize."
         else:
-            text += (
-                f"Warning: The geometry optimization did not converge in {n_steps} "
-                "steps."
-            )
-            table2 = {}
-            for key in (
-                "Maximum Force",
-                "RMS Force",
-                "Maximum Displacement",
-                "RMS Displacement",
-            ):
-                table2[key] = [f"{v:.6f}" for v in data[key + " Trajectory"]]
-                table2[key].append("-")
-                table2[key].append(f"{data[key + ' Threshold']:.6f}")
-            tmp = tabulate(
-                table2,
-                headers="keys",
-                tablefmt="rounded_outline",
-                colalign=("decimal", "decimal", "decimal", "decimal"),
-                disable_numparse=True,
-            )
-            length = len(tmp.splitlines()[0])
-            text_lines = []
-            text_lines.append("Convergence".center(length))
-            text_lines.append(tmp)
-
-            printer.normal(__(text, indent=self.indent + 4 * " "))
-            printer.normal("")
-            text = ""
-            printer.normal(
-                textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
-            )
-
-        for key in ("Total Energy", "Virial Ratio", "RMS Density"):
-            tmp = data[key]
-            mdata = metadata[key]
-            table["Property"].append(key)
-            table["Value"].append(f"{tmp:{mdata['format']}}")
-            if "units" in mdata:
-                table["Units"].append(mdata["units"])
+            # Information about the optimization
+            n_steps = data["Optimization Number of geometries"][0]
+            if data["Geometry Optimization Converged"]:
+                text += f"The geometry optimization converged in {n_steps} steps."
             else:
-                table["Units"].append("")
+                text += (
+                    f"Warning: The geometry optimization did not converge in {n_steps} "
+                    "steps."
+                )
+                table2 = {}
+                for key in (
+                    "Maximum Force",
+                    "RMS Force",
+                    "Maximum Displacement",
+                    "RMS Displacement",
+                ):
+                    table2[key] = [f"{v:.6f}" for v in data[key + " Trajectory"]]
+                    table2[key].append("-")
+                    table2[key].append(f"{data[key + ' Threshold']:.6f}")
+                tmp = tabulate(
+                    table2,
+                    headers="keys",
+                    tablefmt="rounded_outline",
+                    colalign=("decimal", "decimal", "decimal", "decimal"),
+                    disable_numparse=True,
+                )
+                length = len(tmp.splitlines()[0])
+                text_lines = []
+                text_lines.append("Convergence".center(length))
+                text_lines.append(tmp)
 
-        tmp = tabulate(
-            table,
-            headers="keys",
-            tablefmt="rounded_outline",
-            colalign=("center", "decimal", "left"),
-            disable_numparse=True,
-        )
-        length = len(tmp.splitlines()[0])
-        text_lines = []
-        text_lines.append("Results".center(length))
-        text_lines.append(tmp)
+                printer.normal(__(text, indent=self.indent + 4 * " "))
+                printer.normal("")
+                text = ""
+                printer.normal(
+                    textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
+                )
+
+        # Update the structure
+        if "Current cartesian coordinates" in data:
+            factor = Q_(1, "a0").to("Å").magnitude
+            system_db = self.get_variable("_system_db")
+            configuration = system_db.system.configuration
+            xs = []
+            ys = []
+            zs = []
+            it = iter(data["Current cartesian coordinates"])
+            for x in it:
+                xs.append(factor * x)
+                ys.append(factor * next(it))
+                zs.append(factor * next(it))
+            configuration.atoms["x"][0:] = xs
+            configuration.atoms["y"][0:] = ys
+            configuration.atoms["z"][0:] = zs
+            text += " Updated the system with the structure from Gaussian."
 
         if text != "":
             text = str(__(text, **data, indent=self.indent + 4 * " "))
             text += "\n\n"
-        text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
-
         printer.normal(text)
 
-        if (
-            not data["Geometry Optimization Converged"]
-            and not P["ignore unconverged optimization"]
-        ):
-            raise RuntimeError("Gaussian geometry optimization failed to converge.")
+        super().analyze(data=data)
+
+        if configuration.n_atoms > 1:
+            if (
+                not data["Geometry Optimization Converged"]
+                and not P["ignore unconverged optimization"]
+            ):
+                raise RuntimeError("Gaussian geometry optimization failed to converge.")

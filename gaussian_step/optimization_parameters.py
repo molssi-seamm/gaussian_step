@@ -8,7 +8,7 @@ import gaussian_step
 
 # import seamm
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 
 
 class OptimizationParameters(gaussian_step.EnergyParameters):
@@ -83,3 +83,12 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
         super().__init__(
             defaults={**OptimizationParameters.parameters, **defaults}, data=data
         )
+
+        # Do any local editing of defaults
+        tmp = self["configuration name"]
+        tmp._data["enumeration"] = ["optimized with {model}", *tmp.enumeration[1:]]
+        tmp.default = "keep current name"
+
+        tmp = self["configuration name"]
+        tmp._data["enumeration"] = ["optimized with {model}", *tmp.enumeration]
+        tmp.default = "optimized with {model}"
