@@ -84,6 +84,14 @@ gaussian\_step.optimization\_step module
    :undoc-members:
    :show-inheritance:
 
+gaussian\_step.substep module
+-----------------------------
+
+.. automodule:: gaussian_step.substep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gaussian\_step.tk\_energy module
 --------------------------------
 
