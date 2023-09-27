@@ -10,7 +10,7 @@ import gaussian_step
 import seamm
 import seamm_widgets as sw
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 
 
 class TkEnergy(seamm.TkNode):
@@ -88,17 +88,61 @@ class TkEnergy(seamm.TkNode):
             "freeze-cores",
         ):
             self[key] = P[key].widget(self["calculation"])
+
+        # bindings...
+        for key in ("level", "method", "advanced_method"):
+            self[key].bind("<<ComboboxSelected>>", self.reset_calculation)
+            self[key].bind("<Return>", self.reset_calculation)
+            self[key].bind("<FocusOut>", self.reset_calculation)
+
         for key in (
             "maximum iterations",
             "convergence",
         ):
             self[key] = P[key].widget(self["convergence frame"])
 
-        # bindings...
-        for key in ("level", "method", "advanced_method"):
-            self[key].bind("<<ComboboxSelected>>", self.reset_convergence)
-            self[key].bind("<Return>", self.reset_convergence)
-            self[key].bind("<FocusOut>", self.reset_convergence)
+        # Create the structure-handling widgets
+        sframe = self["structure frame"] = ttk.LabelFrame(
+            frame, text="Configuration Handling", labelanchor=tk.N
+        )
+        row = 0
+        widgets = []
+        for key in ("structure handling", "system name", "configuration name"):
+            self[key] = P[key].widget(sframe)
+            self[key].grid(row=row, column=0, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
+        sw.align_labels(widgets, sticky=tk.E)
+
+        # A tab for output of orbitals, etc.
+        notebook = self["notebook"]
+        self["output frame"] = oframe = ttk.Frame(notebook)
+        notebook.insert(self["results frame"], oframe, text="Output", sticky="new")
+
+        # Frame to isolate widgets
+        p_frame = self["plot frame"] = ttk.LabelFrame(
+            self["output frame"],
+            borderwidth=4,
+            relief="sunken",
+            text="Plots",
+            labelanchor="n",
+            padding=10,
+        )
+
+        for key in gaussian_step.EnergyParameters.output_parameters:
+            self[key] = P[key].widget(p_frame)
+
+        # Set the callbacks for changes
+        for widget in ("orbitals", "region"):
+            w = self[widget]
+            w.combobox.bind("<<ComboboxSelected>>", self.reset_plotting)
+            w.combobox.bind("<Return>", self.reset_plotting)
+            w.combobox.bind("<FocusOut>", self.reset_plotting)
+        p_frame.grid(row=0, column=0, sticky="new")
+        oframe.columnconfigure(0, weight=1)
+
+        # and lay them out
+        self.reset_plotting()
 
         # Top level needs to call reset_dialog
         if self.node.calculation == "energy":
@@ -113,33 +157,49 @@ class TkEnergy(seamm.TkNode):
         for slave in frame.grid_slaves():
             slave.grid_forget()
 
-        self["calculation"].grid(row=0, column=0)
+        row = 0
+        self["calculation"].grid(row=row, column=0)
+        row += 1
         self.reset_calculation()
-        self["convergence frame"].grid(row=1, column=0)
+        self["convergence frame"].grid(row=row, column=0)
+        row += 1
         self.reset_convergence()
-        return 2
+        self["structure frame"].grid(
+            row=row, column=0, columnspan=2, sticky=tk.N, pady=5
+        )
+        row += 1
+        return row
 
     def reset_calculation(self, widget=None):
         level = self["level"].get()
 
         if level == "recommended":
             long_method = self["method"].get()
-            if self.is_expr(long_method):
-                self.node.method = None
-                meta = None
-            else:
-                self.node.method = gaussian_step.methods[long_method]["method"]
-                meta = gaussian_step.methods[long_method]
             functional = self["functional"].get()
+            widget = self["method"]
         else:
             long_method = self["advanced_method"].get()
-            if self.is_expr(long_method):
-                self.node.method = None
-                meta = None
-            else:
+            functional = self["advanced_functional"].get()
+            widget = self["advanced_method"]
+        if self.is_expr(long_method):
+            self.node.method = None
+            meta = None
+        else:
+            if long_method in gaussian_step.methods:
                 self.node.method = gaussian_step.methods[long_method]["method"]
                 meta = gaussian_step.methods[long_method]
-            functional = self["advanced_functional"].get()
+            else:
+                # See if it matches the keyword part
+                for key, mdata in gaussian_step.methods.items():
+                    if long_method == mdata["method"]:
+                        long_method = key
+                        widget.set(long_method)
+                        meta = mdata
+                        self.node.method = meta["method"]
+                        break
+                else:
+                    self.node.method = long_method
+                    meta = None
 
         # Set up the results table because it depends on the method
         self.results_widgets = []
@@ -158,9 +218,10 @@ class TkEnergy(seamm.TkNode):
             self["method"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
             widgets.append(self["method"])
             row += 1
-            self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-            widgets.append(self["basis"])
-            row += 1
+            if meta is None or "nobasis" not in meta or not meta["nobasis"]:
+                self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+                widgets.append(self["basis"])
+                row += 1
             if self.node.method is None or self.node.method == "DFT":
                 self["functional"].grid(row=row, column=1, sticky=tk.EW)
                 widgets2.append(self["functional"])
@@ -173,9 +234,10 @@ class TkEnergy(seamm.TkNode):
             self["advanced_method"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
             widgets.append(self["advanced_method"])
             row += 1
-            self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-            widgets.append(self["basis"])
-            row += 1
+            if meta is None or "nobasis" not in meta or not meta["nobasis"]:
+                self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+                widgets.append(self["basis"])
+                row += 1
             if self.node.method is None or self.node.method == "DFT":
                 self["advanced_functional"].grid(row=row, column=1, sticky=tk.EW)
                 widgets2.append(self["advanced_functional"])
@@ -223,3 +285,47 @@ class TkEnergy(seamm.TkNode):
 
         frame.columnconfigure(0, minsize=150)
         sw.align_labels(widgets, sticky=tk.E)
+
+    def reset_plotting(self, widget=None):
+        frame = self["plot frame"]
+        for slave in frame.grid_slaves():
+            slave.grid_forget()
+
+        plot_orbitals = self["orbitals"].get() == "yes"
+        region = self["region"].get()
+
+        widgets = []
+
+        row = 0
+        for key in (
+            "total density",
+            "total spin density",
+            "orbitals",
+        ):
+            # "difference density",
+            self[key].grid(row=row, column=0, columnspan=4, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
+
+        if plot_orbitals:
+            key = "selected orbitals"
+            self[key].grid(row=row, column=1, columnspan=4, sticky=tk.EW)
+            row += 1
+
+        key = "region"
+        self[key].grid(row=row, column=0, columnspan=4, sticky=tk.EW)
+        widgets.append(self[key])
+        row += 1
+
+        if region == "explicit":
+            key = "nx"
+            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            widgets.append(self[key])
+            self["ny"].grid(row=row, column=2, sticky=tk.EW)
+            self["nz"].grid(row=row, column=3, sticky=tk.EW)
+
+        sw.align_labels(widgets, sticky=tk.E)
+        frame.columnconfigure(0, minsize=10)
+        frame.columnconfigure(4, weight=1)
+
+        return row

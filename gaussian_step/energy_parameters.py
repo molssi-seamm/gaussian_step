@@ -7,7 +7,7 @@ import logging
 from gaussian_step import methods, dft_functionals
 import seamm
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Gaussian")
 
 
 class EnergyParameters(seamm.Parameters):
@@ -64,7 +64,7 @@ class EnergyParameters(seamm.Parameters):
             "help_text": ("The computational method to use."),
         },
         "functional": {
-            "default": "B3LYP hybrid GGA exchange-correlation functional",
+            "default": "B3LYP : hybrid functional of Becke and Lee, Yang, and Parr",
             "kind": "enumeration",
             "default_units": "",
             "enumeration": [
@@ -75,7 +75,7 @@ class EnergyParameters(seamm.Parameters):
             "help_text": ("The exchange-correlation functional to use."),
         },
         "advanced_functional": {
-            "default": "B3LYP hybrid GGA exchange-correlation functional",
+            "default": "B3LYP : hybrid functional of Becke and Lee, Yang, and Parr",
             "kind": "enumeration",
             "default_units": "",
             "enumeration": [x for x in dft_functionals],
@@ -172,10 +172,109 @@ class EnergyParameters(seamm.Parameters):
         },
     }
 
+    output_parameters = {
+        "total density": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Plot total density:",
+            "help_text": "Whether to plot the total charge density.",
+        },
+        "total spin density": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Plot total spin density:",
+            "help_text": "Whether to plot the total spin density.",
+        },
+        "difference density": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Plot difference density:",
+            "help_text": "Whether to plot the difference density.",
+        },
+        "orbitals": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Plot orbitals:",
+            "help_text": "Whether to plot orbitals.",
+        },
+        "selected orbitals": {
+            "default": "HOMO, LUMO",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("HOMO, LUMO", "-1, HOMO, LUMO, +1", "all"),
+            "format_string": "",
+            "description": "Selected orbitals:",
+            "help_text": "Which orbitals to plot.",
+        },
+        "region": {
+            "default": "default",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("default", "explicit"),
+            "format_string": "",
+            "description": "Region:",
+            "help_text": "The region for the plots",
+        },
+        "nx": {
+            "default": 50,
+            "kind": "integer",
+            "default_units": "",
+            "enumeration": None,
+            "format_string": "",
+            "description": "Grid:",
+            "help_text": "Number of grid points in first direction",
+        },
+        "ny": {
+            "default": 50,
+            "kind": "integer",
+            "default_units": "",
+            "enumeration": None,
+            "format_string": "",
+            "description": "x",
+            "help_text": "Number of grid points in second direction",
+        },
+        "nz": {
+            "default": 50,
+            "kind": "integer",
+            "default_units": "",
+            "enumeration": None,
+            "format_string": "",
+            "description": "x",
+            "help_text": "Number of grid points in first direction",
+        },
+    }
+
     def __init__(self, defaults={}, data=None):
         """Initialize the instance, by default from the default
         parameters given in the class"""
 
         super().__init__(
-            defaults={**EnergyParameters.parameters, **defaults}, data=data
+            defaults={
+                **EnergyParameters.parameters,
+                **EnergyParameters.output_parameters,
+                **seamm.standard_parameters.structure_handling_parameters,
+                **defaults,
+            },
+            data=data,
         )
+
+        # Do any local editing of defaults
+        tmp = self["configuration name"]
+        tmp._data["enumeration"] = ["single-point with {model}", *tmp.enumeration[1:]]
+        tmp.default = "keep current name"
+
+        tmp = self["configuration name"]
+        tmp._data["enumeration"] = ["single-point with {model}", *tmp.enumeration]
+        tmp.default = "single-point with {model}"

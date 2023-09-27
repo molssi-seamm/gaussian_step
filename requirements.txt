@@ -1,3 +1,4 @@
+cclib
 psutil
 seamm
 seamm-util
