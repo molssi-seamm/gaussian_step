@@ -2,6 +2,11 @@
 History
 =======
 
+2023.10.7 Added structure file for plots of density and orbitals.
+    * Always write the current structure as 'structure.sdf' in the directory where the
+      cube files for orbitals and densities are written. The Dashboard picks up this
+      file to render the structure along with the surfaces.
+      
 2023.9.27 Added composite and other methods, DFT functionals
     * Now support HF, DFT, MP4, CCD & CCSD, CBS-x, and Gn methods
     * Added PBE, PBE-98, PBE0, and HSE06 functionals
