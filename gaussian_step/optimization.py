@@ -12,7 +12,6 @@ import seamm
 import seamm.data
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __
-from seamm_util import Q_
 
 logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
@@ -187,24 +186,6 @@ class Optimization(gaussian_step.Energy):
                 printer.normal(
                     textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
                 )
-
-        # Update the structure
-        if "Current cartesian coordinates" in data:
-            factor = Q_(1, "a0").to("Å").magnitude
-            system_db = self.get_variable("_system_db")
-            configuration = system_db.system.configuration
-            xs = []
-            ys = []
-            zs = []
-            it = iter(data["Current cartesian coordinates"])
-            for x in it:
-                xs.append(factor * x)
-                ys.append(factor * next(it))
-                zs.append(factor * next(it))
-            configuration.atoms["x"][0:] = xs
-            configuration.atoms["y"][0:] = ys
-            configuration.atoms["z"][0:] = zs
-            text += " Updated the system with the structure from Gaussian."
 
         if text != "":
             text = str(__(text, **data, indent=self.indent + 4 * " "))

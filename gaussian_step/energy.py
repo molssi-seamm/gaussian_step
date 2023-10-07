@@ -8,13 +8,14 @@ from pathlib import Path
 import textwrap
 
 import numpy as np
+from openbabel import openbabel
 from tabulate import tabulate
 
 import gaussian_step
 from .substep import Substep
 import seamm
 import seamm.data
-from seamm_util import units_class
+from seamm_util import Q_, units_class
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __
 
@@ -395,10 +396,25 @@ class Energy(Substep):
             text += "\n\n\n"
             text += textwrap.indent(data["Composite/summary"], self.indent + 4 * " ")
 
+        # Update the structure. Gaussian may have reoriented.
+        system, configuration = self.get_system_configuration(None)
+        directory = Path(self.directory)
+        if "Current cartesian coordinates" in data:
+            factor = Q_(1, "a0").to("Å").magnitude
+            xs = []
+            ys = []
+            zs = []
+            it = iter(data["Current cartesian coordinates"])
+            for x in it:
+                xs.append(factor * x)
+                ys.append(factor * next(it))
+                zs.append(factor * next(it))
+            configuration.atoms["x"][0:] = xs
+            configuration.atoms["y"][0:] = ys
+            configuration.atoms["z"][0:] = zs
+
         if "atomcharges/mulliken" in data:
             text_lines = ["\n"]
-            directory = Path(self.directory)
-            system, configuration = self.get_system_configuration(None)
             symbols = configuration.atoms.asymmetric_symbols
             atoms = configuration.atoms
             symmetry = configuration.symmetry
@@ -501,6 +517,16 @@ class Energy(Substep):
                     )
                 text += "\n\n"
                 text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
+
+        # Write the structure locally for use in density and orbital plots
+        obConversion = openbabel.OBConversion()
+        obConversion.SetOutFormat("sdf")
+        obMol = configuration.to_OBMol(properties="all")
+        title = f"SEAMM={system.name}/{configuration.name}"
+        obMol.SetTitle(title)
+        text = obConversion.WriteString(obMol)
+        path = directory / "structure.sdf"
+        path.write_text(text)
 
         printer.normal(text)
 
