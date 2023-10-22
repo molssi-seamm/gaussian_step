@@ -295,6 +295,7 @@ class Energy(Substep):
         metadata = gaussian_step.metadata["results"]
         if "Total Energy" not in data:
             text += "Gaussian did not produce the energy. Something is wrong!"
+            printer.normal(__(text, indent=self.indent + 4 * " "))
 
         for key in (
             "Total Energy",
@@ -518,17 +519,17 @@ class Energy(Substep):
                 text += "\n\n"
                 text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
 
+        printer.normal(text)
+
         # Write the structure locally for use in density and orbital plots
         obConversion = openbabel.OBConversion()
         obConversion.SetOutFormat("sdf")
         obMol = configuration.to_OBMol(properties="all")
         title = f"SEAMM={system.name}/{configuration.name}"
         obMol.SetTitle(title)
-        text = obConversion.WriteString(obMol)
+        sdf = obConversion.WriteString(obMol)
         path = directory / "structure.sdf"
-        path.write_text(text)
-
-        printer.normal(text)
+        path.write_text(sdf)
 
         text = self.make_plots(data)
         if text != "":
