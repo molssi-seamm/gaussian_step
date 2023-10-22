@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2023.10.7 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2023.10.22 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script src="../../_static/documentation_options.js?v=90c0936b"></script>
+    <script src="../../_static/documentation_options.js?v=cbfbbac7"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -787,6 +787,7 @@ document.write(`
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;Total Energy&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;Gaussian did not produce the energy. Something is wrong!&quot;</span>
+            <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="s2">&quot;Total Energy&quot;</span><span class="p">,</span>
@@ -1010,17 +1011,17 @@ document.write(`
                 <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
 
+        <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
         <span class="c1"># Write the structure locally for use in density and orbital plots</span>
         <span class="n">obConversion</span> <span class="o">=</span> <span class="n">openbabel</span><span class="o">.</span><span class="n">OBConversion</span><span class="p">()</span>
         <span class="n">obConversion</span><span class="o">.</span><span class="n">SetOutFormat</span><span class="p">(</span><span class="s2">&quot;sdf&quot;</span><span class="p">)</span>
         <span class="n">obMol</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">to_OBMol</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
         <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SEAMM=</span><span class="si">{</span><span class="n">system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">obMol</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">obConversion</span><span class="o">.</span><span class="n">WriteString</span><span class="p">(</span><span class="n">obMol</span><span class="p">)</span>
+        <span class="n">sdf</span> <span class="o">=</span> <span class="n">obConversion</span><span class="o">.</span><span class="n">WriteString</span><span class="p">(</span><span class="n">obMol</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;structure.sdf&quot;</span>
-        <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-
-        <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span>
 
         <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_plots</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
