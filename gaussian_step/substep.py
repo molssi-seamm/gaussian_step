@@ -264,7 +264,7 @@ class Substep(seamm.Node):
                 tmp = orbitals
                 orbitals = []
                 for x in tmp:
-                    if x > 0 and x <= n_orbitals:
+                    if x >= 0 and x < n_orbitals:
                         orbitals.append(x)
 
                 if spin_polarized:
@@ -282,7 +282,7 @@ class Substep(seamm.Node):
                         filename = f"{l2}LUMO.cube"
                     else:
                         filename = f"{l2}LUMO+{mo - homo - 1}.cube"
-                    args = f"1 {l1}MO={mo} gaussian.fchk {filename} {npts} h"
+                    args = f"1 {l1}MO={mo + 1} gaussian.fchk {filename} {npts} h"
 
                     # And run CUBEGEN
                     try:

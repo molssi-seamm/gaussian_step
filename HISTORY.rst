@@ -2,6 +2,11 @@
 History
 =======
 
+2023.10.22 Bug fixes: orbital plots and output
+    * The plots of the HOMO and LUMO were shifted by one orbital due to some code
+      counting from 1 and other, from 0. Sigh.
+    * The output to Job.out was inadvertently truncated.
+
 2023.10.7 Added structure file for plots of density and orbitals.
     * Always write the current structure as 'structure.sdf' in the directory where the
       cube files for orbitals and densities are written. The Dashboard picks up this
