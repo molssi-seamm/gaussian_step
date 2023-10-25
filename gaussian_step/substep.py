@@ -6,6 +6,7 @@ import gzip
 import logging
 from pathlib import Path
 import pprint
+import re
 import shutil
 import string
 import subprocess
@@ -369,7 +370,10 @@ class Substep(seamm.Node):
                     while i < count:
                         line = next(it)
                         for pos in range(0, 5 * 16, 16):
-                            value.append(float(line[pos : pos + 16].strip()))
+                            text = line[pos : pos + 16].strip()
+                            # Fortran drops E in format for large exponents...
+                            text = re.sub(r"([0-9])-", r"\1E-", text)
+                            value.append(float(text))
                             i += 1
                             if i == count:
                                 break
