@@ -2,6 +2,13 @@
 History
 =======
 
+2023.10.25 Bug fixes: variable for functional, and parsing FChk file
+    * Fixed a problem with handling the functional if it was a variable rather than a
+      specific functional.
+    * Fixed a problem parsing the FChk file. For exponents > 99 the FORTRAN format used
+      in Gaussian grops the "E", resulting in numbers like 0.947-104 that caused a
+      problem when trying to read them.
+      
 2023.10.22 Bug fixes: orbital plots and output
     * The plots of the HOMO and LUMO were shifted by one orbital due to some code
       counting from 1 and other, from 0. Sigh.

@@ -88,7 +88,8 @@ class Energy(Substep):
             basis = P["basis"]
             text = f"{calculation} using {method} using {functional}"
             if (
-                len(gaussian_step.dft_functionals[functional]["dispersion"]) > 1
+                functional in gaussian_step.dft_functionals
+                and len(gaussian_step.dft_functionals[functional]["dispersion"]) > 1
                 and P["dispersion"] != "none"
             ):
                 text += f" with the {P['dispersion']} dispersion correction"
