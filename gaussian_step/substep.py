@@ -2,6 +2,7 @@
 
 """Setup and run Gaussian"""
 
+import configparser
 import gzip
 import logging
 from pathlib import Path
@@ -9,14 +10,13 @@ import pprint
 import re
 import shutil
 import string
-import subprocess
 
 import cclib
 import numpy as np
-import psutil
 
 import gaussian_step
 import seamm
+import seamm_exec
 import seamm.data
 import seamm_util.printing as printing
 
@@ -97,6 +97,8 @@ class Substep(seamm.Node):
             flowchart=flowchart, title=title, extension=extension, logger=logger
         )
 
+        self._input_only = False
+
     @property
     def version(self):
         """The semantic version of this module."""
@@ -110,6 +112,15 @@ class Substep(seamm.Node):
     @property
     def global_options(self):
         return self.parent.global_options
+
+    @property
+    def input_only(self):
+        """Whether to write the input only, not run MOPAC."""
+        return self._input_only
+
+    @input_only.setter
+    def input_only(self, value):
+        self._input_only = value
 
     @property
     def is_runable(self):
@@ -139,6 +150,7 @@ class Substep(seamm.Node):
         """
         text = "\n\n"
 
+        directory = Path(self.directory)
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
         )
@@ -151,18 +163,32 @@ class Substep(seamm.Node):
             raise NotImplementedError("Periodic cube files not implemented yet!")
         spin_polarized = len(data["homos"]) == 2
 
-        # Read the detailed output file to get the number of iterations
-        directory = Path(self.directory)
+        # Prepare to run
+        executor = self.parent.flowchart.executor
 
-        if self.options["gaussian_root"] != "":
-            env = {"g09root": self.options["gaussian_root"]}
+        # Read configuration file for Gaussian
+        seamm_options = self.global_options
+        ini_dir = Path(seamm_options["root"]).expanduser()
+        full_config = configparser.ConfigParser()
+        full_config.read(ini_dir / "gaussian.ini")
+        executor_type = executor.name
+        if executor_type not in full_config:
+            raise RuntimeError(
+                f"No section for '{executor_type}' in MOPAC ini file "
+                f"({ini_dir / 'mopac.ini'})"
+            )
+        config = dict(full_config.items(executor_type))
+
+        # Set up the environment
+        if config["root-directory"] != "":
+            env = {"g09root": config["root-directory"]}
         else:
             env = {}
 
-        if self.options["gaussian_environment"] != "":
-            cmd = f". {self.options['gaussian_environment']} && cubegen"
+        if config["setup-environment"] != "":
+            cmd = [". {setup-environment} && cubegen"]
         else:
-            cmd = "cubegen"
+            cmd = ["cubegen"]
 
         npts = "-2"
 
@@ -180,22 +206,20 @@ class Substep(seamm.Node):
                 args = f"1 Spin=SCF gaussian.fchk Spin_Density.cube {npts} h"
 
             # And run CUBEGEN
-            try:
-                output = subprocess.check_output(
-                    cmd + " " + args,
-                    shell=True,
-                    text=True,
-                    env=env,
-                    stderr=subprocess.STDOUT,
-                    cwd=directory,
-                )
-                logger.debug(f"Output from CUBEGEN:\n{output}")
-            except subprocess.CalledProcessError as e:
+            result = executor.run(
+                cmd=[*cmd, args],
+                config=config,
+                directory=self.directory,
+                files={},
+                return_files=["*"],
+                in_situ=True,
+                shell=True,
+                env=env,
+            )
+            if not result:
+                self.logger.error("There was an error running CubeGen")
                 n_errors += 1
-                printer.important(
-                    f"Calling CUBEGEN, {cmd} {args}:"
-                    f"returncode = {e.returncode}\n\nOutput: {e.output}"
-                )
+                printer.important(f"There was an error calling CUBEGEN, {cmd} {args}")
 
         # Any requested orbitals
         if P["orbitals"]:
@@ -286,21 +310,21 @@ class Substep(seamm.Node):
                     args = f"1 {l1}MO={mo + 1} gaussian.fchk {filename} {npts} h"
 
                     # And run CUBEGEN
-                    try:
-                        output = subprocess.check_output(
-                            cmd + " " + args,
-                            shell=True,
-                            text=True,
-                            env=env,
-                            stderr=subprocess.STDOUT,
-                            cwd=directory,
-                        )
-                        logger.debug(f"Output from CUBEGEN:\n{output}")
-                    except subprocess.CalledProcessError as e:
+                    result = executor.run(
+                        cmd=[*cmd, args],
+                        config=config,
+                        directory=self.directory,
+                        files={},
+                        return_files=["*"],
+                        in_situ=True,
+                        shell=True,
+                        env=env,
+                    )
+                    if not result:
+                        self.logger.error("There was an error running CubeGen")
                         n_errors += 1
                         printer.important(
-                            f"Calling CUBEGEN, {cmd} {args}:"
-                            f"returncode = {e.returncode}\n\nOutput: {e.output}"
+                            f"There was an error calling CUBEGEN, {cmd} {args}"
                         )
 
         # Finally rename and gzip the cube files
@@ -755,11 +779,13 @@ class Substep(seamm.Node):
             options = self.options
             seamm_options = self.global_options
 
-            # Work out how many cores and how much memory to use
-            n_cores = psutil.cpu_count(logical=False)
-            self.logger.info("The number of cores is {}".format(n_cores))
+            # Get the computational environment and set limits
+            ce = seamm_exec.computational_environment()
 
             # How many threads to use
+            n_cores = ce["NTASKS"]
+            self.logger.info("The number of cores available is {}".format(n_cores))
+
             if seamm_options["parallelism"] not in ("openmp", "any"):
                 n_threads = 1
             else:
@@ -773,30 +799,30 @@ class Substep(seamm.Node):
                     n_threads = 1
                 if seamm_options["ncores"] != "available":
                     n_threads = min(n_threads, int(seamm_options["ncores"]))
+            ce["NTASKS"] = n_threads
             self.logger.info(f"Gaussian will use {n_threads} threads.")
 
             # How much memory to use
-            svmem = psutil.virtual_memory()
-
             if seamm_options["memory"] == "all":
-                mem_limit = svmem.total
+                mem_limit = ce["MEM_PER_NODE"]
             elif seamm_options["memory"] == "available":
                 # For the default, 'available', use in proportion to number of
                 # cores used
-                mem_limit = svmem.total * (n_threads / n_cores)
+                mem_limit = ce["MEM_PER_CPU"] * n_threads
             else:
                 mem_limit = dehumanize(seamm_options["memory"])
 
             if options["memory"] == "all":
-                memory = svmem.total
+                memory = ce["MEM_PER_NODE"]
             elif options["memory"] == "available":
                 # For the default, 'available', use in proportion to number of
                 # cores used
-                memory = svmem.total * (n_threads / n_cores)
+                memory = ce["MEM_PER_CPU"] * n_threads
             else:
                 memory = dehumanize(options["memory"])
 
             memory = min(memory, mem_limit)
+            ce["MEM_PER_NODE"] = memory
 
             # Apply a minimum of 800 MB
             min_memory = dehumanize("800 MB")
@@ -830,90 +856,108 @@ class Substep(seamm.Node):
             files = {"input.dat": "\n".join(lines)}
             logger.info("input.dat:\n" + files["input.dat"])
 
-            exe = options["gaussian_exe"]
-            exe_path = options["gaussian_path"]
-            if exe_path != "":
-                exe = f"{exe_path}/{exe}"
-
-            printer.important(
-                self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
-                f"up to {memory} of memory.\n"
-            )
-
-            if options["gaussian_root"] != "":
-                env = {"g09root": options["gaussian_root"]}
+            if self.input_only:
+                # Just write the input files and stop
+                for filename in files:
+                    path = directory / filename
+                    path.write_text(files[filename])
+                data = {}
             else:
-                env = {}
+                # Run Gaussian
+                executor = self.parent.flowchart.executor
 
-            if options["gaussian_environment"] != "":
-                cmd = f". {options['gaussian_environment']} ; {exe}"
-            else:
-                cmd = exe
+                # Read configuration file for Gaussian
+                ini_dir = Path(seamm_options["root"]).expanduser()
+                full_config = configparser.ConfigParser()
+                full_config.read(ini_dir / "gaussian.ini")
+                executor_type = executor.name
+                if executor_type not in full_config:
+                    raise RuntimeError(
+                        f"No section for '{executor_type}' in the Gaussian ini file "
+                        f"({ini_dir / 'mopac.ini'})"
+                    )
+                config = dict(full_config.items(executor_type))
 
-            cmd += " < input.dat > output.txt ; formchk gaussian.chk"
+                # Set up the environment
+                if config["root-directory"] != "":
+                    env = {"g09root": config["root-directory"]}
+                else:
+                    env = {}
 
-            local = seamm.ExecLocal()
-            result = local.run(
-                shell=True,
-                cmd=cmd,
-                files=files,
-                env=env,
-                return_files=[
+                if config["setup-environment"] != "":
+                    cmd = [". {setup-environment} ; {code}"]
+                else:
+                    cmd = ["{code}"]
+
+                cmd.append(" < input.dat > output.txt ; formchk gaussian.chk")
+
+                printer.important(
+                    self.indent + f"    Gaussian will use {n_threads} OpenMP threads "
+                    f"and up to {memory} of memory.\n"
+                )
+
+                return_files = [
                     "output.txt",
                     "gaussian.chk",
                     "gaussian.fchk",
-                ],
-                in_situ=True,
-                directory=directory,
-            )
+                ]
+                result = executor.run(
+                    cmd=cmd,
+                    ce=ce,
+                    config=config,
+                    directory=self.directory,
+                    files=files,
+                    return_files=return_files,
+                    in_situ=True,
+                    shell=True,
+                    env=env,
+                )
 
-            if result is None:
-                raise RuntimeError("There was an error running Gaussian")
+                if not result:
+                    self.logger.error("There was an error running Gaussian")
+                    return None
 
-            # logger.debug("\n" + pprint.pformat(result))
+                self.logger.debug("\n" + pprint.pformat(result))
 
-            logger.info("stdout:\n" + result["stdout"])
-            if result["stderr"] != "":
-                logger.warning("stderr:\n" + result["stderr"])
+        if not self.input_only:
+            # And output
+            path = directory / "output.txt"
+            if path.exists():
+                data = vars(cclib.io.ccread(path))
+                data = self.process_data(data)
+            else:
+                data = {}
 
-        # And output
-        path = directory / "output.txt"
-        if path.exists():
-            data = vars(cclib.io.ccread(path))
-            data = self.process_data(data)
-        else:
-            data = {}
+            # Get the data from the formatted checkpoint file
+            data = self.parse_fchk(directory / "gaussian.fchk", data)
 
-        # Get the data from the formatted checkpoint file
-        data = self.parse_fchk(directory / "gaussian.fchk", data)
+            # And parse a bit more out of the output
+            if path.exists():
+                data = self.parse_output(path, data)
 
-        # And parse a bit more out of the output
-        if path.exists():
-            data = self.parse_output(path, data)
+            # Debug output
+            if self.logger.isEnabledFor(logging.INFO):
+                keys = "\n".join(data.keys())
+                logger.info(f"Data keys:\n{keys}")
+            if self.logger.isEnabledFor(logging.DEBUG):
+                keys = "\n".join(data.keys())
+                logger.info(f"Data keys:\n{keys}")
+                logger.debug(f"Data:\n{pprint.pformat(data)}")
 
-        # Debug output
-        if self.logger.isEnabledFor(logging.INFO):
-            keys = "\n".join(data.keys())
-            logger.info(f"Data keys:\n{keys}")
-        if self.logger.isEnabledFor(logging.DEBUG):
-            keys = "\n".join(data.keys())
-            logger.info(f"Data keys:\n{keys}")
-            logger.debug(f"Data:\n{pprint.pformat(data)}")
+            # The model chemistry
+            # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
+            if "Composite/model" in data:
+                self.model = data["Composite/model"]
+            else:
+                self.model = (
+                    f"{data['metadata/methods'][-1]}/{data['method']}/"
+                    f"{data['metadata/basis_set']}"
+                )
+            logger.info(f"model = {self.model}")
 
-        # The model chemistry
-        # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
-        if "Composite/model" in data:
-            self.model = data["Composite/model"]
-        else:
-            self.model = (
-                f"{data['metadata/methods'][-1]}/{data['method']}/"
-                f"{data['metadata/basis_set']}"
-            )
-        logger.info(f"model = {self.model}")
-
-        # If ran successfully, put out the success file
-        if data["success"]:
-            success.write_text("success")
+            # If ran successfully, put out the success file
+            if data["success"]:
+                success.write_text("success")
 
         # Add other citations here or in the appropriate place in the code.
         # Add the bibtex to data/references.bib, and add a self.reference.cite

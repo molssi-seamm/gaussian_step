@@ -1,6 +1,6 @@
 cclib
-psutil
 seamm
+seamm-exec
 seamm-util
 seamm-widgets
 tabulate
