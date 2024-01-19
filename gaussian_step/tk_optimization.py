@@ -105,6 +105,10 @@ class TkOptimization(gaussian_step.TkEnergy):
             slave.grid_forget()
 
         row = 0
+        # Whether to just write input
+        self["input only"].grid(row=row, column=0, sticky=tk.W)
+        row += 1
+
         self["calculation"].grid(row=row, column=0)
         row += 1
         self.reset_calculation()

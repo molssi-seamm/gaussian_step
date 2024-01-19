@@ -55,6 +55,11 @@ class TkEnergy(seamm.TkNode):
         self.logger.debug("Creating the dialog")
         frame = super().create_dialog(title=title, widget="notebook", results_tab=True)
 
+        P = self.node.parameters
+
+        # The option to just write input
+        self["input only"] = P["input only"].widget(frame)
+
         # Create a frame for the calculation control
         self["calculation"] = ttk.LabelFrame(
             frame,
@@ -74,8 +79,7 @@ class TkEnergy(seamm.TkNode):
             padding=10,
         )
 
-        # Create all the widgets
-        P = self.node.parameters
+        # Create the rest of the widgets
         for key in (
             "level",
             "method",
@@ -158,6 +162,10 @@ class TkEnergy(seamm.TkNode):
             slave.grid_forget()
 
         row = 0
+        # Whether to just write input
+        self["input only"].grid(row=row, column=0, sticky=tk.W)
+        row += 1
+
         self["calculation"].grid(row=row, column=0)
         row += 1
         self.reset_calculation()
