@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2023.10.25 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.1.19 documentation</title>
   
   
   
@@ -17,15 +17,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -33,11 +33,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../../_static/documentation_options.js?v=91573120"></script>
+    <script src="../../_static/documentation_options.js?v=9b344aeb"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,10 +55,9 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -99,7 +98,7 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
@@ -109,6 +108,7 @@
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
+
   
 
 <a class="navbar-brand logo" href="../../index.html">
@@ -136,13 +136,8 @@
     
     <div class="me-auto navbar-header-items__center">
       
-        <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+        <div class="navbar-item">
+<nav class="navbar-nav">
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -218,6 +213,7 @@
       
         <div class="navbar-item navbar-persistent--container">
           
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -231,6 +227,7 @@
       
       
         <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -275,6 +272,7 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -290,10 +288,15 @@ document.write(`
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
@@ -304,13 +307,8 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+          <div class="navbar-item">
+<nav class="navbar-nav">
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -386,6 +384,7 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -478,13 +477,14 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for gaussian_step.substep</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;Setup and run Gaussian&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -492,14 +492,13 @@ document.write(`
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">string</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
 
 <span class="kn">import</span> <span class="nn">cclib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">psutil</span>
 
 <span class="kn">import</span> <span class="nn">gaussian_step</span>
 <span class="kn">import</span> <span class="nn">seamm</span>
+<span class="kn">import</span> <span class="nn">seamm_exec</span>
 <span class="kn">import</span> <span class="nn">seamm.data</span>
 <span class="kn">import</span> <span class="nn">seamm_util.printing</span> <span class="k">as</span> <span class="nn">printing</span>
 
@@ -588,6 +587,8 @@ document.write(`
             <span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_only</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The semantic version of this module.&quot;&quot;&quot;</span>
@@ -601,6 +602,15 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">global_options</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_only</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether to write the input only, not run MOPAC.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_only</span>
+
+    <span class="nd">@input_only</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">input_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_only</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_runable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -632,6 +642,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
         <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">current_values_to_dict</span><span class="p">(</span>
             <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
         <span class="p">)</span>
@@ -644,18 +655,32 @@ document.write(`
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Periodic cube files not implemented yet!&quot;</span><span class="p">)</span>
         <span class="n">spin_polarized</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;homos&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
 
-        <span class="c1"># Read the detailed output file to get the number of iterations</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+        <span class="c1"># Prepare to run</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">executor</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_root&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g09root&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_root&quot;</span><span class="p">]}</span>
+        <span class="c1"># Read configuration file for Gaussian</span>
+        <span class="n">seamm_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_options</span>
+        <span class="n">ini_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+        <span class="n">full_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="n">full_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ini_dir</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span><span class="p">)</span>
+        <span class="n">executor_type</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_config</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No section for &#39;</span><span class="si">{</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">&#39; in MOPAC ini file &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">ini_dir</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;mopac.ini&#39;</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">full_config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">executor_type</span><span class="p">))</span>
+
+        <span class="c1"># Set up the environment</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g09root&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">env</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_environment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;. </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;gaussian_environment&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &amp;&amp; cubegen&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;setup-environment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;. {setup-environment} &amp;&amp; cubegen&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;cubegen&quot;</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cubegen&quot;</span><span class="p">]</span>
 
         <span class="n">npts</span> <span class="o">=</span> <span class="s2">&quot;-2&quot;</span>
 
@@ -673,22 +698,20 @@ document.write(`
                 <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;1 Spin=SCF gaussian.fchk Spin_Density.cube </span><span class="si">{</span><span class="n">npts</span><span class="si">}</span><span class="s2"> h&quot;</span>
 
             <span class="c1"># And run CUBEGEN</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                    <span class="n">cmd</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">args</span><span class="p">,</span>
-                    <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
-                    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
-                    <span class="n">cwd</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output from CUBEGEN:</span><span class="se">\n</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="n">cmd</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">args</span><span class="p">],</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+                <span class="n">files</span><span class="o">=</span><span class="p">{},</span>
+                <span class="n">return_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
+                <span class="n">in_situ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running CubeGen&quot;</span><span class="p">)</span>
                 <span class="n">n_errors</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Calling CUBEGEN, </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">:&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;returncode = </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">Output: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was an error calling CUBEGEN, </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Any requested orbitals</span>
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]:</span>
@@ -779,21 +802,21 @@ document.write(`
                     <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;1 </span><span class="si">{</span><span class="n">l1</span><span class="si">}</span><span class="s2">MO=</span><span class="si">{</span><span class="n">mo</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> gaussian.fchk </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">npts</span><span class="si">}</span><span class="s2"> h&quot;</span>
 
                     <span class="c1"># And run CUBEGEN</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                            <span class="n">cmd</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">args</span><span class="p">,</span>
-                            <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
-                            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
-                            <span class="n">cwd</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-                        <span class="p">)</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output from CUBEGEN:</span><span class="se">\n</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                        <span class="n">cmd</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">args</span><span class="p">],</span>
+                        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                        <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+                        <span class="n">files</span><span class="o">=</span><span class="p">{},</span>
+                        <span class="n">return_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
+                        <span class="n">in_situ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running CubeGen&quot;</span><span class="p">)</span>
                         <span class="n">n_errors</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Calling CUBEGEN, </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">:&quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;returncode = </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">Output: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;There was an error calling CUBEGEN, </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="p">)</span>
 
         <span class="c1"># Finally rename and gzip the cube files</span>
@@ -1260,11 +1283,13 @@ document.write(`
             <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
             <span class="n">seamm_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_options</span>
 
-            <span class="c1"># Work out how many cores and how much memory to use</span>
-            <span class="n">n_cores</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The number of cores is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_cores</span><span class="p">))</span>
+            <span class="c1"># Get the computational environment and set limits</span>
+            <span class="n">ce</span> <span class="o">=</span> <span class="n">seamm_exec</span><span class="o">.</span><span class="n">computational_environment</span><span class="p">()</span>
 
             <span class="c1"># How many threads to use</span>
+            <span class="n">n_cores</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;NTASKS&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The number of cores available is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_cores</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;parallelism&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;openmp&quot;</span><span class="p">,</span> <span class="s2">&quot;any&quot;</span><span class="p">):</span>
                 <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1278,30 +1303,30 @@ document.write(`
                     <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;ncores&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;available&quot;</span><span class="p">:</span>
                     <span class="n">n_threads</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_threads</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;ncores&quot;</span><span class="p">]))</span>
+            <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;NTASKS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> threads.&quot;</span><span class="p">)</span>
 
             <span class="c1"># How much memory to use</span>
-            <span class="n">svmem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
-
             <span class="k">if</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">svmem</span><span class="o">.</span><span class="n">total</span>
+                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;MEM_PER_NODE&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;available&quot;</span><span class="p">:</span>
                 <span class="c1"># For the default, &#39;available&#39;, use in proportion to number of</span>
                 <span class="c1"># cores used</span>
-                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">svmem</span><span class="o">.</span><span class="n">total</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">/</span> <span class="n">n_cores</span><span class="p">)</span>
+                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;MEM_PER_CPU&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_threads</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">dehumanize</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-                <span class="n">memory</span> <span class="o">=</span> <span class="n">svmem</span><span class="o">.</span><span class="n">total</span>
+                <span class="n">memory</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;MEM_PER_NODE&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;available&quot;</span><span class="p">:</span>
                 <span class="c1"># For the default, &#39;available&#39;, use in proportion to number of</span>
                 <span class="c1"># cores used</span>
-                <span class="n">memory</span> <span class="o">=</span> <span class="n">svmem</span><span class="o">.</span><span class="n">total</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">/</span> <span class="n">n_cores</span><span class="p">)</span>
+                <span class="n">memory</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;MEM_PER_CPU&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_threads</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">memory</span> <span class="o">=</span> <span class="n">dehumanize</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">])</span>
 
             <span class="n">memory</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">mem_limit</span><span class="p">)</span>
+            <span class="n">ce</span><span class="p">[</span><span class="s2">&quot;MEM_PER_NODE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">memory</span>
 
             <span class="c1"># Apply a minimum of 800 MB</span>
             <span class="n">min_memory</span> <span class="o">=</span> <span class="n">dehumanize</span><span class="p">(</span><span class="s2">&quot;800 MB&quot;</span><span class="p">)</span>
@@ -1335,90 +1360,108 @@ document.write(`
             <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)}</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;input.dat:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;input.dat&quot;</span><span class="p">])</span>
 
-            <span class="n">exe</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_exe&quot;</span><span class="p">]</span>
-            <span class="n">exe_path</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_path&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">exe_path</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">exe</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exe_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">exe</span><span class="si">}</span><span class="s2">&quot;</span>
-
-            <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;    Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> OpenMP threads and &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;up to </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2"> of memory.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_root&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g09root&quot;</span><span class="p">:</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_root&quot;</span><span class="p">]}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
+                <span class="c1"># Just write the input files and stop</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="n">filename</span>
+                    <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">filename</span><span class="p">])</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">env</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># Run Gaussian</span>
+                <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">executor</span>
 
-            <span class="k">if</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;gaussian_environment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;. </span><span class="si">{</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;gaussian_environment&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> ; </span><span class="si">{</span><span class="n">exe</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="n">exe</span>
+                <span class="c1"># Read configuration file for Gaussian</span>
+                <span class="n">ini_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+                <span class="n">full_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+                <span class="n">full_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ini_dir</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span><span class="p">)</span>
+                <span class="n">executor_type</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_config</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;No section for &#39;</span><span class="si">{</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">&#39; in the Gaussian ini file &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">ini_dir</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;mopac.ini&#39;</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">full_config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">executor_type</span><span class="p">))</span>
 
-            <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat &gt; output.txt ; formchk gaussian.chk&quot;</span>
+                <span class="c1"># Set up the environment</span>
+                <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g09root&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">env</span> <span class="o">=</span> <span class="p">{}</span>
 
-            <span class="n">local</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">ExecLocal</span><span class="p">()</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">local</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">cmd</span><span class="o">=</span><span class="n">cmd</span><span class="p">,</span>
-                <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
-                <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
-                <span class="n">return_files</span><span class="o">=</span><span class="p">[</span>
+                <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;setup-environment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;. {setup-environment} ; </span><span class="si">{code}</span><span class="s2">&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{code}</span><span class="s2">&quot;</span><span class="p">]</span>
+
+                <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &lt; input.dat &gt; output.txt ; formchk gaussian.chk&quot;</span><span class="p">)</span>
+
+                <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;    Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> OpenMP threads &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;and up to </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2"> of memory.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="n">return_files</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="s2">&quot;output.txt&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;gaussian.chk&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span>
-                <span class="p">],</span>
-                <span class="n">in_situ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-            <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                    <span class="n">cmd</span><span class="o">=</span><span class="n">cmd</span><span class="p">,</span>
+                    <span class="n">ce</span><span class="o">=</span><span class="n">ce</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+                    <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+                    <span class="n">return_files</span><span class="o">=</span><span class="n">return_files</span><span class="p">,</span>
+                    <span class="n">in_situ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+                <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;There was an error running Gaussian&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running Gaussian&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">None</span>
 
-            <span class="c1"># logger.debug(&quot;\n&quot; + pprint.pformat(result))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stdout:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;stderr&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;stderr:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;stderr&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
+            <span class="c1"># And output</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;output.txt&quot;</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cclib</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ccread</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># And output</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;output.txt&quot;</span>
-        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cclib</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ccread</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># Get the data from the formatted checkpoint file</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_fchk</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-        <span class="c1"># Get the data from the formatted checkpoint file</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_fchk</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="c1"># And parse a bit more out of the output</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-        <span class="c1"># And parse a bit more out of the output</span>
-        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="c1"># Debug output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Debug output</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># The model chemistry</span>
+            <span class="c1"># self.model = f&quot;{data[&#39;metadata/functional&#39;]}/{data[&#39;metadata/basis_set&#39;]}&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;Composite/model&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/model&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/methods&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/basis_set&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># The model chemistry</span>
-        <span class="c1"># self.model = f&quot;{data[&#39;metadata/functional&#39;]}/{data[&#39;metadata/basis_set&#39;]}&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;Composite/model&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/model&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/methods&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/basis_set&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># If ran successfully, put out the success file</span>
-        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
-            <span class="n">success</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
+            <span class="c1"># If ran successfully, put out the success file</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
+                <span class="n">success</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add other citations here or in the appropriate place in the code.</span>
         <span class="c1"># Add the bibtex to data/references.bib, and add a self.reference.cite</span>
@@ -1453,7 +1496,7 @@ document.write(`
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
 </div>
                 </footer>
@@ -1461,6 +1504,8 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -1473,8 +1518,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1524,8 +1569,9 @@ document.write(`
   
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.2.
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
 </p></div>
       
     </div>

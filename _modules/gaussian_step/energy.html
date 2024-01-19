@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2023.10.25 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.1.19 documentation</title>
   
   
   
@@ -17,15 +17,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -33,11 +33,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../../_static/documentation_options.js?v=91573120"></script>
+    <script src="../../_static/documentation_options.js?v=9b344aeb"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,10 +55,9 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -99,7 +98,7 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
@@ -109,6 +108,7 @@
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
+
   
 
 <a class="navbar-brand logo" href="../../index.html">
@@ -136,13 +136,8 @@
     
     <div class="me-auto navbar-header-items__center">
       
-        <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+        <div class="navbar-item">
+<nav class="navbar-nav">
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -218,6 +213,7 @@
       
         <div class="navbar-item navbar-persistent--container">
           
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -231,6 +227,7 @@
       
       
         <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -275,6 +272,7 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -290,10 +288,15 @@ document.write(`
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
@@ -304,13 +307,8 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+          <div class="navbar-item">
+<nav class="navbar-nav">
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -386,6 +384,7 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -478,7 +477,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for gaussian_step.energy</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
@@ -602,40 +601,50 @@ document.write(`
                 <span class="s2">&quot;proper eigenstate.&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Plotting</span>
-        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total density&quot;</span><span class="p">]:</span>
-            <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;total density&quot;</span><span class="p">)</span>
-        <span class="c1"># if P[&quot;difference density&quot;]:</span>
-        <span class="c1">#     plots.append(&quot;difference density&quot;)</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total spin density&quot;</span><span class="p">]:</span>
-            <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;spin density&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span><span class="si">}</span><span class="s2"> and orbitals &quot;</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;selected orbitals&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> will be plotted.&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The orbitals </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;selected orbitals&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> will be plotted.&quot;</span>
-
-        <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="s2">&quot; The final structure and any charges, etc. will &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;structure handling&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
-        <span class="p">)</span>
-
-        <span class="n">confname</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;configuration name&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using SMILES as its name.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using canonical SMILES as its name.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;keeping the current name.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;optimized with </span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;with &#39;optimized with &lt;model&gt;&#39; as its name.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use configuration number&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using the index of the configuration (1, 2, ...) as its name.&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Energy</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">The input file will be written. No calculation will be run.&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">confname</span> <span class="o">=</span> <span class="n">confname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;model&gt;&quot;</span><span class="p">)</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;with &#39;</span><span class="si">{</span><span class="n">confname</span><span class="si">}</span><span class="s2">&#39; as its name.&quot;</span>
+            <span class="c1"># Plotting</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total density&quot;</span><span class="p">]:</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;total density&quot;</span><span class="p">)</span>
+            <span class="c1"># if P[&quot;difference density&quot;]:</span>
+            <span class="c1">#     plots.append(&quot;difference density&quot;)</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total spin density&quot;</span><span class="p">]:</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;spin density&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span><span class="si">}</span><span class="s2"> and orbitals &quot;</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;selected orbitals&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> will be plotted.&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The orbitals </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;selected orbitals&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> will be plotted.&quot;</span>
+
+            <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot; The final structure and any charges, etc. will &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;structure handling&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">confname</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;configuration name&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using SMILES as its name.&quot;</span>
+            <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using canonical SMILES as its name.&quot;</span>
+            <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;keeping the current name.&quot;</span>
+            <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;optimized with </span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;with &#39;optimized with &lt;model&gt;&#39; as its name.&quot;</span>
+            <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use configuration number&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;using the index of the configuration (1, 2, ...) as its name.&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">confname</span> <span class="o">=</span> <span class="n">confname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;model&gt;&quot;</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;with &#39;</span><span class="si">{</span><span class="n">confname</span><span class="si">}</span><span class="s2">&#39; as its name.&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
 
@@ -655,6 +664,9 @@ document.write(`
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">PP</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">PP</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">units_class</span><span class="p">):</span>
                 <span class="n">PP</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;{:~P}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">PP</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="c1"># Set the attribute for writing just the input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
 
         <span class="c1"># Print what we are doing</span>
         <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_text</span><span class="p">(</span><span class="n">PP</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="p">))</span>
@@ -764,12 +776,13 @@ document.write(`
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_gaussian</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
 
-        <span class="c1"># Follow instructions for where to put the coordinates,</span>
-        <span class="n">system</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span>
-            <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">same_as</span><span class="o">=</span><span class="n">starting_configuration</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
+            <span class="c1"># Follow instructions for where to put the coordinates,</span>
+            <span class="n">system</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span>
+                <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">same_as</span><span class="o">=</span><span class="n">starting_configuration</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+            <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Energy.analyze">
@@ -1050,7 +1063,7 @@ document.write(`
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
 </div>
                 </footer>
@@ -1058,6 +1071,8 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -1070,8 +1085,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1121,8 +1136,9 @@ document.write(`
   
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.2.
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
 </p></div>
       
     </div>
