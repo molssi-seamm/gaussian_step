@@ -2,6 +2,12 @@
 History
 =======
 
+2024.1.19: Switched to new way to run Gaussian, added option to just write input file
+    * Switched to using the new way to run executables, which supports containers.
+    * Added an option to just write the input file, without running
+      Gaussian. This is useful for debugging, and for running Gaussian
+      on a remote server.
+
 2023.10.25 Bug fixes: variable for functional, and parsing FChk file
     * Fixed a problem with handling the functional if it was a variable rather than a
       specific functional.
