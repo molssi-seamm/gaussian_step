@@ -2,7 +2,9 @@
 
 """Setup and run Gaussian"""
 
+import configparser
 import gzip
+import importlib
 import logging
 from pathlib import Path
 import pprint
@@ -10,6 +12,7 @@ import re
 import shutil
 import string
 import subprocess
+import sys
 
 import cclib
 import numpy as np
@@ -633,6 +636,7 @@ class Substep(seamm.Node):
 
     def process_data(self, data):
         """Massage the cclib data to a more easily used form."""
+        logger.debug(pprint.pformat(data))
         # Convert numpy arrays to Python lists
         new = {}
         for key, value in data.items():
@@ -830,45 +834,104 @@ class Substep(seamm.Node):
             files = {"input.dat": "\n".join(lines)}
             logger.info("input.dat:\n" + files["input.dat"])
 
-            exe = options["gaussian_exe"]
-            exe_path = options["gaussian_path"]
-            if exe_path != "":
-                exe = f"{exe_path}/{exe}"
-
             printer.important(
                 self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
                 f"up to {memory} of memory.\n"
             )
 
-            if options["gaussian_root"] != "":
-                env = {"g09root": options["gaussian_root"]}
+            executor = self.parent.flowchart.executor
+
+            # Read configuration file for Gaussian if it exists
+            executor_type = executor.name
+            full_config = configparser.ConfigParser()
+            ini_dir = Path(seamm_options["root"]).expanduser()
+            path = ini_dir / "gaussian.ini"
+
+            if path.exists():
+                full_config.read(ini_dir / "gaussian.ini")
+
+            # If the section we need doesn't exist, get the default
+            if not path.exists() or executor_type not in full_config:
+                resources = importlib.resources.files("gaussian_step") / "data"
+                ini_text = (resources / "gaussian.ini").read_text()
+                full_config.read_string(ini_text)
+
+            # Getting desperate! Look for an executable in the path
+            if executor_type not in full_config:
+                # See if we can find the Gaussian environment variables
+                if "g16root" in sys.environ:
+                    g_ver = "g16"
+                    root_directory = sys.environ["g16root"]
+                elif "g09root" in sys.environ:
+                    g_ver = "g09"
+                    root_directory = sys.environ["g09root"]
+                else:
+                    root_directory = None
+                    exe_path = shutil.which("g16")
+                    if exe_path is None:
+                        exe_path = shutil.which("g09")
+                    if exe_path is None:
+                        raise RuntimeError(
+                            f"No section for '{executor_type}' in Gaussian ini file "
+                            f"({ini_dir / 'gaussian.ini'}), nor in the defaults, nor "
+                            "in the path!"
+                        )
+                    g_ver = exe_path.name
+                    root_directory = str(exe_path.parent.parent)
+                    setup_directory = str(exe_path.parent / g_ver / f"{g_ver}.profile")
+
+                    full_config[executor_type] = {
+                        "installation": "local",
+                        "code": g_ver,
+                        "root-directory": root_directory,
+                        "setup-directory": setup_directory,
+                    }
+
+            # If the ini file does not exist, write it out!
+            if not path.exists():
+                with path.open("w") as fd:
+                    full_config.write(fd)
+                printer.normal(f"Wrote the Gaussian configuration file to {path}")
+                printer.normal("")
+
+            config = dict(full_config.items(executor_type))
+            # Use the matching version of the seamm-gaussian image by default.
+            config["version"] = self.version
+
+            g_ver = config["code"]
+
+            # Setup the calculation environment definition
+            if config["root-directory"] != "":
+                env = {f"{g_ver}root": config["root-directory"]}
             else:
                 env = {}
 
-            if options["gaussian_environment"] != "":
-                cmd = f". {options['gaussian_environment']} ; {exe}"
+            if config["setup-environment"] != "":
+                cmd = f". {config['setup-environment']} ; {g_ver}"
             else:
-                cmd = exe
+                cmd = g_ver
 
             cmd += " < input.dat > output.txt ; formchk gaussian.chk"
 
-            local = seamm.ExecLocal()
-            result = local.run(
-                shell=True,
-                cmd=cmd,
+            return_files = [
+                "output.txt",
+                "gaussian.chk",
+                "gaussian.fchk",
+            ]
+            result = executor.run(
+                cmd=[cmd],
+                config=config,
+                directory=self.directory,
                 files=files,
-                env=env,
-                return_files=[
-                    "output.txt",
-                    "gaussian.chk",
-                    "gaussian.fchk",
-                ],
+                return_files=return_files,
                 in_situ=True,
-                directory=directory,
+                shell=True,
+                env=env,
             )
 
-            if result is None:
-                raise RuntimeError("There was an error running Gaussian")
+            if not result:
+                self.logger.error("There was an error running Gaussian")
+                return None
 
             # logger.debug("\n" + pprint.pformat(result))
 
@@ -891,6 +954,15 @@ class Substep(seamm.Node):
         if path.exists():
             data = self.parse_output(path, data)
 
+        # Explicitly pull out the energy and gradients to standard name
+        if "Total Energy" in data:
+            data["energy"] = data["Total Energy"]
+            del data["Total Energy"]
+        if "Cartesian Gradient" in data:
+            tmp = np.array(data["Cartesian Gradient"])
+            data["gradients"] = tmp.reshape(-1, 3).tolist()
+            del data["Cartesian Gradient"]
+
         # Debug output
         if self.logger.isEnabledFor(logging.INFO):
             keys = "\n".join(data.keys())
@@ -910,6 +982,8 @@ class Substep(seamm.Node):
                 f"{data['metadata/basis_set']}"
             )
         logger.info(f"model = {self.model}")
+
+        data["model"] = "Gaussian/" + self.model
 
         # If ran successfully, put out the success file
         if data["success"]:

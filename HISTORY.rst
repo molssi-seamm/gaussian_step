@@ -1,7 +1,11 @@
 =======
 History
 =======
-
+2024.5.8 General enhancements
+    * Updated to new calculation handling, with ~/SEAMM/gaussian.ini controlling access
+      to the installed version of Gaussian on the machine.
+    * Added energy and gradients to results to support general use in e.g. energy scans.
+      
 2023.10.25 Bug fixes: variable for functional, and parsing FChk file
     * Fixed a problem with handling the functional if it was a variable rather than a
       specific functional.
