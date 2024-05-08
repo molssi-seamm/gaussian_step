@@ -63,19 +63,15 @@ format: ## reformat with with yapf and isort
 	black --extend-exclude '_version.py' $(MODULE) tests
 
 test: ## run tests quickly with the default Python
-	pytest tests/
+	pytest --doctest-modules tests $(MODULE)
 
-coverage: ## check code coverage quickly with the default Python
-	pytest -v --cov=$(MODULE) --cov-report term --color=yes tests/
+dependencies:
+	pur -r requirements_dev.txt
+	pip install -r requirements_dev.txt
 
-coverage-html: ## check code coverage quickly with the default Python, showing as html
-	pytest -v --cov=$(MODULE) --cov-report=html:htmlcov --cov-report term --color=yes tests/
+coverage: clean-test ## check code coverage quickly with the default Python
+	pytest -v --doctest-modules --cov=$(MODULE) --cov-report=html tests/ $(MODULE)
 	$(BROWSER) htmlcov/index.html
-
-clean-docs: ## remove files associated with building the docs
-	rm -f docs/api/$(MODULE).rst
-	rm -f docs/api/modules.rst
-	$(MAKE) -C docs clean
 
 html: clean-docs ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc -o docs/api $(MODULE)
