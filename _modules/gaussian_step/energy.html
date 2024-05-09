@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.1.19 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.5.8 documentation</title>
   
   
   
@@ -37,8 +37,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../../_static/documentation_options.js?v=9b344aeb"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=a730f4a8"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -671,7 +671,12 @@ document.write(`
         <span class="c1"># Print what we are doing</span>
         <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_text</span><span class="p">(</span><span class="n">PP</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="p">))</span>
 
-        <span class="c1"># keywords = []</span>
+        <span class="c1"># If doing a single point, add the correct keyword for the job type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Energy&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;calculate gradient&quot;</span><span class="p">]:</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;FORCE&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;SP&quot;</span><span class="p">)</span>
 
         <span class="c1"># Figure out what we are doing!</span>
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
@@ -764,6 +769,13 @@ document.write(`
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;use symmetry&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;loose&quot;</span><span class="p">:</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Symmetry=Loose&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;use symmetry&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;identify only&quot;</span><span class="p">:</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;NoSymmetry&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;use symmetry&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Symmetry=None&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;freeze core&quot;</span> <span class="ow">in</span> <span class="n">method_data</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;freeze core?&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>

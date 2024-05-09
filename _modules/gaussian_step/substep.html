@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.1.19 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.5.8 documentation</title>
   
   
   
@@ -37,8 +37,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../../_static/documentation_options.js?v=9b344aeb"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=a730f4a8"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -486,12 +486,14 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">cclib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1158,6 +1160,7 @@ document.write(`
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.process_data">[docs]</a>
     <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Massage the cclib data to a more easily used form.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="c1"># Convert numpy arrays to Python lists</span>
         <span class="n">new</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1360,6 +1363,10 @@ document.write(`
             <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)}</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;input.dat:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;input.dat&quot;</span><span class="p">])</span>
 
+            <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;    Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> OpenMP threads and &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;up to </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2"> of memory.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
                 <span class="c1"># Just write the input files and stop</span>
                 <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
@@ -1367,47 +1374,93 @@ document.write(`
                     <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">filename</span><span class="p">])</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Run Gaussian</span>
                 <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">executor</span>
 
-                <span class="c1"># Read configuration file for Gaussian</span>
-                <span class="n">ini_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
-                <span class="n">full_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-                <span class="n">full_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ini_dir</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span><span class="p">)</span>
+                <span class="c1"># Read configuration file for Gaussian if it exists</span>
                 <span class="n">executor_type</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">name</span>
-                <span class="k">if</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_config</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;No section for &#39;</span><span class="si">{</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">&#39; in the Gaussian ini file &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">ini_dir</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;mopac.ini&#39;</span><span class="si">}</span><span class="s2">)&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">full_config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">executor_type</span><span class="p">))</span>
+                <span class="n">full_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+                <span class="n">ini_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">ini_dir</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span>
 
-                <span class="c1"># Set up the environment</span>
+                <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">full_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ini_dir</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span><span class="p">)</span>
+
+                <span class="c1"># If the section we need doesn&#39;t exist, get the default</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_config</span><span class="p">:</span>
+                    <span class="n">resources</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;gaussian_step&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
+                    <span class="n">ini_text</span> <span class="o">=</span> <span class="p">(</span><span class="n">resources</span> <span class="o">/</span> <span class="s2">&quot;gaussian.ini&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+                    <span class="n">full_config</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="n">ini_text</span><span class="p">)</span>
+
+                <span class="c1"># Getting desperate! Look for an executable in the path</span>
+                <span class="k">if</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_config</span><span class="p">:</span>
+                    <span class="c1"># See if we can find the Gaussian environment variables</span>
+                    <span class="k">if</span> <span class="s2">&quot;g16root&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                        <span class="n">g_ver</span> <span class="o">=</span> <span class="s2">&quot;g16&quot;</span>
+                        <span class="n">root_directory</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;g16root&quot;</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s2">&quot;g09root&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                        <span class="n">g_ver</span> <span class="o">=</span> <span class="s2">&quot;g09&quot;</span>
+                        <span class="n">root_directory</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;g09root&quot;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">root_directory</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">exe_path</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;g16&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">exe_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">exe_path</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;g09&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">exe_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;No section for &#39;</span><span class="si">{</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">&#39; in Gaussian ini file&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">ini_dir</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;gaussian.ini&#39;</span><span class="si">}</span><span class="s2">), nor in the defaults, &quot;</span>
+                                <span class="s2">&quot;nor in the path!&quot;</span>
+                            <span class="p">)</span>
+                        <span class="n">g_ver</span> <span class="o">=</span> <span class="n">exe_path</span><span class="o">.</span><span class="n">name</span>
+                        <span class="n">root_directory</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exe_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+                        <span class="n">setup_directory</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="n">exe_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">g_ver</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g_ver</span><span class="si">}</span><span class="s2">.profile&quot;</span>
+                        <span class="p">)</span>
+
+                        <span class="n">full_config</span><span class="p">[</span><span class="n">executor_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s2">&quot;installation&quot;</span><span class="p">:</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">g_ver</span><span class="p">,</span>
+                            <span class="s2">&quot;root-directory&quot;</span><span class="p">:</span> <span class="n">root_directory</span><span class="p">,</span>
+                            <span class="s2">&quot;setup-directory&quot;</span><span class="p">:</span> <span class="n">setup_directory</span><span class="p">,</span>
+                        <span class="p">}</span>
+
+                <span class="c1"># If the ini file does not exist, write it out!</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                        <span class="n">full_config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrote the Gaussian configuration file to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">full_config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">executor_type</span><span class="p">))</span>
+                <span class="c1"># Use the matching version of the seamm-gaussian image by default.</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span>
+
+                <span class="n">g_ver</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+
+                <span class="c1"># Setup the calculation environment definition</span>
                 <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g09root&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]}</span>
+                    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g_ver</span><span class="si">}</span><span class="s2">root&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;root-directory&quot;</span><span class="p">]}</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">env</span> <span class="o">=</span> <span class="p">{}</span>
 
                 <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;setup-environment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;. {setup-environment} ; </span><span class="si">{code}</span><span class="s2">&quot;</span><span class="p">]</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;. </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;setup-environment&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> ; </span><span class="si">{</span><span class="n">g_ver</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{code}</span><span class="s2">&quot;</span><span class="p">]</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="n">g_ver</span>
 
-                <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &lt; input.dat &gt; output.txt ; formchk gaussian.chk&quot;</span><span class="p">)</span>
-
-                <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;    Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> OpenMP threads &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;and up to </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2"> of memory.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat &gt; output.txt ; formchk gaussian.chk&quot;</span>
 
                 <span class="n">return_files</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="s2">&quot;output.txt&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;gaussian.chk&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span>
                 <span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">env</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
                 <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                    <span class="n">cmd</span><span class="o">=</span><span class="n">cmd</span><span class="p">,</span>
-                    <span class="n">ce</span><span class="o">=</span><span class="n">ce</span><span class="p">,</span>
+                    <span class="n">cmd</span><span class="o">=</span><span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
                     <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
                     <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
                     <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
@@ -1448,6 +1501,24 @@ document.write(`
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="c1"># Explicitly pull out the energy and gradients to standard name</span>
+            <span class="k">if</span> <span class="s2">&quot;Total Energy&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;Cartesian Gradient&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Cartesian Gradient&quot;</span><span class="p">])</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Cartesian Gradient&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Debug output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="c1"># The model chemistry</span>
             <span class="c1"># self.model = f&quot;{data[&#39;metadata/functional&#39;]}/{data[&#39;metadata/basis_set&#39;]}&quot;</span>
             <span class="k">if</span> <span class="s2">&quot;Composite/model&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -1458,6 +1529,8 @@ document.write(`
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/basis_set&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Gaussian/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
 
             <span class="c1"># If ran successfully, put out the success file</span>
             <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
