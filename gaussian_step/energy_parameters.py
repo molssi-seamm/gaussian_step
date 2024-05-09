@@ -150,6 +150,24 @@ class EnergyParameters(seamm.Parameters):
                 "an error is thrown."
             ),
         },
+        "use symmetry": {
+            "default": "yes",
+            "kind": "enumeration",
+            "default_units": "",
+            "enumeration": ("yes", "loose", "identify only", "no"),
+            "format_string": "s",
+            "description": "Use symmetry:",
+            "help_text": "Whether to use symmetry, and if so how much.",
+        },
+        "calculate gradient": {
+            "default": "yes",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "s",
+            "description": "Calculate gradient:",
+            "help_text": "Whether to calculate the gradient:",
+        },
         "freeze-cores": {
             "default": "yes",
             "kind": "enumeration",
