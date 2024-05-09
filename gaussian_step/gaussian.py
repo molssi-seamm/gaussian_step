@@ -149,7 +149,7 @@ class Gaussian(seamm.Node):
         logger.debug(f"Creating Gaussian {self}")
         self.subflowchart = seamm.Flowchart(
             parent=self, name="Gaussian", namespace=namespace
-        )  # yapf: disable
+        )
 
         super().__init__(
             flowchart=flowchart,
@@ -157,7 +157,7 @@ class Gaussian(seamm.Node):
             extension=extension,
             module=__name__,
             logger=logger,
-        )  # yapf: disable
+        )
 
         self.parameters = gaussian_step.GaussianParameters()
         self._data = {}

@@ -221,6 +221,27 @@ units : str
     Optional units for the result. If present, the value should be in these units.
 """
 metadata["results"] = {
+    "energy": {
+        "calculation": ["energy", "optimization", "thermodynamics", "vibrations"],
+        "description": "energy",
+        "dimensionality": "scalar",
+        "type": "float",
+        "units": "E_h",
+        "format": ".6f",
+    },
+    "gradients": {
+        "calculation": ["energy", "optimization", "thermodynamics", "vibrations"],
+        "description": "gradients",
+        "dimensionality": [3, "natoms"],
+        "type": "float",
+        "units": "E_h/a0",
+        "format": ".6f",
+    },
+    "model": {
+        "description": "The model string",
+        "dimensionality": "scalar",
+        "type": "string",
+    },
     "Virial Ratio": {
         "calculation": ["energy", "optimization", "thermodynamics", "vibrations"],
         "description": "the virial ratio",
@@ -235,6 +256,14 @@ metadata["results"] = {
         "dimensionality": "scalar",
         "type": "float",
         "units": "E_h",
+        "format": ".6f",
+    },
+    "Cartesian Gradient": {
+        "calculation": ["energy", "optimization", "thermodynamics", "vibrations"],
+        "description": "the cartesian gradients",
+        "dimensionality": ["natoms", 3],
+        "type": "float",
+        "units": "E_h/a0",
         "format": ".6f",
     },
     "RMS Density": {

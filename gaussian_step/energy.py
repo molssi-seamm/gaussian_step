@@ -182,7 +182,12 @@ class Energy(Substep):
         # Print what we are doing
         printer.important(__(self.description_text(PP), indent=self.indent))
 
-        # keywords = []
+        # If doing a single point, add the correct keyword for the job type
+        if self.__class__.__name__ == "Energy":
+            if P["calculate gradient"]:
+                keywords.add("FORCE")
+            else:
+                keywords.add("SP")
 
         # Figure out what we are doing!
         if P["level"] == "recommended":
@@ -275,6 +280,13 @@ class Energy(Substep):
                 )
         else:
             keywords.add(f"{method}/{basis}")
+
+        if P["use symmetry"] == "loose":
+            keywords.add("Symmetry=Loose")
+        elif P["use symmetry"] == "identify only":
+            keywords.add("NoSymmetry")
+        elif P["use symmetry"] == "no":
+            keywords.add("Symmetry=None")
 
         if "freeze core" in method_data:
             if method_data["freeze core?"] and P["freeze-cores"] == "no":

@@ -90,6 +90,8 @@ class TkEnergy(seamm.TkNode):
             "dispersion",
             "spin-restricted",
             "freeze-cores",
+            "use symmetry",
+            "calculate gradient",
         ):
             self[key] = P[key].widget(self["calculation"])
 
@@ -270,7 +272,17 @@ class TkEnergy(seamm.TkNode):
         self["spin-restricted"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
         widgets.append(self["spin-restricted"])
         row += 1
+        self["use symmetry"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+        widgets.append(self["use symmetry"])
+        row += 1
         sw.align_labels(widgets, sticky=tk.E)
+
+        if self.__class__.__name__ == "TkEnergy":
+            self["calculate gradient"].grid(
+                row=row, column=0, columnspan=2, sticky=tk.EW
+            )
+            widgets.append(self["calculate gradient"])
+            row += 1
 
         return row
 

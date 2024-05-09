@@ -4,12 +4,14 @@
 
 import configparser
 import gzip
+import importlib
 import logging
 from pathlib import Path
 import pprint
 import re
 import shutil
 import string
+import sys
 
 import cclib
 import numpy as np
@@ -657,6 +659,7 @@ class Substep(seamm.Node):
 
     def process_data(self, data):
         """Massage the cclib data to a more easily used form."""
+        logger.debug(pprint.pformat(data))
         # Convert numpy arrays to Python lists
         new = {}
         for key, value in data.items():
@@ -856,6 +859,10 @@ class Substep(seamm.Node):
             files = {"input.dat": "\n".join(lines)}
             logger.info("input.dat:\n" + files["input.dat"])
 
+            printer.important(
+                self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
+                f"up to {memory} of memory.\n"
+            )
             if self.input_only:
                 # Just write the input files and stop
                 for filename in files:
@@ -863,47 +870,93 @@ class Substep(seamm.Node):
                     path.write_text(files[filename])
                 data = {}
             else:
-                # Run Gaussian
                 executor = self.parent.flowchart.executor
 
-                # Read configuration file for Gaussian
-                ini_dir = Path(seamm_options["root"]).expanduser()
-                full_config = configparser.ConfigParser()
-                full_config.read(ini_dir / "gaussian.ini")
+                # Read configuration file for Gaussian if it exists
                 executor_type = executor.name
-                if executor_type not in full_config:
-                    raise RuntimeError(
-                        f"No section for '{executor_type}' in the Gaussian ini file "
-                        f"({ini_dir / 'mopac.ini'})"
-                    )
-                config = dict(full_config.items(executor_type))
+                full_config = configparser.ConfigParser()
+                ini_dir = Path(seamm_options["root"]).expanduser()
+                path = ini_dir / "gaussian.ini"
 
-                # Set up the environment
+                if path.exists():
+                    full_config.read(ini_dir / "gaussian.ini")
+
+                # If the section we need doesn't exist, get the default
+                if not path.exists() or executor_type not in full_config:
+                    resources = importlib.resources.files("gaussian_step") / "data"
+                    ini_text = (resources / "gaussian.ini").read_text()
+                    full_config.read_string(ini_text)
+
+                # Getting desperate! Look for an executable in the path
+                if executor_type not in full_config:
+                    # See if we can find the Gaussian environment variables
+                    if "g16root" in sys.environ:
+                        g_ver = "g16"
+                        root_directory = sys.environ["g16root"]
+                    elif "g09root" in sys.environ:
+                        g_ver = "g09"
+                        root_directory = sys.environ["g09root"]
+                    else:
+                        root_directory = None
+                        exe_path = shutil.which("g16")
+                        if exe_path is None:
+                            exe_path = shutil.which("g09")
+                        if exe_path is None:
+                            raise RuntimeError(
+                                f"No section for '{executor_type}' in Gaussian ini file"
+                                f" ({ini_dir / 'gaussian.ini'}), nor in the defaults, "
+                                "nor in the path!"
+                            )
+                        g_ver = exe_path.name
+                        root_directory = str(exe_path.parent.parent)
+                        setup_directory = str(
+                            exe_path.parent / g_ver / f"{g_ver}.profile"
+                        )
+
+                        full_config[executor_type] = {
+                            "installation": "local",
+                            "code": g_ver,
+                            "root-directory": root_directory,
+                            "setup-directory": setup_directory,
+                        }
+
+                # If the ini file does not exist, write it out!
+                if not path.exists():
+                    with path.open("w") as fd:
+                        full_config.write(fd)
+                    printer.normal(f"Wrote the Gaussian configuration file to {path}")
+                    printer.normal("")
+
+                config = dict(full_config.items(executor_type))
+                # Use the matching version of the seamm-gaussian image by default.
+                config["version"] = self.version
+
+                g_ver = config["code"]
+
+                # Setup the calculation environment definition
                 if config["root-directory"] != "":
-                    env = {"g09root": config["root-directory"]}
+                    env = {f"{g_ver}root": config["root-directory"]}
                 else:
                     env = {}
 
                 if config["setup-environment"] != "":
-                    cmd = [". {setup-environment} ; {code}"]
+                    cmd = f". {config['setup-environment']} ; {g_ver}"
                 else:
-                    cmd = ["{code}"]
+                    cmd = g_ver
 
-                cmd.append(" < input.dat > output.txt ; formchk gaussian.chk")
-
-                printer.important(
-                    self.indent + f"    Gaussian will use {n_threads} OpenMP threads "
-                    f"and up to {memory} of memory.\n"
-                )
+                cmd += " < input.dat > output.txt ; formchk gaussian.chk"
 
                 return_files = [
                     "output.txt",
                     "gaussian.chk",
                     "gaussian.fchk",
                 ]
+
+                self.logger.info(f"{cmd=}")
+                self.logger.info(f"{env=}")
+
                 result = executor.run(
-                    cmd=cmd,
-                    ce=ce,
+                    cmd=[cmd],
                     config=config,
                     directory=self.directory,
                     files=files,
@@ -944,6 +997,24 @@ class Substep(seamm.Node):
                 logger.info(f"Data keys:\n{keys}")
                 logger.debug(f"Data:\n{pprint.pformat(data)}")
 
+            # Explicitly pull out the energy and gradients to standard name
+            if "Total Energy" in data:
+                data["energy"] = data["Total Energy"]
+                del data["Total Energy"]
+            if "Cartesian Gradient" in data:
+                tmp = np.array(data["Cartesian Gradient"])
+                data["gradients"] = tmp.reshape(-1, 3).tolist()
+                del data["Cartesian Gradient"]
+
+            # Debug output
+            if self.logger.isEnabledFor(logging.INFO):
+                keys = "\n".join(data.keys())
+                logger.info(f"Data keys:\n{keys}")
+            if self.logger.isEnabledFor(logging.DEBUG):
+                keys = "\n".join(data.keys())
+                logger.info(f"Data keys:\n{keys}")
+                logger.debug(f"Data:\n{pprint.pformat(data)}")
+
             # The model chemistry
             # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
             if "Composite/model" in data:
@@ -954,6 +1025,8 @@ class Substep(seamm.Node):
                     f"{data['metadata/basis_set']}"
                 )
             logger.info(f"model = {self.model}")
+
+            data["model"] = "Gaussian/" + self.model
 
             # If ran successfully, put out the success file
             if data["success"]:
