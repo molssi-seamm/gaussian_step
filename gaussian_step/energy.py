@@ -115,40 +115,50 @@ class Energy(Substep):
                 "proper eigenstate."
             )
 
-        # Plotting
-        plots = []
-        if P["total density"]:
-            plots.append("total density")
-        # if P["difference density"]:
-        #     plots.append("difference density")
-        if P["total spin density"]:
-            plots.append("spin density")
-        if P["orbitals"]:
-            if len(plots) > 0:
-                text += f"\nThe {', '.join(plots)} and orbitals "
-                text += f"{P['selected orbitals']} will be plotted."
-            else:
-                text += f"\nThe orbitals {P['selected orbitals']} will be plotted."
-
-        text += (
-            " The final structure and any charges, etc. will "
-            f"{P['structure handling'].lower()} "
-        )
-
-        confname = P["configuration name"]
-        if confname == "use SMILES string":
-            text += "using SMILES as its name."
-        elif confname == "use Canonical SMILES string":
-            text += "using canonical SMILES as its name."
-        elif confname == "keep current name":
-            text += "keeping the current name."
-        elif confname == "optimized with {model}":
-            text += "with 'optimized with <model>' as its name."
-        elif confname == "use configuration number":
-            text += "using the index of the configuration (1, 2, ...) as its name."
+        if (
+            isinstance(P["input only"], bool)
+            and P["input only"]
+            or P["input only"] == "yes"
+        ):
+            if type(self) is Energy:
+                text += (
+                    "\n\nThe input file will be written. No calculation will be run."
+                )
         else:
-            confname = confname.replace("{model}", "<model>")
-            text += f"with '{confname}' as its name."
+            # Plotting
+            plots = []
+            if P["total density"]:
+                plots.append("total density")
+            # if P["difference density"]:
+            #     plots.append("difference density")
+            if P["total spin density"]:
+                plots.append("spin density")
+            if P["orbitals"]:
+                if len(plots) > 0:
+                    text += f"\nThe {', '.join(plots)} and orbitals "
+                    text += f"{P['selected orbitals']} will be plotted."
+                else:
+                    text += f"\nThe orbitals {P['selected orbitals']} will be plotted."
+
+            text += (
+                " The final structure and any charges, etc. will "
+                f"{P['structure handling'].lower()} "
+            )
+
+            confname = P["configuration name"]
+            if confname == "use SMILES string":
+                text += "using SMILES as its name."
+            elif confname == "use Canonical SMILES string":
+                text += "using canonical SMILES as its name."
+            elif confname == "keep current name":
+                text += "keeping the current name."
+            elif confname == "optimized with {model}":
+                text += "with 'optimized with <model>' as its name."
+            elif confname == "use configuration number":
+                text += "using the index of the configuration (1, 2, ...) as its name."
+            else:
+                confname = confname.replace("{model}", "<model>")
+                text += f"with '{confname}' as its name."
 
         return self.header + "\n" + __(text, **P, indent=4 * " ").__str__()
 
@@ -165,6 +175,9 @@ class Energy(Substep):
         for key in PP:
             if isinstance(PP[key], units_class):
                 PP[key] = "{:~P}".format(PP[key])
+
+        # Set the attribute for writing just the input
+        self.input_only = P["input only"]
 
         # Print what we are doing
         printer.important(__(self.description_text(PP), indent=self.indent))
@@ -274,12 +287,13 @@ class Energy(Substep):
 
         data = self.run_gaussian(keywords)
 
-        # Follow instructions for where to put the coordinates,
-        system, configuration = self.get_system_configuration(
-            P=P, same_as=starting_configuration, model=self.model
-        )
+        if not self.input_only:
+            # Follow instructions for where to put the coordinates,
+            system, configuration = self.get_system_configuration(
+                P=P, same_as=starting_configuration, model=self.model
+            )
 
-        self.analyze(data=data)
+            self.analyze(data=data)
 
     def analyze(self, indent="", data={}, table=None):
         """Parse the output and generating the text output and store the

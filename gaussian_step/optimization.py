@@ -70,6 +70,16 @@ class Optimization(gaussian_step.Energy):
             added += " steps. Note that calculating the second derivatives is "
             added += "quite expensive!"
 
+        if (
+            isinstance(P["input only"], bool)
+            and P["input only"]
+            or P["input only"] == "yes"
+        ):
+            if type(self) is Optimization:
+                added += (
+                    "\n\nThe input file will be written. No calculation will be run."
+                )
+
         return text + "\n" + __(added, **P, indent=4 * " ").__str__()
 
     def run(self, keywords=set()):
@@ -79,6 +89,9 @@ class Optimization(gaussian_step.Energy):
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
         )
+
+        # Set the attribute for writing just the input
+        self.input_only = P["input only"]
 
         subkeywords = []
         convergence = gaussian_step.optimization_convergence[P["geometry convergence"]]
