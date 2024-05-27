@@ -248,15 +248,21 @@ class Energy(Substep):
                     keywords.add(f"ROHF/{basis}")
             else:
                 keywords.add(f"UHF/{basis}")
-            keywords.add("Guess=Mix")
+            # keywords.add("Guess=Mix")
         elif method[0:2] == "MP":
-            if restricted and multiplicity != 1 and isinstance(self, Energy):
-                keywords.add(f"RO{method}/{basis}")
+            if restricted:
+                if multiplicity == 1:
+                    keywords.add(f"R{method}/{basis}")
+                else:
+                    keywords.add(f"RO{method}/{basis}")
             else:
                 keywords.add(f"U{method}/{basis}")
         elif method in ("CCSD", "CCSD(T)"):
-            if restricted and multiplicity != 1 and isinstance(self, Energy):
-                keywords.add(f"RO{method}/{basis}")
+            if restricted:
+                if multiplicity == 1:
+                    keywords.add(f"R{method}/{basis}")
+                else:
+                    keywords.add(f"RO{method}/{basis}")
             else:
                 keywords.add(f"U{method}/{basis}")
         elif method in ("CBS-4M", "CBS-QB3"):
