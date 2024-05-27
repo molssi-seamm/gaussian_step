@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.5.27: Added number of optimization steps to results
+    * Added the number of steps for the optimizations to the results that can be output
+      to tables, variables, etc.
+      
 2024.5.8 General enhancements
     * Updated to new calculation handling, with ~/SEAMM/gaussian.ini controlling access
       to the installed version of Gaussian on the machine.
