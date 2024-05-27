@@ -164,6 +164,7 @@ class Optimization(gaussian_step.Energy):
         else:
             # Information about the optimization
             n_steps = data["Optimization Number of geometries"][0]
+            data["nsteps"] = n_steps
             if data["Geometry Optimization Converged"]:
                 text += f"The geometry optimization converged in {n_steps} steps."
             else:

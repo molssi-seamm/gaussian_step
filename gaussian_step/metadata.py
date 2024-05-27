@@ -237,6 +237,12 @@ metadata["results"] = {
         "units": "E_h/a0",
         "format": ".6f",
     },
+    "nsteps": {
+        "calculation": ["optimization"],
+        "description": "optimization nsteps",
+        "dimensionality": "scalar",
+        "type": "integer",
+    },
     "model": {
         "description": "The model string",
         "dimensionality": "scalar",
