@@ -15,6 +15,26 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
     """The control parameters for the energy."""
 
     parameters = {
+        "target": {
+            "default": "minimum",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("minimum", "transition state", "saddle point"),
+            "format_string": "",
+            "description": "Optimization target:",
+            "help_text": (
+                "The type of structure that is the target for the optimization."
+            ),
+        },
+        "saddle order": {
+            "default": 2,
+            "kind": "integer",
+            "default_units": "",
+            "enumeration": tuple(),
+            "format_string": "",
+            "description": "Order of saddle point:",
+            "help_text": "Number of directions down from the saddle point.",
+        },
         "max geometry steps": {
             "default": "default",
             "kind": "string",
