@@ -160,6 +160,7 @@ class Gaussian(seamm.Node):
         )
 
         self.parameters = gaussian_step.GaussianParameters()
+        self._gversion = "g09"
         self._data = {}
 
     @property
@@ -171,6 +172,15 @@ class Gaussian(seamm.Node):
     def git_revision(self):
         """The git version of this module."""
         return gaussian_step.__git_revision__
+
+    @property
+    def gversion(self):
+        """The Gaussian version to target."""
+        return self._gversion
+
+    @gversion.setter
+    def gversion(self, version):
+        self._gversion = version
 
     def set_id(self, node_id):
         """Set the id for node to a given tuple"""
@@ -341,9 +351,6 @@ class Gaussian(seamm.Node):
         indent: str
             An extra indentation for the output
         """
-        self.parse_fchk(fchk)
-        self.parse_output(output)
-
         # Get the first real node
         node = self.subflowchart.get_node("1").next()
 

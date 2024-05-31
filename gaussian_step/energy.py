@@ -266,25 +266,66 @@ class Energy(Substep):
             else:
                 keywords.add(f"U{method}/{basis}")
         elif method in ("CBS-4M", "CBS-QB3"):
-            if isinstance(self, Energy):
-                if restricted and multiplicity != 1:
-                    keywords.add(f"RO{method}")
+            if self.gversion == "g09":
+                if self.__class__ == Energy:
+                    raise RuntimeError(
+                        "G09 does not appear to be able to run the CBS methods without "
+                        "optimizing the structure during the calculation."
+                    )
+                else:
+                    if restricted and multiplicity != 1:
+                        keywords.add(f"RO{method}")
+                    else:
+                        keywords.add(f"{method}")
+            else:
+                if self.__class__ == Energy:
+                    if restricted and multiplicity != 1:
+                        keywords.add(f"RO{method}=NoOpt")
+                    else:
+                        keywords.add(f"{method}=(NoOpt)")
+                else:
+                    if restricted and multiplicity != 1:
+                        keywords.add(f"RO{method}")
+                    else:
+                        keywords.add(f"{method}")
+        elif method == "CBS-APNO":
+            if self.gversion == "g09":
+                if self.__class__ == Energy:
+                    raise RuntimeError(
+                        "G09 does not appear to be able to run the CBS methods without "
+                        "optimizing the structure during the calculation."
+                    )
                 else:
                     keywords.add(f"{method}")
             else:
-                raise ValueError("CBS methods are only for single-point calculations.")
-        elif method == "CBS-APNO":
-            if isinstance(self, Energy):
-                keywords.add(f"{method}")
+                if self.__class__ == Energy:
+                    keywords.add(f"{method}=NoOpt")
+                else:
+                    keywords.add(f"{method}")
+        elif method in (
+            "G1",
+            "G2",
+            "G3",
+            "G4",
+            "G2MP2",
+            "G3B3",
+            "G3MP2",
+            "G3MP2B3",
+            "G4MP2",
+        ):
+            if self.gversion == "g09":
+                if self.__class__ == Energy:
+                    raise RuntimeError(
+                        "G09 does not appear to be able to run the CBS methods without "
+                        "optimizing the structure during the calculation."
+                    )
+                else:
+                    keywords.add(f"{method}")
             else:
-                raise ValueError("CBS methods are only for single-point calculations.")
-        elif method in ("G1", "G2", "G3", "G4"):
-            if isinstance(self, Energy):
-                keywords.add(f"{method}")
-            else:
-                raise ValueError(
-                    "Gaussian composite methods are only for single-point calculations."
-                )
+                if self.__class__ == Energy:
+                    keywords.add(f"{method}=(NoOpt)")
+                else:
+                    keywords.add(f"{method}")
         else:
             keywords.add(f"{method}/{basis}")
 

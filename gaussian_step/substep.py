@@ -116,6 +116,10 @@ class Substep(seamm.Node):
         return self.parent.global_options
 
     @property
+    def gversion(self):
+        return self.parent.gversion
+
+    @property
     def input_only(self):
         """Whether to write the input only, not run MOPAC."""
         return self._input_only
@@ -481,13 +485,18 @@ class Substep(seamm.Node):
                                 data["G month"] = month
                                 data["G year"] = year
                             except Exception as e:
-                                logger.warning(
+                                self.logger.warning(
                                     f"Could not find the Gaussian citation: {e}"
                                 )
                             break
                 break
 
         # And the optimization steps, if any.
+        #
+        # Need to be careful about end of the first (and presumably only?) optimization.
+        # The FORCE calculation prints out the same information about convergence, but
+        # may indicate no convergence. This can confuse this code unless we look for the
+        # end of the optimization step and quit then
         it = iter(lines)
         n_steps = 0
         max_force = []
@@ -527,6 +536,16 @@ class Substep(seamm.Node):
                     data["RMS Displacement Threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
+            elif line == " Optimization completed.":
+                line = next(it)
+                if line == "    -- Stationary point found.":
+                    converged = True
+                else:
+                    self.logger.warning(f"Optimization completed: {line}")
+                break
+            elif line == "    -- Stationary point found.":
+                converged = True
+                break
 
         if converged is not None:
             data["Geometry Optimization Converged"] = converged
@@ -598,8 +617,14 @@ class Substep(seamm.Node):
                         key, value = p.split("=", 1)
                         key = key.strip()
                         value = float(value.strip())
-                        if method in key:
-                            key = key.split(" ", 1)[1]
+                        if "(0 K)" in key:
+                            key = "E(0 K)"
+                        elif "Free Energy" in key:
+                            key = "Free Energy"
+                        elif "Energy" in key:
+                            key = "Energy"
+                        elif "Enthalpy" in key:
+                            key = "Enthalpy"
                         data[f"Composite/{key}"] = value
                 data["Composite/model"] = method
                 data["Composite/summary"] = "\n".join(text)
@@ -615,7 +640,17 @@ class Substep(seamm.Node):
         # G4(0 K)=                  -78.521880 G4 Energy=                   -78.518825
         # G4 Enthalpy=              -78.517880 G4 Free Energy=              -78.542752
 
-        if P["method"][0:2] in ("G1", "G2", "G3", "G4"):
+        if P["method"] in (
+            "G1",
+            "G2",
+            "G3",
+            "G4",
+            "G2MP2",
+            "G3B3",
+            "G3MP2",
+            "G3MP2B3",
+            "G4MP2",
+        ):
             # Need last section
             method = P["method"][0:2]
             match = f"{method} Enthalpy="
@@ -659,7 +694,7 @@ class Substep(seamm.Node):
 
     def process_data(self, data):
         """Massage the cclib data to a more easily used form."""
-        logger.debug(pprint.pformat(data))
+        self.logger.debug(pprint.pformat(data))
         # Convert numpy arrays to Python lists
         new = {}
         for key, value in data.items():
@@ -857,7 +892,7 @@ class Substep(seamm.Node):
             lines.append(" ")
 
             files = {"input.dat": "\n".join(lines)}
-            logger.info("input.dat:\n" + files["input.dat"])
+            self.logger.info("input.dat:\n" + files["input.dat"])
 
             printer.important(
                 self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
@@ -991,11 +1026,11 @@ class Substep(seamm.Node):
             # Debug output
             if self.logger.isEnabledFor(logging.INFO):
                 keys = "\n".join(data.keys())
-                logger.info(f"Data keys:\n{keys}")
+                self.logger.info(f"Data keys:\n{keys}")
             if self.logger.isEnabledFor(logging.DEBUG):
                 keys = "\n".join(data.keys())
-                logger.info(f"Data keys:\n{keys}")
-                logger.debug(f"Data:\n{pprint.pformat(data)}")
+                self.logger.info(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # Explicitly pull out the energy and gradients to standard name
             if "Total Energy" in data:
@@ -1009,11 +1044,11 @@ class Substep(seamm.Node):
             # Debug output
             if self.logger.isEnabledFor(logging.INFO):
                 keys = "\n".join(data.keys())
-                logger.info(f"Data keys:\n{keys}")
+                self.logger.info(f"Data keys:\n{keys}")
             if self.logger.isEnabledFor(logging.DEBUG):
                 keys = "\n".join(data.keys())
-                logger.info(f"Data keys:\n{keys}")
-                logger.debug(f"Data:\n{pprint.pformat(data)}")
+                self.logger.info(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # The model chemistry
             # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
@@ -1024,7 +1059,7 @@ class Substep(seamm.Node):
                     f"{data['metadata/methods'][-1]}/{data['method']}/"
                     f"{data['metadata/basis_set']}"
                 )
-            logger.info(f"model = {self.model}")
+            self.logger.info(f"model = {self.model}")
 
             data["model"] = "Gaussian/" + self.model
 
