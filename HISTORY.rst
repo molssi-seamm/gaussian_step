@@ -1,6 +1,13 @@
 =======
 History
 =======
+2024.5.31: Added optimization of transition states, and...
+    * Corrected implementation of composite methods (Gn, CBS-x) to handle optimization.
+    * Added target of the optimizationto allow transition states and saddle points.
+    * Corrected a bug in handling the maximum number of optimization steps.
+    * Corrected bug determing if optimization completed properly.
+    * Corrected bug handling the composite method results.
+      
 2024.5.27: Added number of optimization steps to results
     * Added the number of steps for the optimizations to the results that can be output
       to tables, variables, etc.
