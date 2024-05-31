@@ -94,6 +94,12 @@ class TkOptimization(gaussian_step.TkEnergy):
         for key in gaussian_step.OptimizationParameters.parameters:
             self[key] = P[key].widget(opt_frame)
 
+        # bindings...
+        for key in ("target",):
+            self[key].bind("<<ComboboxSelected>>", self.reset_optimization)
+            self[key].bind("<Return>", self.reset_optimization)
+            self[key].bind("<FocusOut>", self.reset_optimization)
+
         # Top level needs to call reset_dialog
         if self.node.calculation == "optimization":
             self.reset_dialog()
@@ -127,30 +133,31 @@ class TkOptimization(gaussian_step.TkEnergy):
         for slave in frame.grid_slaves():
             slave.grid_forget()
 
+        target = self["target"].get()
+
         widgets = []
-        # widgets2 = []
+        widgets2 = []
         row = 0
 
-        self["geometry convergence"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["geometry convergence"])
+        self["target"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+        widgets.append(self["target"])
         row += 1
 
-        self["coordinates"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["coordinates"])
-        row += 1
+        if target not in ("minimum", "transition state"):
+            self["saddle order"].grid(row=row, column=1, sticky=tk.EW)
+            widgets2.append(self["saddle order"])
+            row += 1
 
-        self["max geometry steps"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["max geometry steps"])
-        row += 1
-
-        self["recalc hessian"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["recalc hessian"])
-        row += 1
-
-        self["ignore unconverged optimization"].grid(
-            row=row, column=0, columnspan=2, sticky=tk.EW
-        )
-        widgets.append(self["ignore unconverged optimization"])
-        row += 1
+        for key in (
+            "geometry convergence",
+            "coordinates",
+            "max geometry steps",
+            "recalc hessian",
+            "ignore unconverged optimization",
+        ):
+            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
 
         sw.align_labels(widgets, sticky=tk.E)
+        sw.align_labels(widgets2, sticky=tk.E)
