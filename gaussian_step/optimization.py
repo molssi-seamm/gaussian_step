@@ -55,7 +55,18 @@ class Optimization(gaussian_step.Energy):
         text = super().description_text(P=P, calculation=calculation)
 
         coordinates = P["coordinates"]
-        added = f"\nThe geometry optimization will use {coordinates} coordinates,"
+        added = "\nThe geometry optimization is targeting "
+
+        target = P["target"].lower()
+        if self.is_expr(target):
+            added += "a minimum or saddle point, depending on {target},"
+        elif "min" in target:
+            added += "the minimum"
+        elif "trans" in target or target == "ts":
+            added += "a transition state"
+        elif "saddle" in target:
+            added += "a saddle point with {saddle order} downhill directions"
+        added += f" using {coordinates} coordinates,"
         added += " a {geometry convergence} convergence criterion, "
         if P["max geometry steps"] == "default":
             added += (
@@ -65,10 +76,23 @@ class Optimization(gaussian_step.Energy):
         else:
             added += "and no more than {max geometry steps} steps."
 
+        if P["recalc hessian"] == "never":
+            pass
+        elif self.is_expr(P["recalc hessian"]):
+            added += " Whether and how to calculate the Hessian will be determined by "
+            added += "{recalc hessian}."
+        elif "every" in P["recalc hessian"]:
+            added += " The Hessian will be recalculated every step."
+        elif P["recalc hessian"] == "at beginning":
+            added += " The Hessian will be calculated once at the beginning."
+        elif P["recalc hessian"] == "HF at beginning":
+            added += (
+                " The Hartree-Fock Hessian will be calculated once at the beginning."
+            )
+        else:
+            added += " The Hessian will be recalculated every {recalc hessian} steps."
         if P["recalc hessian"] != "never":
-            added += " The Hessian will be recalculated every {recalc hessian}"
-            added += " steps. Note that calculating the second derivatives is "
-            added += "quite expensive!"
+            added += " Note that calculating the second derivatives is quite expensive!"
 
         if (
             isinstance(P["input only"], bool)
@@ -106,7 +130,21 @@ class Optimization(gaussian_step.Energy):
             else:
                 max_steps = int(max_steps)
             subkeywords.append(f"MaxCycles={max_steps}")
+            # Also need to use an IOP to set the max. Odd.
+            # https://mattermodeling.stackexchange.com/questions/5087/ (continued)
+            #       why-does-gaussian-ignore-the-opt-maxcycles-keyword-for-optimizations
+            keywords.add(f"iop(1/152={max_steps})")
 
+        # Handle the target for the optimization
+        target = P["target"].lower()
+        if "min" in target:
+            pass
+        elif "trans" in target or target == "ts":
+            subkeywords.append("TS")
+        elif "saddle" in target:
+            subkeywords.append(f"Saddle={P['saddle order']}")
+
+        # Handle options for the calculation of the Hessian
         if P["recalc hessian"] == "every step":
             subkeywords.append("CalcAll")
         elif P["recalc hessian"] == "at beginning":
@@ -153,7 +191,7 @@ class Optimization(gaussian_step.Energy):
             }
 
         # metadata = gaussian_step.metadata["results"]
-        if "Total Energy" not in data:
+        if "energy" not in data:
             text += "Gaussian did not produce the energy. Something is wrong!"
 
         # Get the system & configuration
