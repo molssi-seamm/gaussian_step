@@ -822,7 +822,7 @@ class Substep(seamm.Node):
 
             # How many threads to use
             n_cores = ce["NTASKS"]
-            self.logger.info("The number of cores available is {}".format(n_cores))
+            self.logger.debug("The number of cores available is {}".format(n_cores))
 
             if seamm_options["parallelism"] not in ("openmp", "any"):
                 n_threads = 1
@@ -838,7 +838,7 @@ class Substep(seamm.Node):
                 if seamm_options["ncores"] != "available":
                     n_threads = min(n_threads, int(seamm_options["ncores"]))
             ce["NTASKS"] = n_threads
-            self.logger.info(f"Gaussian will use {n_threads} threads.")
+            self.logger.debug(f"Gaussian will use {n_threads} threads.")
 
             # How much memory to use
             if seamm_options["memory"] == "all":
@@ -892,7 +892,7 @@ class Substep(seamm.Node):
             lines.append(" ")
 
             files = {"input.dat": "\n".join(lines)}
-            self.logger.info("input.dat:\n" + files["input.dat"])
+            self.logger.debug("input.dat:\n" + files["input.dat"])
 
             printer.important(
                 self.indent + f"    Gaussian will use {n_threads} OpenMP threads and "
@@ -987,8 +987,8 @@ class Substep(seamm.Node):
                     "gaussian.fchk",
                 ]
 
-                self.logger.info(f"{cmd=}")
-                self.logger.info(f"{env=}")
+                self.logger.debug(f"{cmd=}")
+                self.logger.debug(f"{env=}")
 
                 result = executor.run(
                     cmd=[cmd],
@@ -1024,12 +1024,9 @@ class Substep(seamm.Node):
                 data = self.parse_output(path, data)
 
             # Debug output
-            if self.logger.isEnabledFor(logging.INFO):
-                keys = "\n".join(data.keys())
-                self.logger.info(f"Data keys:\n{keys}")
             if self.logger.isEnabledFor(logging.DEBUG):
                 keys = "\n".join(data.keys())
-                self.logger.info(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data keys:\n{keys}")
                 self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # Explicitly pull out the energy and gradients to standard name
@@ -1042,12 +1039,9 @@ class Substep(seamm.Node):
                 del data["Cartesian Gradient"]
 
             # Debug output
-            if self.logger.isEnabledFor(logging.INFO):
-                keys = "\n".join(data.keys())
-                self.logger.info(f"Data keys:\n{keys}")
             if self.logger.isEnabledFor(logging.DEBUG):
                 keys = "\n".join(data.keys())
-                self.logger.info(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data keys:\n{keys}")
                 self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # The model chemistry
@@ -1059,7 +1053,7 @@ class Substep(seamm.Node):
                     f"{data['metadata/methods'][-1]}/{data['method']}/"
                     f"{data['metadata/basis_set']}"
                 )
-            self.logger.info(f"model = {self.model}")
+            self.logger.debug(f"model = {self.model}")
 
             data["model"] = "Gaussian/" + self.model
 
