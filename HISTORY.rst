@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.6.5: Cleaned up logging from code.
+    * The logging was a bit aggressive, so moved most logging down to the debug
+      level. This will make the output of e.g. geomeTRIC more readable.
+      
 2024.5.31: Added optimization of transition states, and...
     * Corrected implementation of composite methods (Gn, CBS-x) to handle optimization.
     * Added target of the optimization to allow transition states and saddle points.
