@@ -6,12 +6,12 @@ import configparser
 import gzip
 import importlib
 import logging
+import os
 from pathlib import Path
 import pprint
 import re
 import shutil
 import string
-import sys
 
 import cclib
 import numpy as np
@@ -20,6 +20,7 @@ import gaussian_step
 import seamm
 import seamm_exec
 import seamm.data
+from seamm_util import Configuration
 import seamm_util.printing as printing
 
 logger = logging.getLogger("Gaussian")
@@ -875,7 +876,6 @@ class Substep(seamm.Node):
             lines.append(f"%Mem={memory}")
             lines.append(f"%NProcShared={n_threads}")
 
-            # keywords.add("FormCheck=ForceCart")
             lines.append("# " + " ".join(keywords))
 
             lines.append(" ")
@@ -913,24 +913,37 @@ class Substep(seamm.Node):
                 ini_dir = Path(seamm_options["root"]).expanduser()
                 path = ini_dir / "gaussian.ini"
 
-                if path.exists():
-                    full_config.read(ini_dir / "gaussian.ini")
-
-                # If the section we need doesn't exist, get the default
-                if not path.exists() or executor_type not in full_config:
+                # If the config file doesn't exist, get the default
+                if not path.exists():
                     resources = importlib.resources.files("gaussian_step") / "data"
                     ini_text = (resources / "gaussian.ini").read_text()
-                    full_config.read_string(ini_text)
+                    txt_config = Configuration(path)
+                    txt_config.from_string(ini_text)
+                    txt_config.save()
+
+                full_config.read(ini_dir / "gaussian.ini")
 
                 # Getting desperate! Look for an executable in the path
-                if executor_type not in full_config:
+                if (
+                    executor_type not in full_config
+                    or "root-directory" not in full_config[executor_type]
+                    or "setup-environment" not in full_config[executor_type]
+                ):
                     # See if we can find the Gaussian environment variables
-                    if "g16root" in sys.environ:
+                    if "g16root" in os.environ:
                         g_ver = "g16"
-                        root_directory = sys.environ["g16root"]
-                    elif "g09root" in sys.environ:
+                        root_directory = os.environ["g16root"]
+                        if "GAUSS_BSDDIR" in os.environ:
+                            setup_directory = Path(os.environ["GAUSS_BSDDIR"])
+                        else:
+                            setup_directory = Path(root_directory) / g_ver / "bsd"
+                    elif "g09root" in os.environ:
                         g_ver = "g09"
-                        root_directory = sys.environ["g09root"]
+                        root_directory = os.environ["g09root"]
+                        if "GAUSS_BSDDIR" in os.environ:
+                            setup_directory = Path(os.environ["GAUSS_BSDDIR"])
+                        else:
+                            setup_directory = Path(root_directory) / g_ver / "bsd"
                     else:
                         root_directory = None
                         exe_path = shutil.which("g16")
@@ -944,23 +957,24 @@ class Substep(seamm.Node):
                             )
                         g_ver = exe_path.name
                         root_directory = str(exe_path.parent.parent)
-                        setup_directory = str(
-                            exe_path.parent / g_ver / f"{g_ver}.profile"
-                        )
+                        setup_directory = Path(root_directory) / g_ver / "bsd"
+                    setup_environment = str(setup_directory / f"{g_ver}.profile")
 
-                        full_config[executor_type] = {
-                            "installation": "local",
-                            "code": g_ver,
-                            "root-directory": root_directory,
-                            "setup-directory": setup_directory,
-                        }
+                    txt_config = Configuration(path)
 
-                # If the ini file does not exist, write it out!
-                if not path.exists():
-                    with path.open("w") as fd:
-                        full_config.write(fd)
-                    printer.normal(f"Wrote the Gaussian configuration file to {path}")
-                    printer.normal("")
+                    if not txt_config.section_exists(executor_type):
+                        txt_config.add_section(executor_type)
+
+                    txt_config.set_value(executor_type, "installation", "local")
+                    txt_config.set_value(executor_type, "code", g_ver)
+                    txt_config.set_value(
+                        executor_type, "root-directory", root_directory
+                    )
+                    txt_config.set_value(
+                        executor_type, "setup-environment", setup_environment
+                    )
+                    txt_config.save()
+                    full_config.read(ini_dir / "gaussian.ini")
 
                 config = dict(full_config.items(executor_type))
                 # Use the matching version of the seamm-gaussian image by default.

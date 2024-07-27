@@ -162,8 +162,10 @@ class Energy(Substep):
 
         return self.header + "\n" + __(text, **P, indent=4 * " ").__str__()
 
-    def run(self, keywords=set()):
+    def run(self, keywords=None):
         """Run a single-point Gaussian calculation."""
+        if keywords is None:
+            keywords = set()
 
         _, starting_configuration = self.get_system_configuration(None)
 
