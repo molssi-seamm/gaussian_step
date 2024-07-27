@@ -1,6 +1,11 @@
 =======
 History
 =======
+2024.7.27: Bugfix: issues when used in loop
+    * Fixed a bug that caused the plug-in to fail when used in a loop.
+    * Improved the creation of the gaussian.ini file to both work better and keep the
+      comments in the file.
+      
 2024.6.5: Cleaned up logging from code.
     * The logging was a bit aggressive, so moved most logging down to the debug
       level. This will make the output of e.g. geomeTRIC more readable.

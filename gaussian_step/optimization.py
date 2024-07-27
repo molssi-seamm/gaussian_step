@@ -106,8 +106,11 @@ class Optimization(gaussian_step.Energy):
 
         return text + "\n" + __(added, **P, indent=4 * " ").__str__()
 
-    def run(self, keywords=set()):
+    def run(self, keywords=None):
         """Run an optimization calculation with Gaussian"""
+        if keywords is None:
+            keywords = set()
+
         _, configuration = self.get_system_configuration()
 
         P = self.parameters.current_values_to_dict(
