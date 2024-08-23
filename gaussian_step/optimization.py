@@ -147,6 +147,10 @@ class Optimization(gaussian_step.Energy):
         elif "saddle" in target:
             subkeywords.append(f"Saddle={P['saddle order']}")
 
+        if "min" not in target:
+            if P["ignore curvature error"]:
+                subkeywords.append("NoEigenTest")
+
         # Handle options for the calculation of the Hessian
         if P["recalc hessian"] == "every step":
             subkeywords.append("CalcAll")
@@ -176,13 +180,14 @@ class Optimization(gaussian_step.Energy):
 
         super().run(keywords=keywords)
 
-    def analyze(self, indent="", data={}, out=[], table=None):
+    def analyze(self, indent="", data={}, out=[], table=None, P=None):
         """Parse the output and generating the text output and store the
         data in variables for other stages to access
         """
-        P = self.parameters.current_values_to_dict(
-            context=seamm.flowchart_variables._data
-        )
+        if P is None:
+            P = self.parameters.current_values_to_dict(
+                context=seamm.flowchart_variables._data
+            )
 
         text = ""
 
@@ -242,12 +247,54 @@ class Optimization(gaussian_step.Energy):
                     textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
                 )
 
+            # If calculating 2nd derivatives each step have the vibrations
+            if "vibfreqs" in data:
+                imaginary = [-v for v in data["vibfreqs"] if v < 0]
+                data["number of saddle modes"] = len(imaginary)
+                target = P["target"].lower()
+                if "trans" in target or target == "ts":
+                    if len(imaginary) == 1:
+                        text += (
+                            " The structure is a transition state, as requested, "
+                            "with one mode with negative curvature of "
+                            f"{imaginary[0]:.2f} cm^-1."
+                        )
+                        data["ts frequency"] = round(imaginary[0], 2)
+                    elif len(imaginary) == 0:
+                        text += (
+                            " Optimization to a transition state was requested, "
+                            "however, the structure has no modes with negative "
+                            "curvature."
+                        )
+                    else:
+                        freqs = ", ".join([f"{v:.2}" for v in imaginary])
+                        text += (
+                            " A transition state was requested, but the structure is "
+                            f"a saddle point with {len(imaginary)} modes with negative "
+                            f"curvature: {freqs}"
+                        )
+                else:
+                    if len(imaginary) == 1:
+                        text += (
+                            " The structure is a transition state "
+                            "with one mode with negative curvature of "
+                            f"{imaginary[0]:.2f} cm^-1."
+                        )
+                    elif len(imaginary) == 0:
+                        pass
+                    else:
+                        freqs = ", ".join([f"{v:.2}" for v in imaginary])
+                        text += (
+                            " The structure is "
+                            f"a saddle point with {len(imaginary)} modes with negative "
+                            f"curvature: {freqs}"
+                        )
         if text != "":
             text = str(__(text, **data, indent=self.indent + 4 * " "))
             text += "\n\n"
-        printer.normal(text)
+            printer.normal(text)
 
-        super().analyze(data=data)
+        super().analyze(data=data, P=P)
 
         if configuration.n_atoms > 1:
             if (

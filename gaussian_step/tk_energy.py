@@ -91,12 +91,14 @@ class TkEnergy(seamm.TkNode):
             "spin-restricted",
             "freeze-cores",
             "use symmetry",
+            "bond orders",
+            "apply bond orders",
             "calculate gradient",
         ):
             self[key] = P[key].widget(self["calculation"])
 
         # bindings...
-        for key in ("level", "method", "advanced_method"):
+        for key in ("level", "method", "advanced_method", "bond orders"):
             self[key].bind("<<ComboboxSelected>>", self.reset_calculation)
             self[key].bind("<Return>", self.reset_calculation)
             self[key].bind("<FocusOut>", self.reset_calculation)
@@ -191,6 +193,7 @@ class TkEnergy(seamm.TkNode):
             long_method = self["advanced_method"].get()
             functional = self["advanced_functional"].get()
             widget = self["advanced_method"]
+        bond_orders = self["bond orders"].get()
         if self.is_expr(long_method):
             self.node.method = None
             meta = None
@@ -267,22 +270,31 @@ class TkEnergy(seamm.TkNode):
                     w.grid(row=row, column=1, sticky=tk.W)
                     widgets2.append(self["dispersion"])
                     row += 1
-                    sw.align_labels(widgets2, sticky=tk.E)
-                frame.columnconfigure(0, minsize=30)
-        self["spin-restricted"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["spin-restricted"])
-        row += 1
+        for key in ("spin-restricted", "use symmetry", "bond orders"):
+            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
+
+        if bond_orders != "none":
+            for key in ("apply bond orders",):
+                self[key].grid(row=row, column=1, sticky=tk.EW)
+                widgets2.append(self[key])
+                row += 1
+
         self["use symmetry"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
         widgets.append(self["use symmetry"])
         row += 1
-        sw.align_labels(widgets, sticky=tk.E)
 
         if self.__class__.__name__ == "TkEnergy":
             self["calculate gradient"].grid(
-                row=row, column=0, columnspan=2, sticky=tk.EW
+                row=row, column=0, columnspan=2, sticky=tk.W
             )
             widgets.append(self["calculate gradient"])
             row += 1
+
+        sw.align_labels(widgets, sticky=tk.E)
+        sw.align_labels(widgets2, sticky=tk.E)
+        frame.columnconfigure(0, minsize=30)
 
         return row
 

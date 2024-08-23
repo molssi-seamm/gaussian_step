@@ -691,6 +691,53 @@ class Substep(seamm.Node):
                 data["Composite/summary"] = tmp + "\n".join(text)
                 data["Total Energy"] = data["Composite/Free Energy"]
 
+        # The Wiberg bond orders ... which look like this:
+
+        # Wiberg bond index matrix in the NAO basis:
+        #
+        #     Atom    1       2       3       4       5       6       7       8       9
+        #     ---- ------  ------  ------  ------  ------  ------  ------  ------  -----
+        #   1.  C  0.0000  1.8962  0.0134  0.1327  0.9261  0.9249  0.0071  0.0005  0.00x
+        #   2.  C  1.8962  0.0000  1.1131  0.0127  0.0044  0.0049  0.9112  0.0029  0.01x
+        #  ...
+        #  10.  H  0.0002  0.0022  0.0049  0.9269  0.0000  0.0002  0.0015  0.0171  0.00x
+        #
+        #     Atom   10
+        #     ---- ------
+        #   1.  C  0.0002
+        #   2.  C  0.0022
+        #  ...
+
+        it = iter(lines)
+        for line in it:
+            n_atoms = None
+            if line.startswith(" Wiberg bond index matrix in the NAO basis:"):
+                bond_orders = []
+                next(it)
+                # Read each chunk of output
+                while True:
+                    # Skip the two header lines
+                    next(it)
+                    next(it)
+                    count = 0
+                    # And add the data to the bond_order matrix
+                    for line in it:
+                        line = line.strip()
+                        if line == "":
+                            if n_atoms is None:
+                                n_atoms = count
+                            break
+                        count += 1
+                        vals = [float(val) for val in line.split()[2:]]
+                        if len(bond_orders) < count:
+                            bond_orders.append(vals)
+                        else:
+                            bond_orders[count - 1].extend(vals)
+                    if len(bond_orders[0]) >= n_atoms:
+                        break
+
+                data["Wiberg bond order matrix"] = bond_orders
+
         return data
 
     def process_data(self, data):
@@ -792,7 +839,7 @@ class Substep(seamm.Node):
 
         return new
 
-    def run_gaussian(self, keywords):
+    def run_gaussian(self, keywords, extra_lines=None):
         """Run Gaussian.
 
         Parameters
@@ -890,6 +937,9 @@ class Substep(seamm.Node):
                 x, y, z = xyz
                 lines.append(f"{symbol:2}   {x:10.6f} {y:10.6f} {z:10.6f}")
             lines.append(" ")
+
+            if extra_lines is not None:
+                lines.extend(extra_lines)
 
             files = {"input.dat": "\n".join(lines)}
             self.logger.debug("input.dat:\n" + files["input.dat"])

@@ -179,6 +179,26 @@ class EnergyParameters(seamm.Parameters):
                 "Whether to freeze the core orbitals in correlated " "methods"
             ),
         },
+        "bond orders": {
+            "default": "Wiberg",
+            "kind": "enumeration",
+            "default_units": "",
+            "enumeration": ("Wiberg", "none"),
+            "format_string": "s",
+            "description": "Calculate bond orders:",
+            "help_text": "Whether to calculate the bond orders and if so how.",
+        },
+        "apply bond orders": {
+            "default": "yes",
+            "kind": "bool",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Apply bond orders to structure:",
+            "help_text": (
+                "Whether to use the calculated bond orders to update the structure"
+            ),
+        },
         "results": {
             "default": {},
             "kind": "dictionary",
