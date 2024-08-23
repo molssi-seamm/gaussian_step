@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.7.27 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.8.23 documentation</title>
   
   
   
@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=149295a0"></script>
+    <script src="../../_static/documentation_options.js?v=0280db91"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1187,6 +1187,53 @@ document.write(`
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/summary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/Free Energy&quot;</span><span class="p">]</span>
 
+        <span class="c1"># The Wiberg bond orders ... which look like this:</span>
+
+        <span class="c1"># Wiberg bond index matrix in the NAO basis:</span>
+        <span class="c1">#</span>
+        <span class="c1">#     Atom    1       2       3       4       5       6       7       8       9</span>
+        <span class="c1">#     ---- ------  ------  ------  ------  ------  ------  ------  ------  -----</span>
+        <span class="c1">#   1.  C  0.0000  1.8962  0.0134  0.1327  0.9261  0.9249  0.0071  0.0005  0.00x</span>
+        <span class="c1">#   2.  C  1.8962  0.0000  1.1131  0.0127  0.0044  0.0049  0.9112  0.0029  0.01x</span>
+        <span class="c1">#  ...</span>
+        <span class="c1">#  10.  H  0.0002  0.0022  0.0049  0.9269  0.0000  0.0002  0.0015  0.0171  0.00x</span>
+        <span class="c1">#</span>
+        <span class="c1">#     Atom   10</span>
+        <span class="c1">#     ---- ------</span>
+        <span class="c1">#   1.  C  0.0002</span>
+        <span class="c1">#   2.  C  0.0022</span>
+        <span class="c1">#  ...</span>
+
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; Wiberg bond index matrix in the NAO basis:&quot;</span><span class="p">):</span>
+                <span class="n">bond_orders</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                <span class="c1"># Read each chunk of output</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="c1"># Skip the two header lines</span>
+                    <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                    <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="c1"># And add the data to the bond_order matrix</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">count</span>
+                            <span class="k">break</span>
+                        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bond_orders</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">bond_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">bond_orders</span><span class="p">[</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bond_orders</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">n_atoms</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Wiberg bond order matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bond_orders</span>
+
         <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -1294,7 +1341,7 @@ document.write(`
 
 <div class="viewcode-block" id="Substep.run_gaussian">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.run_gaussian">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">,</span> <span class="n">extra_lines</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run Gaussian.</span>
 
 <span class="sd">        Parameters</span>
@@ -1392,6 +1439,9 @@ document.write(`
                 <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span>
                 <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">extra_lines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_lines</span><span class="p">)</span>
 
             <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;input.dat:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;input.dat&quot;</span><span class="p">])</span>
