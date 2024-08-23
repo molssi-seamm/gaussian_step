@@ -82,6 +82,17 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
             "description": "Type of coordinates:",
             "help_text": "The typ of coordinates to use in the minimization.",
         },
+        "ignore curvature error": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "s",
+            "description": "Ignore incorrect curvature for TS:",
+            "help_text": (
+                "Whether to ignore incorrect curvvatures during TS optimizations"
+            ),
+        },
         "ignore unconverged optimization": {
             "default": "no",
             "kind": "boolean",

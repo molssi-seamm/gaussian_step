@@ -148,6 +148,11 @@ class TkOptimization(gaussian_step.TkEnergy):
             widgets2.append(self["saddle order"])
             row += 1
 
+        if target not in ("minimum"):
+            self["ignore curvature error"].grid(row=row, column=1, sticky=tk.EW)
+            widgets2.append(self["ignore curvature error"])
+            row += 1
+
         for key in (
             "geometry convergence",
             "coordinates",

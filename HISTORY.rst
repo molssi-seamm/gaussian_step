@@ -1,6 +1,13 @@
 =======
 History
 =======
+2024.8.23: Enhancements: added bond orders and improved transition state optimization
+    * Added ability to calculate the Wiberg bond order matrix and optionally use to set
+      the bond orders of the structure.
+    * Enhanced the optimization for transitions states to capture the vibrational
+      analysis if the second derivatives are calculated, and report on the stability of
+      the structure.
+
 2024.7.27: Bugfix: issues when used in loop
     * Fixed a bug that caused the plug-in to fail when used in a loop.
     * Improved the creation of the gaussian.ini file to both work better and keep the

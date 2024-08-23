@@ -162,10 +162,12 @@ class Energy(Substep):
 
         return self.header + "\n" + __(text, **P, indent=4 * " ").__str__()
 
-    def run(self, keywords=None):
+    def run(self, keywords=None, extra_lines=None):
         """Run a single-point Gaussian calculation."""
         if keywords is None:
             keywords = set()
+        if extra_lines is None:
+            extra_lines = []
 
         _, starting_configuration = self.get_system_configuration(None)
 
@@ -347,7 +349,11 @@ class Energy(Substep):
         if P["convergence"] != "default":
             keywords.add("Conver={P['convergence']}")
 
-        data = self.run_gaussian(keywords)
+        if P["bond orders"] == "Wiberg":
+            keywords.add("Pop=NBORead")
+            extra_lines.append("$nbo bndidx $end")
+
+        data = self.run_gaussian(keywords, extra_lines=extra_lines)
 
         if not self.input_only:
             # Follow instructions for where to put the coordinates,
@@ -355,12 +361,17 @@ class Energy(Substep):
                 P=P, same_as=starting_configuration, model=self.model
             )
 
-            self.analyze(data=data)
+            self.analyze(data=data, P=P)
 
-    def analyze(self, indent="", data={}, table=None):
+    def analyze(self, indent="", data={}, table=None, P=None):
         """Parse the output and generating the text output and store the
         data in variables for other stages to access
         """
+        if P is None:
+            P = self.parameters.current_values_to_dict(
+                context=seamm.flowchart_variables._data
+            )
+
         text = ""
         if table is None:
             table = {
@@ -571,7 +582,7 @@ class Energy(Substep):
                         writer.writerow([atom, symbol, q])
 
                         chg_tbl["Charge"].append(q)
-            if len(symbols) <= int(self.options["max_atoms_to_print"]):
+            if len(symbols) <= int(self.parent.options["max_atoms_to_print"]):
                 text_lines.append(header)
                 if "Spin" in chg_tbl:
                     text_lines.append(
@@ -595,6 +606,12 @@ class Energy(Substep):
                     )
                 text += "\n\n"
                 text += textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
+
+        # Bond orders, if calculated
+        if "Wiberg bond order matrix" in data:
+            text += self._bond_orders(
+                P, data["Wiberg bond order matrix"], configuration
+            )
 
         printer.normal(text)
 
@@ -622,3 +639,82 @@ class Energy(Substep):
 
         # Put any requested results into variables or tables
         self.store_results(data=data, create_tables=True)
+
+    def _bond_orders(self, P, bond_order_matrix, configuration):
+        """Analyze and print the bond orders, and optionally use for the bonding
+        in the structure.
+
+        Parameters
+        ----------
+        P : {}
+            The control options for the step
+        bond_order_matrix : [natoms * [natoms * float]]
+            The square bond order matrix.
+        configuration : molsystem.Configuration
+            The configuration to put the bonds on, if requested.
+        """
+        text = ""
+        n_atoms = configuration.n_atoms
+
+        if n_atoms == 1:
+            return "\n\n        No bonds, since there is only one atom.\n"
+
+        bond_i = []
+        bond_j = []
+        bond_order = []
+        bond_order_str = []
+        orders = []
+        for j, row in enumerate(bond_order_matrix):
+            for i, order in enumerate(row):
+                if i == j:
+                    break
+                if order > 0.4:
+                    bond_i.append(i)
+                    bond_j.append(j)
+                    if order > 1.3 and order < 1.7:
+                        bond_order.append(5)
+                        bond_order_str.append("aromatic")
+                    else:
+                        bond_order.append(round(order))
+                        bond_order_str.append(str(round(order)))
+                    orders.append(order)
+
+        if len(bond_order) > 0:
+            symbols = configuration.atoms.symbols
+            text_lines = []
+            if len(symbols) <= int(self.parent.options["max_atoms_to_print"]):
+                name = configuration.atoms.names
+                table = {
+                    "i": [name[i] for i in bond_i],
+                    "j": [name[j] for j in bond_j],
+                    "bond order": [f"{o:6.3f}" for o in orders],
+                    "bond multiplicity": bond_order_str,
+                }
+                tmp = tabulate(
+                    table,
+                    headers="keys",
+                    tablefmt="rounded_outline",
+                    disable_numparse=True,
+                    colalign=("center", "center", "center", "center"),
+                )
+                length = len(tmp.splitlines()[0])
+                text_lines.append("\n")
+                text_lines.append("Bond Orders".center(length))
+                text_lines.append(tmp)
+                text += "\n\n"
+                text += textwrap.indent("\n".join(text_lines), 12 * " ")
+
+            if P["apply bond orders"]:
+                ids = configuration.atoms.ids
+                iatoms = [ids[i] for i in bond_i]
+                jatoms = [ids[j] for j in bond_j]
+                configuration.new_bondset()
+                configuration.bonds.append(i=iatoms, j=jatoms, bondorder=bond_order)
+                text2 = (
+                    "\nReplaced the bonds in the configuration with those from the "
+                    "calculated bond orders.\n"
+                )
+
+                text += str(__(text2, indent=8 * " "))
+
+        return text
