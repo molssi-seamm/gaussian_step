@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.10.10: Enhancement: added sempiempirical methods
+    * Added the various semiempirical methods supported by Gaussian so they can be used
+      from SEAMM.
+      
 2024.8.23: Enhancements: added bond orders and improved transition state optimization
     * Added ability to calculate the Wiberg bond order matrix and optionally use to set
       the bond orders of the structure.

@@ -4,6 +4,55 @@
 metadata = {}
 
 methods = {
+    "AM1: AM1 semiempirical HF": {
+        "method": "AM1",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PM3: PM3 semiempirical HF": {
+        "method": "PM3",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PM3MM: PM3 semiempirical HF with MM corrections": {
+        "method": "PM3MM",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PM6: PM6 semiempirical HF": {
+        "method": "PM6",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PDDG: PDDG variant of PM6 semiempirical HF": {
+        "method": "PDDG",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PM7: modified PM7 semiempirical HF": {
+        "method": "PM7",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
+    "PM7MOPAC: PM7 semiempirical HF as in MOPAC": {
+        "method": "PM6",
+        "calculation": ["energy", "gradients"],
+        "level": "normal",
+        "gradients": "analytic",
+        "nobasis": True,
+    },
     "DFT: Kohn-Sham density functional theory": {
         "method": "DFT",
         "calculation": ["energy", "gradients"],

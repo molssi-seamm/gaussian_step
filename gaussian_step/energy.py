@@ -330,6 +330,11 @@ class Energy(Substep):
                     keywords.add(f"{method}=(NoOpt)")
                 else:
                     keywords.add(f"{method}")
+        elif method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
+            if restricted and multiplicity != 1:
+                keywords.add(f"RO{method}")
+            else:
+                keywords.add(f"{method}")
         else:
             keywords.add(f"{method}/{basis}")
 
@@ -385,8 +390,59 @@ class Energy(Substep):
             text += "Gaussian did not produce the energy. Something is wrong!"
             printer.normal(__(text, indent=self.indent + 4 * " "))
 
+        # The semiempirical energy is the enthalpy, not energy!
+        key = "energy"
+        if key in data:
+            # Figure out the method.
+            if P["level"] == "recommended":
+                method_string = P["method"]
+            else:
+                method_string = P["advanced_method"]
+
+            # If we don't recognize the string presume (hope?) it is a Gaussian method
+            if method_string in gaussian_step.methods:
+                method_data = gaussian_step.methods[method_string]
+                method = method_data["method"]
+            else:
+                # See if it matches the keyword part
+                for key, mdata in gaussian_step.methods.items():
+                    if method_string == mdata["method"]:
+                        method_string = key
+                        method_data = mdata
+                        method = method_data["method"]
+                        break
+                else:
+                    method_data = {}
+                    method = method_string
+
+            if method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
+                tmp = data[key]
+                mdata = metadata[key]
+                table["Property"].append("H(298)")
+                table["Value"].append(f"{tmp:{mdata['format']}}")
+                if "units" in mdata:
+                    table["Units"].append(mdata["units"])
+                else:
+                    table["Units"].append("")
+                table["Property"].append("")
+                tmp = Q_(float(data[key]), "hartree").m_as("kcal/mol")
+                table["Value"].append(f"{tmp:.2f}")
+                table["Units"].append("kcal/mol")
+                table["Property"].append("")
+                tmp = Q_(float(data[key]), "hartree").m_as("kJ/mol")
+                table["Value"].append(f"{tmp:.2f}")
+                table["Units"].append("kJ/mol")
+            else:
+                tmp = data[key]
+                mdata = metadata[key]
+                table["Property"].append(key)
+                table["Value"].append(f"{tmp:{mdata['format']}}")
+                if "units" in mdata:
+                    table["Units"].append(mdata["units"])
+                else:
+                    table["Units"].append("")
+
         for key in (
-            "energy",
             "Virial Ratio",
             "RMS Density",
             "Cluster Energy with triples",
