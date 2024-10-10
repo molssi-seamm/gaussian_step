@@ -209,7 +209,10 @@ class Optimization(gaussian_step.Energy):
             text += "System is an atom, so nothing to optimize."
         else:
             # Information about the optimization
-            n_steps = data["Optimization Number of geometries"][0]
+            if "Optimization Number of geometries" in data:
+                n_steps = data["Optimization Number of geometries"][0]
+            else:
+                n_steps = -1
             data["nsteps"] = n_steps
             if data["Geometry Optimization Converged"]:
                 text += f"The geometry optimization converged in {n_steps} steps."
