@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.8.23 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.10.10 documentation</title>
   
   
   
@@ -37,8 +37,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=0280db91"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/documentation_options.js?v=15d57538"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -874,74 +874,77 @@ document.write(`
                 <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="k">break</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">code</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">]</span>
-            <span class="n">is_array</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">49</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;N=&quot;</span>
-            <span class="k">if</span> <span class="n">is_array</span><span class="p">:</span>
-                <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">61</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
-                            <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
-                            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
-                                <span class="k">break</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
-                            <span class="n">text</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                            <span class="c1"># Fortran drops E in format for large exponents...</span>
-                            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([0-9])-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\1E-&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-                            <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-                            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
-                                <span class="k">break</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
-                            <span class="n">value</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">12</span><span class="p">]</span>
-                            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
-                                <span class="k">break</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
-                            <span class="n">value</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">8</span><span class="p">]</span>
-                            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
-                                <span class="k">break</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
-                            <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
-                            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
-                                <span class="k">break</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">code</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">]</span>
+                <span class="n">is_array</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">49</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;N=&quot;</span>
+                <span class="k">if</span> <span class="n">is_array</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">61</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+                                <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+                                <span class="n">text</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="c1"># Fortran drops E in format for large exponents...</span>
+                                <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([0-9])-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\1E-&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                                <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+                                <span class="n">value</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">12</span><span class="p">]</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+                                <span class="n">value</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">8</span><span class="p">]</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+                                <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">49</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -1571,7 +1574,7 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running Gaussian&quot;</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">None</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+                <span class="c1"># self.logger.debug(&quot;\n&quot; + pprint.pformat(result))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
             <span class="c1"># And output</span>
@@ -1585,6 +1588,13 @@ document.write(`
             <span class="c1"># Get the data from the formatted checkpoint file</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_fchk</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
+            <span class="c1"># Debug output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;After parse_fchk&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="c1"># And parse a bit more out of the output</span>
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1592,6 +1602,7 @@ document.write(`
             <span class="c1"># Debug output</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
                 <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;After second parse output&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
