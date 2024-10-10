@@ -381,74 +381,77 @@ class Substep(seamm.Node):
                 line = next(it)
             except StopIteration:
                 break
-            key = line[0:40].strip()
-            code = line[43]
-            is_array = line[47:49] == "N="
-            if is_array:
-                count = int(line[49:61].strip())
-                value = []
-                if code == "I":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 6 * 12, 12):
-                            value.append(int(line[pos : pos + 12].strip()))
-                            i += 1
-                            if i == count:
-                                break
-                elif code == "R":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 5 * 16, 16):
-                            text = line[pos : pos + 16].strip()
-                            # Fortran drops E in format for large exponents...
-                            text = re.sub(r"([0-9])-", r"\1E-", text)
-                            value.append(float(text))
-                            i += 1
-                            if i == count:
-                                break
-                elif code == "C":
-                    value = ""
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 5 * 12, 12):
-                            value += line[pos : pos + 12]
-                            i += 1
-                            if i == count:
-                                break
-                    value = value.rstrip()
-                elif code == "H":
-                    value = ""
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(0, 9 * 8, 8):
-                            value += line[pos : pos + 8]
-                            i += 1
-                            if i == count:
-                                break
-                    value = value.rstrip()
-                elif code == "L":
-                    i = 0
-                    while i < count:
-                        line = next(it)
-                        for pos in range(72):
-                            value.append(line[pos] == "T")
-                            i += 1
-                            if i == count:
-                                break
-            else:
-                if code == "I":
-                    value = int(line[49:].strip())
-                elif code == "R":
-                    value = float(line[49:].strip())
-                elif code == "C":
-                    value = line[49:].strip()
-                elif code == "L":
-                    value = line[49] == "T"
-            data[key] = value
+            try:
+                key = line[0:40].strip()
+                code = line[43]
+                is_array = line[47:49] == "N="
+                if is_array:
+                    count = int(line[49:61].strip())
+                    value = []
+                    if code == "I":
+                        i = 0
+                        while i < count:
+                            line = next(it)
+                            for pos in range(0, 6 * 12, 12):
+                                value.append(int(line[pos : pos + 12].strip()))
+                                i += 1
+                                if i == count:
+                                    break
+                    elif code == "R":
+                        i = 0
+                        while i < count:
+                            line = next(it)
+                            for pos in range(0, 5 * 16, 16):
+                                text = line[pos : pos + 16].strip()
+                                # Fortran drops E in format for large exponents...
+                                text = re.sub(r"([0-9])-", r"\1E-", text)
+                                value.append(float(text))
+                                i += 1
+                                if i == count:
+                                    break
+                    elif code == "C":
+                        value = ""
+                        i = 0
+                        while i < count:
+                            line = next(it)
+                            for pos in range(0, 5 * 12, 12):
+                                value += line[pos : pos + 12]
+                                i += 1
+                                if i == count:
+                                    break
+                                value = value.rstrip()
+                    elif code == "H":
+                        value = ""
+                        i = 0
+                        while i < count:
+                            line = next(it)
+                            for pos in range(0, 9 * 8, 8):
+                                value += line[pos : pos + 8]
+                                i += 1
+                                if i == count:
+                                    break
+                                value = value.rstrip()
+                    elif code == "L":
+                        i = 0
+                        while i < count:
+                            line = next(it)
+                            for pos in range(72):
+                                value.append(line[pos] == "T")
+                                i += 1
+                                if i == count:
+                                    break
+                else:
+                    if code == "I":
+                        value = int(line[49:].strip())
+                    elif code == "R":
+                        value = float(line[49:].strip())
+                    elif code == "C":
+                        value = line[49:].strip()
+                    elif code == "L":
+                        value = line[49] == "T"
+                data[key] = value
+            except Exception:
+                pass
         return data
 
     def parse_output(self, path, data={}):
@@ -1069,7 +1072,7 @@ class Substep(seamm.Node):
                     self.logger.error("There was an error running Gaussian")
                     return None
 
-                self.logger.debug("\n" + pprint.pformat(result))
+                # self.logger.debug("\n" + pprint.pformat(result))
 
         if not self.input_only:
             # And output
@@ -1083,6 +1086,13 @@ class Substep(seamm.Node):
             # Get the data from the formatted checkpoint file
             data = self.parse_fchk(directory / "gaussian.fchk", data)
 
+            # Debug output
+            if self.logger.isEnabledFor(logging.DEBUG):
+                keys = "\n".join(data.keys())
+                self.logger.debug("After parse_fchk")
+                self.logger.debug(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
+
             # And parse a bit more out of the output
             if path.exists():
                 data = self.parse_output(path, data)
@@ -1090,6 +1100,7 @@ class Substep(seamm.Node):
             # Debug output
             if self.logger.isEnabledFor(logging.DEBUG):
                 keys = "\n".join(data.keys())
+                self.logger.debug("After second parse output")
                 self.logger.debug(f"Data keys:\n{keys}")
                 self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
