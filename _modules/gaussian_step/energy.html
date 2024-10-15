@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.10.10 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.10.15 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=15d57538"></script>
+    <script src="../../_static/documentation_options.js?v=4ddceb86"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -569,6 +569,24 @@ document.write(`
                 <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;functional&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_functional&quot;</span><span class="p">]</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="c1"># Might be first part of name, or Gaussian-encoded name</span>
+                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="c1"># Might be the internal Gaussian name</span>
+                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize functional &#39;</span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
             <span class="n">basis</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;basis&quot;</span><span class="p">]</span>
             <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -721,6 +739,24 @@ document.write(`
                 <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;functional&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_functional&quot;</span><span class="p">]</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="c1"># Might be first part of name, or Gaussian-encoded name</span>
+                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="c1"># Might be the internal Gaussian name</span>
+                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize functional &#39;</span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
             <span class="n">functional_data</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="p">[</span><span class="n">functional</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">restricted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -895,10 +931,10 @@ document.write(`
                 <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># See if it matches the keyword part</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">method_string</span> <span class="o">==</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
-                        <span class="n">method_string</span> <span class="o">=</span> <span class="n">key</span>
-                        <span class="n">method_data</span> <span class="o">=</span> <span class="n">mdata</span>
+                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">method_string</span> <span class="o">==</span> <span class="n">_mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
+                        <span class="n">method_string</span> <span class="o">=</span> <span class="n">_key</span>
+                        <span class="n">method_data</span> <span class="o">=</span> <span class="n">_mdata</span>
                         <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
                         <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
