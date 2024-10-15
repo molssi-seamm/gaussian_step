@@ -85,6 +85,24 @@ class Energy(Substep):
                 functional = P["functional"]
             else:
                 functional = P["advanced_functional"]
+            found = functional in gaussian_step.dft_functionals
+            if not found:
+                # Might be first part of name, or Gaussian-encoded name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _key.split(":")[0].strip():
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                # Might be the internal Gaussian name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _data["name"]:
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                raise ValueError(f"Don't recognize functional '{functional}'")
+
             basis = P["basis"]
             text = f"{calculation} using {method} using {functional}"
             if (
@@ -234,6 +252,24 @@ class Energy(Substep):
                 functional = P["functional"]
             else:
                 functional = P["advanced_functional"]
+            found = functional in gaussian_step.dft_functionals
+            if not found:
+                # Might be first part of name, or Gaussian-encoded name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _key.split(":")[0].strip():
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                # Might be the internal Gaussian name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _data["name"]:
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                raise ValueError(f"Don't recognize functional '{functional}'")
+
             functional_data = gaussian_step.dft_functionals[functional]
             if restricted:
                 if multiplicity == 1:
@@ -405,10 +441,10 @@ class Energy(Substep):
                 method = method_data["method"]
             else:
                 # See if it matches the keyword part
-                for key, mdata in gaussian_step.methods.items():
-                    if method_string == mdata["method"]:
-                        method_string = key
-                        method_data = mdata
+                for _key, _mdata in gaussian_step.methods.items():
+                    if method_string == _mdata["method"]:
+                        method_string = _key
+                        method_data = _mdata
                         method = method_data["method"]
                         break
                 else:

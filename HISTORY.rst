@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.10.15: Bugfix: errors using short names of methods and functionals
+    * There were bugs in the code that caused errors when using short names, e.g. "HF"
+      or "CCD" for the method, or e.g. "B3LYP" for the density fnctional.
+      
 2024.10.10: Enhancement: added sempiempirical methods
     * Added the various semiempirical methods supported by Gaussian so they can be used
       from SEAMM.
