@@ -730,7 +730,7 @@ class Energy(Substep):
         printer.normal("")
 
         # Put any requested results into variables or tables
-        self.store_results(data=data, create_tables=True)
+        self.store_results(data=data, create_tables=True, configuration=configuration)
 
     def _bond_orders(self, P, bond_order_matrix, configuration):
         """Analyze and print the bond orders, and optionally use for the bonding
