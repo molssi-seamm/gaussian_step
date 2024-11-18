@@ -1,9 +1,13 @@
 =======
 History
 =======
+2024.11.18: Enhancement: added properties
+    * Added properties for the energy and enthalpy, etc. from composite models.
+    * Protected the code from crashing is Gaussian failed.
+      
 2024.10.15: Bugfix: errors using short names of methods and functionals
     * There were bugs in the code that caused errors when using short names, e.g. "HF"
-      or "CCD" for the method, or e.g. "B3LYP" for the density fnctional.
+      or "CCD" for the method, or e.g. "B3LYP" for the density functional.
       
 2024.10.10: Enhancement: added sempiempirical methods
     * Added the various semiempirical methods supported by Gaussian so they can be used

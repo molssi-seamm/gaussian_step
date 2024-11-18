@@ -1,2 +1,12 @@
 Property,Type,Units,Description,URL
+HOMO energy#Gaussian#{model},float,eV,"The {model} energy of the highest occupied molecular orbital (HOMO)",https://en.wikipedia.org/wiki/HOMO_and_LUMO
+LUMO energy#Gaussian#{model},float,eV,"The {model} energy of the lowest unoccupied molecular orbital (LUMO)",https://en.wikipedia.org/wiki/HOMO_and_LUMO
 total energy#Gaussian#{model},float,eV,"The {model} total energy (electronic + nuclear).",
+dipole moment#Gaussian#{model},float,D,"The {model} electric dipole moment, which is the magnitude of the dipole vector.",https://en.wikipedia.org/wiki/Electric_dipole_moment
+temperature#Gaussian#{model},float,K,"The {model} temperature.",
+pressure#Gaussian#{model},float,atm,"The {model} pressure.",
+ZPE#Gaussian#{model},float,kJ/mol,"The {model} zero-point energy, ZPE.",
+E(0 K)#Gaussian#{model},float,kJ/mol,"The {model} energy at 0K, E(0 K).",
+energy#Gaussian#{model},float,kJ/mol,"The {model} energy, E.",
+enthalpy#Gaussian#{model},float,kJ/mol,"The {model} enthalpy, H.",https://en.wikipedia.org/wiki/Standard_enthalpy_of_formation
+free energy#Gaussian#{model},float,kJ/mol,"The {model} free energy, G.",

@@ -168,6 +168,11 @@ class Substep(seamm.Node):
         periodicity = configuration.periodicity
         if periodicity != 0:
             raise NotImplementedError("Periodic cube files not implemented yet!")
+
+        # Have the needed data?
+        if "homos" not in data:
+            return ""
+
         spin_polarized = len(data["homos"]) == 2
 
         # Prepare to run
@@ -1078,8 +1083,12 @@ class Substep(seamm.Node):
             # And output
             path = directory / "output.txt"
             if path.exists():
-                data = vars(cclib.io.ccread(path))
-                data = self.process_data(data)
+                try:
+                    data = vars(cclib.io.ccread(path))
+                    data = self.process_data(data)
+                except Exception as e:
+                    print(f"cclib raised exception {e}")
+                    data = {}
             else:
                 data = {}
 
@@ -1123,11 +1132,13 @@ class Substep(seamm.Node):
             # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
             if "Composite/model" in data:
                 self.model = data["Composite/model"]
-            else:
+            elif "metadata/methods" in data and "metadata/basis_set" in data:
                 self.model = (
                     f"{data['metadata/methods'][-1]}/{data['method']}/"
                     f"{data['metadata/basis_set']}"
                 )
+            else:
+                self.model = "unknown"
             self.logger.debug(f"model = {self.model}")
 
             data["model"] = "Gaussian/" + self.model
