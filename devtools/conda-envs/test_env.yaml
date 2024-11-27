@@ -10,6 +10,9 @@ dependencies:
 
   # SEAMM
   - cclib
+  - py-cpuinfo
+  - numpy
+  - pandas
   - seamm
   - tabulate
 
