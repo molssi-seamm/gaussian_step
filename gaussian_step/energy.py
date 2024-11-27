@@ -60,20 +60,22 @@ class Energy(Substep):
         if not P:
             P = self.parameters.values_to_dict()
 
-        if P["level"] == "recommended":
-            method = P["method"]
-        else:
-            method = P["advanced_method"]
+        # if P["level"] == "recommended":
+        #     method = P["method"]
+        # else:
+        #     method = P["advanced_method"]
 
-        if not self.is_expr(method) and method not in gaussian_step.methods:
-            # See if it matches the keyword part
-            for key, mdata in gaussian_step.methods.items():
-                if method == mdata["method"]:
-                    method = key
-                    if P["level"] == "recommended":
-                        self.parameters["method"].value = method
-                    else:
-                        self.parameters["advanced_method"].value = method
+        # if not self.is_expr(method) and method not in gaussian_step.methods:
+        #     # See if it matches the keyword part
+        #     for key, mdata in gaussian_step.methods.items():
+        #         if method == mdata["method"]:
+        #             method = key
+        #             if P["level"] == "recommended":
+        #                 self.parameters["method"].value = method
+        #             else:
+        #                 self.parameters["advanced_method"].value = method
+
+        method, method_data = self.get_method(P)
 
         if self.is_expr(method):
             text = f"{calculation} using method given by {method}."
@@ -81,27 +83,29 @@ class Energy(Substep):
             method in gaussian_step.methods
             and gaussian_step.methods[method]["method"] == "DFT"
         ):
-            if P["level"] == "recommended":
-                functional = P["functional"]
-            else:
-                functional = P["advanced_functional"]
-            found = functional in gaussian_step.dft_functionals
-            if not found:
-                # Might be first part of name, or Gaussian-encoded name
-                for _key, _data in gaussian_step.dft_functionals.items():
-                    if functional == _key.split(":")[0].strip():
-                        functional = _key
-                        found = True
-                        break
-            if not found:
-                # Might be the internal Gaussian name
-                for _key, _data in gaussian_step.dft_functionals.items():
-                    if functional == _data["name"]:
-                        functional = _key
-                        found = True
-                        break
-            if not found:
-                raise ValueError(f"Don't recognize functional '{functional}'")
+            # if P["level"] == "recommended":
+            #     functional = P["functional"]
+            # else:
+            #     functional = P["advanced_functional"]
+            # found = functional in gaussian_step.dft_functionals
+            # if not found:
+            #     # Might be first part of name, or Gaussian-encoded name
+            #     for _key, _data in gaussian_step.dft_functionals.items():
+            #         if functional == _key.split(":")[0].strip():
+            #             functional = _key
+            #             found = True
+            #             break
+            # if not found:
+            #     # Might be the internal Gaussian name
+            #     for _key, _data in gaussian_step.dft_functionals.items():
+            #         if functional == _data["name"]:
+            #             functional = _key
+            #             found = True
+            #             break
+            # if not found:
+            #     raise ValueError(f"Don't recognize functional '{functional}'")
+
+            functional = self.get_functional(P)
 
             basis = P["basis"]
             text = f"{calculation} using {method} using {functional}"
@@ -189,6 +193,8 @@ class Energy(Substep):
 
         _, starting_configuration = self.get_system_configuration(None)
 
+        max_atno = max(starting_configuration.atoms.atomic_numbers)
+
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
         )
@@ -212,26 +218,28 @@ class Energy(Substep):
                 keywords.add("SP")
 
         # Figure out what we are doing!
-        if P["level"] == "recommended":
-            method_string = P["method"]
-        else:
-            method_string = P["advanced_method"]
+        # if P["level"] == "recommended":
+        #     method_string = P["method"]
+        # else:
+        #     method_string = P["advanced_method"]
 
-        # If we don't recognize the string presume (hope?) it is a Gaussian method
-        if method_string in gaussian_step.methods:
-            method_data = gaussian_step.methods[method_string]
-            method = method_data["method"]
-        else:
-            # See if it matches the keyword part
-            for key, mdata in gaussian_step.methods.items():
-                if method_string == mdata["method"]:
-                    method_string = key
-                    method_data = mdata
-                    method = method_data["method"]
-                    break
-            else:
-                method_data = {}
-                method = method_string
+        # # If we don't recognize the string presume (hope?) it is a Gaussian method
+        # if method_string in gaussian_step.methods:
+        #     method_data = gaussian_step.methods[method_string]
+        #     method = method_data["method"]
+        # else:
+        #     # See if it matches the keyword part
+        #     for key, mdata in gaussian_step.methods.items():
+        #         if method_string == mdata["method"]:
+        #             method_string = key
+        #             method_data = mdata
+        #             method = method_data["method"]
+        #             break
+        #     else:
+        #         method_data = {}
+        #         method = method_string
+
+        method, method_data = self.get_method(P)
 
         # How to handle spin restricted.
         multiplicity = starting_configuration.spin_multiplicity
@@ -248,27 +256,29 @@ class Energy(Substep):
 
         basis = P["basis"]
         if method == "DFT":
-            if P["level"] == "recommended":
-                functional = P["functional"]
-            else:
-                functional = P["advanced_functional"]
-            found = functional in gaussian_step.dft_functionals
-            if not found:
-                # Might be first part of name, or Gaussian-encoded name
-                for _key, _data in gaussian_step.dft_functionals.items():
-                    if functional == _key.split(":")[0].strip():
-                        functional = _key
-                        found = True
-                        break
-            if not found:
-                # Might be the internal Gaussian name
-                for _key, _data in gaussian_step.dft_functionals.items():
-                    if functional == _data["name"]:
-                        functional = _key
-                        found = True
-                        break
-            if not found:
-                raise ValueError(f"Don't recognize functional '{functional}'")
+            # if P["level"] == "recommended":
+            #     functional = P["functional"]
+            # else:
+            #     functional = P["advanced_functional"]
+            # found = functional in gaussian_step.dft_functionals
+            # if not found:
+            #     # Might be first part of name, or Gaussian-encoded name
+            #     for _key, _data in gaussian_step.dft_functionals.items():
+            #         if functional == _key.split(":")[0].strip():
+            #             functional = _key
+            #             found = True
+            #             break
+            # if not found:
+            #     # Might be the internal Gaussian name
+            #     for _key, _data in gaussian_step.dft_functionals.items():
+            #         if functional == _data["name"]:
+            #             functional = _key
+            #             found = True
+            #             break
+            # if not found:
+            #     raise ValueError(f"Don't recognize functional '{functional}'")
+
+            functional = self.get_functional(P)
 
             functional_data = gaussian_step.dft_functionals[functional]
             if restricted:
@@ -328,6 +338,10 @@ class Energy(Substep):
                         keywords.add(f"RO{method}")
                     else:
                         keywords.add(f"{method}")
+            if max_atno > 36:
+                raise RuntimeError(
+                    f"{method} cannot handle systems with atoms heavier than Kr (36)"
+                )
         elif method == "CBS-APNO":
             if self.gversion == "g09":
                 if self.__class__ == Energy:
@@ -342,6 +356,10 @@ class Energy(Substep):
                     keywords.add(f"{method}=NoOpt")
                 else:
                     keywords.add(f"{method}")
+            if max_atno > 18:
+                raise RuntimeError(
+                    f"{method} cannot handle systems with atoms heavier than Ar (18)"
+                )
         elif method in (
             "G1",
             "G2",
@@ -366,6 +384,10 @@ class Energy(Substep):
                     keywords.add(f"{method}=(NoOpt)")
                 else:
                     keywords.add(f"{method}")
+            if max_atno > 36:
+                raise RuntimeError(
+                    f"{method} cannot handle systems with atoms heavier than Kr (36)"
+                )
         elif method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
             if restricted and multiplicity != 1:
                 keywords.add(f"RO{method}")
@@ -394,6 +416,32 @@ class Energy(Substep):
             keywords.add("Pop=NBORead")
             extra_lines.append("$nbo bndidx $end")
 
+        if self._timing_data is not None:
+            try:
+                self._timing_data[6] = starting_configuration.to_smiles(
+                    canonical=True, flavor="openbabel"
+                )
+            except Exception:
+                self._timing_data[6] = ""
+            try:
+                self._timing_data[7] = starting_configuration.to_smiles(
+                    canonical=True, hydrogens=True, flavor="openbabel"
+                )
+            except Exception:
+                self._timing_data[7] = ""
+            try:
+                self._timing_data[8] = starting_configuration.formula[0]
+            except Exception:
+                self._timing_data[7] = ""
+            try:
+                self._timing_data[9] = str(starting_configuration.charge)
+            except Exception:
+                self._timing_data[9] = ""
+            try:
+                self._timing_data[10] = str(starting_configuration.spin_multiplicity)
+            except Exception:
+                self._timing_data[10] = ""
+
         data = self.run_gaussian(keywords, extra_lines=extra_lines)
 
         if not self.input_only:
@@ -413,6 +461,9 @@ class Energy(Substep):
                 context=seamm.flowchart_variables._data
             )
 
+        # Calculate the enthalpy of formation, if possible
+        self.calculate_enthalpy_of_formation(data)
+
         text = ""
         if table is None:
             table = {
@@ -429,32 +480,36 @@ class Energy(Substep):
         # The semiempirical energy is the enthalpy, not energy!
         key = "energy"
         if key in data:
-            # Figure out the method.
-            if P["level"] == "recommended":
-                method_string = P["method"]
-            else:
-                method_string = P["advanced_method"]
+            # # Figure out the method.
+            # if P["level"] == "recommended":
+            #     method_string = P["method"]
+            # else:
+            #     method_string = P["advanced_method"]
 
-            # If we don't recognize the string presume (hope?) it is a Gaussian method
-            if method_string in gaussian_step.methods:
-                method_data = gaussian_step.methods[method_string]
-                method = method_data["method"]
-            else:
-                # See if it matches the keyword part
-                for _key, _mdata in gaussian_step.methods.items():
-                    if method_string == _mdata["method"]:
-                        method_string = _key
-                        method_data = _mdata
-                        method = method_data["method"]
-                        break
-                else:
-                    method_data = {}
-                    method = method_string
+            # # If we don't recognize the string presume (hope?) it is a Gaussian method
+            # if method_string in gaussian_step.methods:
+            #     method_data = gaussian_step.methods[method_string]
+            #     method = method_data["method"]
+            # else:
+            #     # See if it matches the keyword part
+            #     for _key, _mdata in gaussian_step.methods.items():
+            #         if method_string == _mdata["method"]:
+            #             method_string = _key
+            #             method_data = _mdata
+            #             method = method_data["method"]
+            #             break
+            #     else:
+            #         method_data = {}
+            #         method = method_string
+
+            method, method_data = self.get_method(P)
 
             if method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
                 tmp = data[key]
                 mdata = metadata[key]
-                table["Property"].append("H(298)")
+                table["Property"].append(
+                    "\N{GREEK CAPITAL LETTER DELTA}fH\N{SUPERSCRIPT ZERO}"
+                )
                 table["Value"].append(f"{tmp:{mdata['format']}}")
                 if "units" in mdata:
                     table["Units"].append(mdata["units"])
@@ -469,6 +524,17 @@ class Energy(Substep):
                 table["Value"].append(f"{tmp:.2f}")
                 table["Units"].append("kJ/mol")
             else:
+                if "DfH0" in data:
+                    tmp = data["DfH0"]
+                    table["Property"].append(
+                        "\N{GREEK CAPITAL LETTER DELTA}fH\N{SUPERSCRIPT ZERO}"
+                    )
+                    table["Value"].append(f"{Q_(tmp, 'kJ/mol').m_as('kcal/mol'):.2f}")
+                    table["Units"].append("kcal/mol")
+                    table["Property"].append("")
+                    table["Value"].append(f"{tmp:.2f}")
+                    table["Units"].append("kJ/mol")
+
                 tmp = data[key]
                 mdata = metadata[key]
                 table["Property"].append(key)
