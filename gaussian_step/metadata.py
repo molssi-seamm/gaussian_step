@@ -334,6 +334,37 @@ metadata["results"] = {
         "units": "E_h/a0",
         "format": ".6f",
     },
+    "DfE0": {
+        "calculation": ["optimization", "thermodynamics"],
+        "description": "the energy of formation",
+        "dimensionality": "scalar",
+        "property": "DfE0#Gaussian#{model}",
+        "type": "float",
+        "units": "kJ/mol",
+        "format": ".2f",
+    },
+    "DfH0": {
+        "calculation": ["optimization", "thermodynamics"],
+        "description": "the enthalpy of formation",
+        "dimensionality": "scalar",
+        "property": "DfH0#Gaussian#{model}",
+        "type": "float",
+        "units": "kJ/mol",
+        "format": ".2f",
+    },
+    "SEAMM elapsed time": {
+        "description": "total elapsed time for Gaussian",
+        "dimensionality": "scalar",
+        "type": "float",
+        "units": "s",
+        "format": ".1f",
+    },
+    "SEAMM np": {
+        "description": "number of processors for Gaussian",
+        "dimensionality": "scalar",
+        "type": "integer",
+        "format": "d",
+    },
     "nsteps": {
         "calculation": ["optimization"],
         "description": "optimization nsteps",
@@ -379,15 +410,15 @@ metadata["results"] = {
         "format": ".2e",
     },
     "Geometry Optimization Converged": {
-        "calculation": ["optimization"],
-        "description": "whether the geometry optimzation converged",
+        "calculation": ["optimization", "thermodynamics"],
+        "description": "whether the geometry optimization converged",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
         "type": "boolean",
         "format": "s",
     },
     "RMS Force": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the RMS force on the atoms",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -396,7 +427,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "Maximum Force": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the maximum force on an atom",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -405,7 +436,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "RMS Displacement": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the RMS displacement of the atoms",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -414,7 +445,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "Maximum Displacement": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the maximum displacement of an atom",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -423,7 +454,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "RMS Force Threshold": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the RMS force threshold for the atoms",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -432,7 +463,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "Maximum Force Threshold": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the maximum force threshold for an atom",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -441,7 +472,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "RMS Displacement Threshold": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the RMS displacement threshold for the atoms",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -450,7 +481,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "Maximum Displacement Threshold": {
-        "calculation": ["optimization"],
+        "calculation": ["optimization", "thermodynamics"],
         "description": "the maximum displacement threshold for an atom",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -465,7 +496,7 @@ metadata["results"] = {
         "format": "s",
     },
     "E(gap)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": (
             "The gap between the LUMO and HOMO or conduction and valence bands"
         ),
@@ -476,7 +507,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of highest occupied MO (HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -486,7 +517,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(homo-1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the next-to-highest occupied orbital (NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -495,7 +526,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(lumo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of lowest unoccupied MO (LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -505,7 +536,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(lumo+1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the second lowest unoccupied orbital (SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -514,7 +545,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "N(homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The orbital number of the HOMO (starting at 1)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -523,7 +554,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(homo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The symmetry of the highest occupied MO (HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -532,7 +563,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(homo-1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The symmetry of the next-to-highest occupied orbital (NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -541,7 +572,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(lumo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The symmetry of the lowest unoccupied MO (LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -550,7 +581,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(lumo+1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The symmetry of the second lowest unoccupied orbital (SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -559,7 +590,7 @@ metadata["results"] = {
         "format": "",
     },
     "E(α-gap)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": (
             "The gap between the LUMO and HOMO or conduction and valence bands"
         ),
@@ -570,7 +601,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(α-homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of highest occupied MO (α-HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -579,7 +610,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(α-homo-1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the next-to-highest occupied orbital (α-NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -588,7 +619,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(α-lumo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of lowest unoccupied MO (α-LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -597,7 +628,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(α-lumo+1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the second lowest unoccupied orbital (α-SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -606,7 +637,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "N(α-homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The orbital number of the HOMO (starting at 1)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -615,7 +646,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(α-homo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the highest occupied MO (α-HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -624,7 +655,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(α-homo-1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the next-to-highest occupied orbital (α-NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -633,7 +664,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(α-lumo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the lowest unoccupied MO (α-LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -642,7 +673,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(α-lumo+1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the second lowest unoccupied orbital (α-SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -651,7 +682,7 @@ metadata["results"] = {
         "format": "",
     },
     "E(β-gap)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": (
             "The gap between the LUMO and HOMO or conduction and valence bands"
         ),
@@ -662,7 +693,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(β-homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of highest occupied MO (β-HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -671,7 +702,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(β-homo-1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the next-to-highest occupied orbital (β-NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -680,7 +711,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(β-lumo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of lowest unoccupied MO (β-LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -689,7 +720,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "E(β-lumo+1)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The energy of the second lowest unoccupied orbital (β-SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -698,7 +729,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "N(β-homo)": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The orbital number of the HOMO (starting at 1)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -707,7 +738,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(β-homo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the highest occupied MO (β-HOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -716,7 +747,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(β-homo-1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the next-to-highest occupied orbital (β-NHOMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -725,7 +756,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(β-lumo)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the lowest unoccupied MO (β-LUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -734,7 +765,7 @@ metadata["results"] = {
         "format": "",
     },
     "Sym(β-lumo+1)": {
-        "calculation": ["symmetry", "optimization"],
+        "calculation": ["symmetry", "optimization", "thermodynamics"],
         "description": "The symmetry of the second lowest unoccupied orbital (β-SLUMO)",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -743,7 +774,7 @@ metadata["results"] = {
         "format": "",
     },
     "atomcharges/mulliken": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization", "thermodynamics"],
         "description": "The Mulliken charges of the atoms",
         "dimensionality": "[natoms]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -752,7 +783,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "coreelectrons": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The number of core electrons per atom",
         "dimensionality": "[natoms]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -875,7 +906,7 @@ metadata["results"] = {
         "format": "",
     },
     "moenergies": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The energy of the molecular orbitals (MOs)",
         "dimensionality": "[[nmo]*nspin]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -884,7 +915,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "moments": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -893,7 +924,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "multipole_reference": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The reference point for the multipole expansions",
         "dimensionality": "[3]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -902,7 +933,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "dipole_moment": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The dipole moment",
         "dimensionality": "[3]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -911,7 +942,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "dipole_moment_magnitude": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The magnitude of the dipole moment",
         "dimensionality": "scalar",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -921,7 +952,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "quadrupole_moment": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The quadrupole moment",
         "dimensionality": "[6]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -930,7 +961,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "octapole_moment": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The octapole moment",
         "dimensionality": "[10]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -939,7 +970,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "hexadecapole_moment": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The hexadecapole moment",
         "dimensionality": "[15]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -948,7 +979,7 @@ metadata["results"] = {
         "format": ".6f",
     },
     "mosysm": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The symmetry of the MOs",
         "dimensionality": "[nmo]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
@@ -998,7 +1029,7 @@ metadata["results"] = {
         "format": ".3f",
     },
     "scfenergies": {
-        "calculation": ["energy", "optimization"],
+        "calculation": ["energy", "optimization",, "thermodynamics"],
         "description": "The energies per step",
         "dimensionality": "[nsteps]",
         "methods": ["DFT", "HF", "MP2", "MP3", "MP4"],
