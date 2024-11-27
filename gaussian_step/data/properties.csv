@@ -8,5 +8,6 @@ pressure#Gaussian#{model},float,atm,"The {model} pressure.",
 ZPE#Gaussian#{model},float,kJ/mol,"The {model} zero-point energy, ZPE.",
 E(0 K)#Gaussian#{model},float,kJ/mol,"The {model} energy at 0K, E(0 K).",
 energy#Gaussian#{model},float,kJ/mol,"The {model} energy, E.",
-enthalpy#Gaussian#{model},float,kJ/mol,"The {model} enthalpy, H.",https://en.wikipedia.org/wiki/Standard_enthalpy_of_formation
+enthalpy#Gaussian#{model},float,kJ/mol,"The {model} enthalpy, H.",
 free energy#Gaussian#{model},float,kJ/mol,"The {model} free energy, G.",
+DfH0#Gaussian#{model},float,kJ/mol,"The {model} standard enthalpy of formation",https://en.wikipedia.org/wiki/Standard_enthalpy_of_formation
