@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.11.18 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=24807a2d"></script>
+    <script src="../../_static/documentation_options.js?v=63911625"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.11.18" />
+  <meta name="docsearch:version" content="2024.12.1" />
   </head>
   
   
@@ -457,25 +457,34 @@
 
 <span class="sd">&quot;&quot;&quot;Setup and run Gaussian&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isnan</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">import</span> <span class="nn">cclib</span>
+<span class="kn">from</span> <span class="nn">cpuinfo</span> <span class="kn">import</span> <span class="n">get_cpu_info</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
 
 <span class="kn">import</span> <span class="nn">gaussian_step</span>
 <span class="kn">import</span> <span class="nn">seamm</span>
 <span class="kn">import</span> <span class="nn">seamm_exec</span>
 <span class="kn">import</span> <span class="nn">seamm.data</span>
-<span class="kn">from</span> <span class="nn">seamm_util</span> <span class="kn">import</span> <span class="n">Configuration</span>
+<span class="kn">from</span> <span class="nn">seamm_util</span> <span class="kn">import</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">Q_</span>
 <span class="kn">import</span> <span class="nn">seamm_util.printing</span> <span class="k">as</span> <span class="nn">printing</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
@@ -564,6 +573,51 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_only</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/.seamm.d/timing/gaussian.csv&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+
+        <span class="c1"># Set up the timing information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_header</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;node&quot;</span><span class="p">,</span>  <span class="c1"># 0</span>
+            <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>  <span class="c1"># 1</span>
+            <span class="s2">&quot;cpu_version&quot;</span><span class="p">,</span>  <span class="c1"># 2</span>
+            <span class="s2">&quot;cpu_count&quot;</span><span class="p">,</span>  <span class="c1"># 3</span>
+            <span class="s2">&quot;cpu_speed&quot;</span><span class="p">,</span>  <span class="c1"># 4</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">,</span>  <span class="c1"># 5</span>
+            <span class="s2">&quot;SMILES&quot;</span><span class="p">,</span>  <span class="c1"># 6</span>
+            <span class="s2">&quot;H_SMILES&quot;</span><span class="p">,</span>  <span class="c1"># 7</span>
+            <span class="s2">&quot;formula&quot;</span><span class="p">,</span>  <span class="c1"># 8</span>
+            <span class="s2">&quot;net_charge&quot;</span><span class="p">,</span>  <span class="c1"># 9</span>
+            <span class="s2">&quot;spin_multiplicity&quot;</span><span class="p">,</span>  <span class="c1"># 10</span>
+            <span class="s2">&quot;model&quot;</span><span class="p">,</span>  <span class="c1"># 11</span>
+            <span class="s2">&quot;keywords&quot;</span><span class="p">,</span>  <span class="c1"># 12</span>
+            <span class="s2">&quot;symmetry&quot;</span><span class="p">,</span>  <span class="c1"># 13</span>
+            <span class="s2">&quot;symmetry_used&quot;</span><span class="p">,</span>  <span class="c1"># 14</span>
+            <span class="s2">&quot;nbf&quot;</span><span class="p">,</span>  <span class="c1"># 15</span>
+            <span class="s2">&quot;nproc&quot;</span><span class="p">,</span>  <span class="c1"># 16</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">,</span>  <span class="c1"># 17</span>
+        <span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="o">=</span> <span class="mi">18</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">get_cpu_info</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;arch&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;arch&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;cpuinfo_version_string&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;cpuinfo_version_string&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;count&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;hz_advertized_friendly&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;hz_advertized_friendly&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                    <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+                    <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timing_header</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -598,17 +652,151 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The method ... HF, DFT, ... used.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span>
-
-    <span class="nd">@method</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">options</span>
+
+<div class="viewcode-block" id="Substep.calculate_enthalpy_of_formation">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.calculate_enthalpy_of_formation">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_enthalpy_of_formation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the enthalpy of formation from the results of a calculation.</span>
+
+<span class="sd">        This uses tabulated values of the enthalpy of formation of the atoms for</span>
+<span class="sd">        the elements and tabulated energies calculated for atoms with the current</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : dict</span>
+<span class="sd">            The results of the calculation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Read the tabulated values from either user or data directory</span>
+        <span class="n">personal_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/.seamm.d/data/atom_energies.csv&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">personal_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">personal_table</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">personal_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">personal_table</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;data/&quot;</span><span class="p">))</span>
+        <span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;atom_energies.csv&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+
+        <span class="c1"># Check if have the data</span>
+        <span class="n">atom_energies</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">correction_energy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Looking for &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; in&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">column2</span> <span class="o">=</span> <span class="n">column</span> <span class="o">+</span> <span class="s2">&quot; correction&quot;</span>
+        <span class="k">if</span> <span class="n">personal_table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">personal_table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">atom_energies</span> <span class="o">=</span> <span class="n">personal_table</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">column2</span> <span class="ow">in</span> <span class="n">personal_table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">correction_energy</span> <span class="o">=</span> <span class="n">personal_table</span><span class="p">[</span><span class="n">column2</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">atom_energies</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">column2</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">correction_energy</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">column2</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="n">DfH0gas</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">personal_table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;ΔfH°gas&quot;</span> <span class="ow">in</span> <span class="n">personal_table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">DfH0gas</span> <span class="o">=</span> <span class="n">personal_table</span><span class="p">[</span><span class="s2">&quot;ΔfH°gas&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="s2">&quot;ΔfH°gas&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">DfH0gas</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;ΔfH°gas&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">DfH0gas</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">atom_energies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Get the atomic numbers and counts</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
+        <span class="n">Ecorr</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">atno</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">isnan</span><span class="p">(</span><span class="n">atom_energies</span><span class="p">[</span><span class="n">atno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                <span class="c1"># Don&#39;t have the data for this element</span>
+                <span class="k">return</span>
+            <span class="n">Ecorr</span> <span class="o">+=</span> <span class="n">count</span> <span class="o">*</span> <span class="p">(</span><span class="n">DfH0gas</span><span class="p">[</span><span class="n">atno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">atom_energies</span><span class="p">[</span><span class="n">atno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">correction_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isnan</span><span class="p">(</span><span class="n">correction_energy</span><span class="p">[</span><span class="n">atno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                <span class="n">Ecorr</span> <span class="o">+=</span> <span class="n">count</span> <span class="o">*</span> <span class="n">correction_energy</span><span class="p">[</span><span class="n">atno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfH0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">],</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Ecorr</span>
+
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="Substep.get_functional">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.get_functional">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_functional</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Work out the DFT functional&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">current_values_to_dict</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;functional&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_functional&quot;</span><span class="p">]</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="c1"># Might be first part of name, or Gaussian-encoded name</span>
+            <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="c1"># Might be the internal Gaussian name</span>
+            <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+                    <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize functional &#39;</span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">functional</span></div>
+
+
+<div class="viewcode-block" id="Substep.get_method">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.get_method">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The method ... HF, DFT, ... used.&quot;&quot;&quot;</span>
+        <span class="c1"># Figure out the method.</span>
+        <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">current_values_to_dict</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
+            <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_method&quot;</span><span class="p">]</span>
+
+        <span class="c1"># If we don&#39;t recognize the string presume (hope?) it is a Gaussian method</span>
+        <span class="k">if</span> <span class="n">method_string</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
+            <span class="n">method_data</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">method_string</span><span class="p">]</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># See if it matches the keyword part</span>
+            <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">method_string</span> <span class="o">==</span> <span class="n">_mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
+                    <span class="n">method_string</span> <span class="o">=</span> <span class="n">_key</span>
+                    <span class="n">method_data</span> <span class="o">=</span> <span class="n">_mdata</span>
+                    <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">method_data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">method</span> <span class="o">=</span> <span class="n">method_string</span>
+
+        <span class="k">return</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span></div>
+
 
 <div class="viewcode-block" id="Substep.make_plots">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.make_plots">[docs]</a>
@@ -845,10 +1033,10 @@
         <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;calculation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;basis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">70</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="c1"># The rest of the file consists of a line defining the data.</span>
         <span class="c1"># If the data is a scalar, it is on the control line, otherwise it follows</span>
+        <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;translation&quot;</span><span class="p">]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
@@ -856,6 +1044,8 @@
                 <span class="k">break</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">translation</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">translation</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">code</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">]</span>
                 <span class="n">is_array</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">49</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;N=&quot;</span>
                 <span class="k">if</span> <span class="n">is_array</span><span class="p">:</span>
@@ -992,28 +1182,28 @@
                 <span class="n">tmp1</span><span class="p">,</span> <span class="n">tmp2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">criterion</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">tmp1</span> <span class="o">==</span> <span class="s2">&quot;Maximum&quot;</span> <span class="ow">and</span> <span class="n">tmp2</span> <span class="o">==</span> <span class="s2">&quot;Force&quot;</span><span class="p">:</span>
                     <span class="n">max_force</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Force Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom force threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">criterion</span> <span class="o">!=</span> <span class="s2">&quot;YES&quot;</span><span class="p">:</span>
                         <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="n">tmp1</span><span class="p">,</span> <span class="n">tmp2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">criterion</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">tmp1</span> <span class="o">==</span> <span class="s2">&quot;RMS&quot;</span> <span class="ow">and</span> <span class="n">tmp2</span> <span class="o">==</span> <span class="s2">&quot;Force&quot;</span><span class="p">:</span>
                     <span class="n">rms_force</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Force Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom force threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">criterion</span> <span class="o">!=</span> <span class="s2">&quot;YES&quot;</span><span class="p">:</span>
                         <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="n">tmp1</span><span class="p">,</span> <span class="n">tmp2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">criterion</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">tmp1</span> <span class="o">==</span> <span class="s2">&quot;Maximum&quot;</span> <span class="ow">and</span> <span class="n">tmp2</span> <span class="o">==</span> <span class="s2">&quot;Displacement&quot;</span><span class="p">:</span>
                     <span class="n">max_displacement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Displacement Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom displacement threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">criterion</span> <span class="o">!=</span> <span class="s2">&quot;YES&quot;</span><span class="p">:</span>
                         <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="n">tmp1</span><span class="p">,</span> <span class="n">tmp2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">criterion</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">tmp1</span> <span class="o">==</span> <span class="s2">&quot;RMS&quot;</span> <span class="ow">and</span> <span class="n">tmp2</span> <span class="o">==</span> <span class="s2">&quot;Displacement&quot;</span><span class="p">:</span>
                     <span class="n">rms_displacement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Displacement Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom displacement threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">criterion</span> <span class="o">!=</span> <span class="s2">&quot;YES&quot;</span><span class="p">:</span>
                         <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot; Optimization completed.&quot;</span><span class="p">:</span>
@@ -1027,16 +1217,18 @@
                 <span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">break</span>
 
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N steps optimization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_steps</span>
+
         <span class="k">if</span> <span class="n">converged</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Geometry Optimization Converged&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_force</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_force</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Displacement&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_displacement</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Displacement&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_displacement</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Force Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_force</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Force Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_force</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Maximum Displacement Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_displacement</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS Displacement Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_displacement</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;optimization is converged&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_force</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_force</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom displacement&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_displacement</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom displacement&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_displacement</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom force Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_force</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom force Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_force</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom displacement Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_displacement</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom displacement Trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_displacement</span>
 
         <span class="c1"># CBS calculations</span>
 
@@ -1054,14 +1246,15 @@
         <span class="c1"># CBS-4 (0 K)=               -78.439921 CBS-4 Energy=                 -78.436908</span>
         <span class="c1"># CBS-4 Enthalpy=            -78.435964 CBS-4 Free Energy=            -78.460753</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CBS-&quot;</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Checking for CBS extrapolation for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CBS-&quot;</span><span class="p">:</span>
             <span class="c1"># Need last section</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
-                <span class="n">method</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;CBS-4M&quot;</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="s2">&quot;CBS-4 Enthalpy=&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">method</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-
-            <span class="n">match</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> Enthalpy=&quot;</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> Enthalpy=&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Looking for &#39;</span><span class="si">{</span><span class="n">match</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
@@ -1073,6 +1266,7 @@
                     <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found CBS extrapolation: </span><span class="si">{</span><span class="n">found</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
@@ -1098,17 +1292,16 @@
                         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                         <span class="k">if</span> <span class="s2">&quot;(0 K)&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;E(0 K)&quot;</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;E 0&quot;</span>
                         <span class="k">elif</span> <span class="s2">&quot;Free Energy&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;Free Energy&quot;</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span>
                         <span class="k">elif</span> <span class="s2">&quot;Energy&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;Energy&quot;</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span>
                         <span class="k">elif</span> <span class="s2">&quot;Enthalpy&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;Enthalpy&quot;</span>
-                        <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Composite/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/summary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/Free Energy&quot;</span><span class="p">]</span>
 
         <span class="c1"># Gn calculations. No header!!!!!</span>
 
@@ -1120,7 +1313,7 @@
         <span class="c1"># G4(0 K)=                  -78.521880 G4 Energy=                   -78.518825</span>
         <span class="c1"># G4 Enthalpy=              -78.517880 G4 Free Energy=              -78.542752</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="s2">&quot;G1&quot;</span><span class="p">,</span>
             <span class="s2">&quot;G2&quot;</span><span class="p">,</span>
             <span class="s2">&quot;G3&quot;</span><span class="p">,</span>
@@ -1132,8 +1325,16 @@
             <span class="s2">&quot;G4MP2&quot;</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="c1"># Need last section</span>
-            <span class="n">method</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> Enthalpy=&quot;</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;G2&quot;</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="s2">&quot;G2MP2 Enthalpy=&quot;</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;G3B3&quot;</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="s2">&quot;G3 Enthalpy=&quot;</span>
+                <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;G3&quot;</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;G3MP2B3&quot;</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="s2">&quot;G3MP2 Enthalpy=&quot;</span>
+                <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;G3MP2&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> Enthalpy=&quot;</span>
             <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
@@ -1146,6 +1347,7 @@
                     <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;translation&quot;</span><span class="p">]</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -1159,13 +1361,16 @@
                         <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                        <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
                             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
                         <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;E(Empiric)&quot;</span><span class="p">:</span>
                             <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;E(empirical)&quot;</span>
-                        <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Composite/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;Composite/&quot;</span> <span class="o">+</span> <span class="n">key</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">translation</span><span class="p">:</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="n">translation</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> composite method extrapolation</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/summary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/Free Energy&quot;</span><span class="p">]</span>
@@ -1261,61 +1466,61 @@
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;α&quot;</span><span class="p">,</span> <span class="s2">&quot;β&quot;</span><span class="p">]):</span>
                     <span class="n">Es</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;moenergies&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
                     <span class="n">homo</span> <span class="o">=</span> <span class="n">homos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                    <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;N(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span>
-                    <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO orbital number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> homo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo-1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> nhomo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Es</span><span class="p">):</span>
-                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-gap)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> lumo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> gap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Es</span><span class="p">):</span>
-                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo+1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> slumo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
                     <span class="k">if</span> <span class="s2">&quot;mosyms&quot;</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
                         <span class="n">syms</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;mosyms&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo-1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> NHOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
-                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
-                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo+1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> SLUMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">Es</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;moenergies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">homo</span> <span class="o">=</span> <span class="n">homos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;N(homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E(homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;HOMO orbital number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E homo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E(homo-1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E nhomo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Es</span><span class="p">):</span>
-                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E(lumo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E(gap)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E lumo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E gap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Es</span><span class="p">):</span>
-                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E(lumo+1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;E slumo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
                 <span class="k">if</span> <span class="s2">&quot;mosyms&quot;</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
                     <span class="n">syms</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;mosyms&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;Sym(homo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
+                    <span class="n">new</span><span class="p">[</span><span class="s2">&quot;HOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;Sym(homo-1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;NHOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
-                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;Sym(lumo)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;LUMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
-                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;Sym(lumo+1)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+                        <span class="n">new</span><span class="p">[</span><span class="s2">&quot;SLUMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># moments</span>
         <span class="k">if</span> <span class="s2">&quot;moments&quot;</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
             <span class="n">moments</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;moments&quot;</span><span class="p">]</span>
-            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;multipole_reference&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;dipole_moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;dipole_moment_magnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;multipole reference point&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;dipole moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">new</span><span class="p">[</span><span class="s2">&quot;dipole moment magnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;quadrupole_moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;quadrupole moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;octapole_moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;octapole moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;hexadecapole_moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">new</span><span class="p">[</span><span class="s2">&quot;hexadecapole moment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
             <span class="k">del</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;moments&quot;</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;metadata/symmetry_detected&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata/symmetry_used&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;symmetry group&quot;</span><span class="p">,</span> <span class="s2">&quot;symmetry group used&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
                 <span class="n">new</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
@@ -1341,8 +1546,8 @@
         <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Check for successful run, don&#39;t rerun</span>
-        <span class="n">success</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;success.dat&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">success_file</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;success.dat&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="c1"># Get the system &amp; configuration</span>
             <span class="n">system</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
@@ -1539,6 +1744,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">env</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()</span>
+
                 <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
                     <span class="n">cmd</span><span class="o">=</span><span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
                     <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
@@ -1549,6 +1758,11 @@
                     <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
                 <span class="p">)</span>
+
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.0e9</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_threads</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There was an error running Gaussian&quot;</span><span class="p">)</span>
@@ -1564,10 +1778,37 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cclib</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ccread</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cclib raised exception </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">cclib raised exception </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">Please report!&quot;</span><span class="p">)</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="c1"># Switch to standard names</span>
+            <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;translation&quot;</span><span class="p">]</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">translation</span><span class="p">:</span>
+                    <span class="n">to</span> <span class="o">=</span> <span class="n">translation</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">to</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">to</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> --&gt; </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">to</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+            <span class="c1"># Adding timing information from SEAMM</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;SEAMM elapsed time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;SEAMM np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;after cclib&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="mi">80</span> <span class="o">*</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+
+            <span class="n">success</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span> <span class="k">if</span> <span class="s2">&quot;success&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Gaussian did not complete successfully&quot;</span><span class="p">)</span>
 
             <span class="c1"># Get the data from the formatted checkpoint file</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_fchk</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.fchk&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1583,46 +1824,69 @@
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-            <span class="c1"># Debug output</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;After second parse output&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Explicitly pull out the energy and gradients to standard name</span>
-            <span class="k">if</span> <span class="s2">&quot;Total Energy&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span>
-                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;Cartesian Gradient&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Cartesian Gradient&quot;</span><span class="p">])</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Cartesian Gradient&quot;</span><span class="p">]</span>
-
-            <span class="c1"># Debug output</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
             <span class="c1"># The model chemistry</span>
-            <span class="c1"># self.model = f&quot;{data[&#39;metadata/functional&#39;]}/{data[&#39;metadata/basis_set&#39;]}&quot;</span>
-            <span class="k">if</span> <span class="s2">&quot;Composite/model&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Composite/model&quot;</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="s2">&quot;metadata/methods&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;metadata/basis_set&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/methods&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;metadata/basis_set&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s2">&quot;method&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;DFT&quot;</span><span class="p">):</span>
+                    <span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;density functional&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">model</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;basis set name&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;basis set name&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Gaussian/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+
+            <span class="c1"># Capitalize symmetry names</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;symmetry group&quot;</span><span class="p">,</span> <span class="s2">&quot;symmetry group used&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+            <span class="c1"># Check for QCI and change the energy names</span>
+            <span class="k">if</span> <span class="s2">&quot;QCISD&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s2">&quot;E cc&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E qcisd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E cc&quot;</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E cc&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;E ccsd_t&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E qcisd_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E ccsd_t&quot;</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E ccsd_t&quot;</span><span class="p">]</span>
+
+            <span class="c1"># printer.normal(f&quot;\n\n\n\n\nData:\n{pprint.pformat(data)}\n\n\n\n\n&quot;)</span>
+
+            <span class="c1"># Debug output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data keys:</span><span class="se">\n</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data:</span><span class="se">\n</span><span class="si">{</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># If ran successfully, put out the success file</span>
             <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
-                <span class="n">success</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="n">success_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="s2">&quot;metadata/symmetry_detected&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;metadata/symmetry_detected&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">if</span> <span class="s2">&quot;metadata/symmetry_used&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;metadata/symmetry_used&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">if</span> <span class="s2">&quot;Number of basis functions&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Number of basis functions&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+                            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
 
         <span class="c1"># Add other citations here or in the appropriate place in the code.</span>
         <span class="c1"># Add the bibtex to data/references.bib, and add a self.reference.cite</span>

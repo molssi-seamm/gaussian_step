@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step &#8212; SEAMM Gaussian Plug-in 2024.11.18 documentation</title>
+    <title>gaussian_step &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../_static/documentation_options.js?v=24807a2d"></script>
+    <script src="../_static/documentation_options.js?v=63911625"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="prev" title="API Documentation" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.11.18" />
+  <meta name="docsearch:version" content="2024.12.1" />
   </head>
   
   
@@ -574,13 +574,15 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.substep">gaussian_step.substep module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep"><code class="docutils literal notranslate"><span class="pre">Substep</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.calculate_enthalpy_of_formation"><code class="docutils literal notranslate"><span class="pre">Substep.calculate_enthalpy_of_formation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.get_functional"><code class="docutils literal notranslate"><span class="pre">Substep.get_functional()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.get_method"><code class="docutils literal notranslate"><span class="pre">Substep.get_method()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.git_revision"><code class="docutils literal notranslate"><span class="pre">Substep.git_revision</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.global_options"><code class="docutils literal notranslate"><span class="pre">Substep.global_options</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.gversion"><code class="docutils literal notranslate"><span class="pre">Substep.gversion</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.input_only"><code class="docutils literal notranslate"><span class="pre">Substep.input_only</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.is_runable"><code class="docutils literal notranslate"><span class="pre">Substep.is_runable</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.make_plots"><code class="docutils literal notranslate"><span class="pre">Substep.make_plots()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.method"><code class="docutils literal notranslate"><span class="pre">Substep.method</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.options"><code class="docutils literal notranslate"><span class="pre">Substep.options</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.parse_fchk"><code class="docutils literal notranslate"><span class="pre">Substep.parse_fchk()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.parse_output"><code class="docutils literal notranslate"><span class="pre">Substep.parse_output()</span></code></a></li>
@@ -591,6 +593,39 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.thermodynamics">gaussian_step.thermodynamics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics"><code class="docutils literal notranslate"><span class="pre">Thermodynamics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.parser"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.options"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.options</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.subflowchart"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.subflowchart</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.parameters"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.analyze"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.description_text"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.description_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.git_revision"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.git_revision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.header"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.header</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.run"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.version"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.thermodynamics_parameters">gaussian_step.thermodynamics_parameters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters.parameters"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsParameters.parameters</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.thermodynamics_step">gaussian_step.thermodynamics_step module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_node"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.create_node()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_tk_node"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.create_tk_node()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.description"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.description()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.my_description"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.my_description</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.tk_energy">gaussian_step.tk_energy module</a><ul>
@@ -633,6 +668,25 @@
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_optimization.TkOptimization.reset_dialog"><code class="docutils literal notranslate"><span class="pre">TkOptimization.reset_dialog()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_optimization.TkOptimization.reset_optimization"><code class="docutils literal notranslate"><span class="pre">TkOptimization.reset_optimization()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_optimization.TkOptimization.right_click"><code class="docutils literal notranslate"><span class="pre">TkOptimization.right_click()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.tk_thermodynamics">gaussian_step.tk_thermodynamics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.tk_flowchart"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.tk_flowchart</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.node"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.node</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.canvas"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.dialog</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.x"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.x</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.y"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.w"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.w</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.h"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.h</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.self"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.self</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.create_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.reset_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_thermodynamics"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.reset_thermodynamics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.tk_thermodynamics.TkThermodynamics.right_click"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.right_click()</span></code></a></li>
 </ul>
 </li>
 </ul>

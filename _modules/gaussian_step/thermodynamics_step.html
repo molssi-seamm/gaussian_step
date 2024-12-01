@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.gaussian_parameters &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
+    <title>gaussian_step.thermodynamics_step &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -46,7 +46,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/gaussian_step/gaussian_parameters';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/gaussian_step/thermodynamics_step';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -435,7 +435,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">gaussian_step.gaussian_parameters</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">gaussian_step.thermodynamics_step</span></li>
   </ul>
 </nav>
 </div>
@@ -452,127 +452,113 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for gaussian_step.gaussian_parameters</h1><div class="highlight"><pre>
+  <h1>Source code for gaussian_step.thermodynamics_step</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Control parameters for the Gaussian step in a SEAMM flowchart</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">seamm</span>
-<span class="kn">import</span> <span class="nn">pprint</span>  <span class="c1"># noqa: F401</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">gaussian_step</span>  <span class="c1"># noqa: E999</span>
 
 
-<div class="viewcode-block" id="GaussianParameters">
-<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian_parameters.GaussianParameters">[docs]</a>
-<span class="k">class</span> <span class="nc">GaussianParameters</span><span class="p">(</span><span class="n">seamm</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The control parameters for Gaussian.</span>
+<div class="viewcode-block" id="ThermodynamicsStep">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep">[docs]</a>
+<span class="k">class</span> <span class="nc">ThermodynamicsStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class needed for the stevedore integration.</span>
 
-<span class="sd">    The developer will add a dictionary of Parameters to this class.</span>
-<span class="sd">    The keys are parameters for the current plugin, which themselves</span>
-<span class="sd">    might be dictionaries.</span>
+<span class="sd">    This must provide a `description()` method that returns a dict containing a</span>
+<span class="sd">    description of this node, and `create_node()` and `create_tk_node()` methods</span>
+<span class="sd">    for creating the graphical and non-graphical nodes.</span>
 
-<span class="sd">    You need to replace the &quot;time&quot; example below with one or more</span>
-<span class="sd">    definitions of the control parameters for your plugin and application.</span>
+<span class="sd">    The dictionary for the description is the class variable just below these</span>
+<span class="sd">    comments. The felds are as follows:</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    parameters : {&quot;kind&quot;, &quot;default&quot;, &quot;default_units&quot;, &quot;enumeration&quot;,</span>
-<span class="sd">    &quot;format_string&quot;, description&quot;, help_text&quot;}</span>
-<span class="sd">        A dictionary containing the parameters for the current step.</span>
-<span class="sd">        Each key of the dictionary is a dictionary that contains the</span>
-<span class="sd">        the following keys: kind, default, default_units, enumeration,</span>
-<span class="sd">        format_string, description and help text.</span>
+<span class="sd">        my_description : {str, str}</span>
+<span class="sd">            A human-readable description of this step. It can be</span>
+<span class="sd">            several lines long, and needs to be clear to non-expert users.</span>
+<span class="sd">            It contains the following keys: description, group, name.</span>
 
-<span class="sd">    parameters[&quot;kind&quot;]: custom</span>
-<span class="sd">        Specifies the kind of a variable. While the &quot;kind&quot; of a variable might</span>
-<span class="sd">        be a numeric value, it may still have enumerated custom values</span>
-<span class="sd">        meaningful to the user. For instance, if the parameter is</span>
-<span class="sd">        a convergence criterion for an optimizer, custom values like &quot;normal&quot;,</span>
-<span class="sd">        &quot;precise&quot;, etc, might be adequate. In addition, any</span>
-<span class="sd">        parameter can be set to a variable of expression, indicated by having</span>
-<span class="sd">        &quot;$&quot; as the first character in the field. For example, $OPTIMIZER_CONV.</span>
+<span class="sd">        my_description[&quot;description&quot;] : tuple</span>
+<span class="sd">            A description of the Thermodynamics step. It must be</span>
+<span class="sd">            clear to non-experts.</span>
 
-<span class="sd">    parameters[&quot;default&quot;] : &quot;integer&quot; or &quot;float&quot; or &quot;string&quot; or &quot;boolean&quot; or</span>
-<span class="sd">        &quot;enum&quot; The default value of the parameter, used to reset it.</span>
+<span class="sd">        my_description[&quot;group&quot;] : str</span>
+<span class="sd">            Which group in the menus to put this step. If the group does</span>
+<span class="sd">            not exist it will be created. Common groups are &quot;Building&quot;,</span>
+<span class="sd">            &quot;Control&quot;, &quot;Custom&quot;, &quot;Data&quot;, and &quot;Simulations&quot;.</span>
 
-<span class="sd">    parameters[&quot;default_units&quot;] : str</span>
-<span class="sd">        The default units, used for resetting the value.</span>
-
-<span class="sd">    parameters[&quot;enumeration&quot;] : tuple</span>
-<span class="sd">        A tuple of enumerated values.</span>
-
-<span class="sd">    parameters[&quot;format_string&quot;] : str</span>
-<span class="sd">        A format string for &quot;pretty&quot; output.</span>
-
-<span class="sd">    parameters[&quot;description&quot;] : str</span>
-<span class="sd">        A short string used as a prompt in the GUI.</span>
-
-<span class="sd">    parameters[&quot;help_text&quot;] : tuple</span>
-<span class="sd">        A longer string to display as help for the user.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        parameters = {</span>
-<span class="sd">            &quot;time&quot;: {</span>
-<span class="sd">                &quot;default&quot;: 100.0,</span>
-<span class="sd">                &quot;kind&quot;: &quot;float&quot;,</span>
-<span class="sd">                &quot;default_units&quot;: &quot;ps&quot;,</span>
-<span class="sd">                &quot;enumeration&quot;: tuple(),</span>
-<span class="sd">                &quot;format_string&quot;: &quot;.1f&quot;,</span>
-<span class="sd">                &quot;description&quot;: &quot;Simulation time:&quot;,</span>
-<span class="sd">                &quot;help_text&quot;: (&quot;The time to simulate in the dynamics run.&quot;)</span>
-<span class="sd">            },</span>
-<span class="sd">        }</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Gaussian, TkGaussian, Gaussian</span>
-<span class="sd">    GaussianParameters, GaussianStep</span>
+<span class="sd">        my_description[&quot;name&quot;] : str</span>
+<span class="sd">            The name of this step, to be displayed in the menus.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># The parameters for Gaussian</span>
-    <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span>
-            <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(),</span>
-            <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;.1f&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Simulation time:&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;The time to simulate in the dynamics run.&quot;</span><span class="p">),</span>
-        <span class="p">},</span>
+    <span class="n">my_description</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Calculate the (harmonic) thermodynamic functions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="s2">&quot;Calculation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Thermodynamics&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{},</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the parameters, by default with the parameters defined above</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize this helper class, which is used by</span>
+<span class="sd">        the application via stevedore to get information about</span>
+<span class="sd">        and create node objects for the flowchart</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ThermodynamicsStep.create_node">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return the new node object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        defaults: dict</span>
-<span class="sd">            A dictionary of parameters to initialize. The parameters</span>
-<span class="sd">            above are used first and any given will override/add to them.</span>
-<span class="sd">        data: dict</span>
-<span class="sd">            A dictionary of keys and a subdictionary with value and units</span>
-<span class="sd">            for updating the current, default values.</span>
+<span class="sd">        flowchart: seamm.Node</span>
+<span class="sd">            A non-graphical SEAMM node</span>
+
+<span class="sd">        **kwargs : keyword arguments</span>
+<span class="sd">            Various keyword arguments such as title, namespace or</span>
+<span class="sd">            extension representing the title displayed in the flowchart,</span>
+<span class="sd">            the namespace for the plugins of a subflowchart and</span>
+<span class="sd">            the extension, respectively.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">        Thermodynamics</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;GaussianParameters.__init__&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Thermodynamics</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">GaussianParameters</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">defaults</span><span class="p">},</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span>
-        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ThermodynamicsStep.create_tk_node">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_tk_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_tk_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return the graphical Tk node object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        canvas : tk.Canvas</span>
+<span class="sd">            The Tk Canvas widget</span>
+
+<span class="sd">        **kwargs : keyword arguments</span>
+<span class="sd">            Various keyword arguments such as tk_flowchart, node, x, y, w, h</span>
+<span class="sd">            representing a graphical flowchart object, a non-graphical node for</span>
+<span class="sd">            a step, and dimensions of the graphical node.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TkThermodynamics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">TkThermodynamics</span><span class="p">(</span><span class="n">canvas</span><span class="o">=</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThermodynamicsStep.description">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics_step.ThermodynamicsStep.description">[docs]</a>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a description of what this step does.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        description : dict(str, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ThermodynamicsStep</span><span class="o">.</span><span class="n">my_description</span></div>
+</div>
 
 </pre></div>
 

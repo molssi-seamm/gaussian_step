@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.11.18 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=24807a2d"></script>
+    <script src="../../_static/documentation_options.js?v=63911625"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.11.18" />
+  <meta name="docsearch:version" content="2024.12.1" />
   </head>
   
   
@@ -519,50 +519,16 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">P</span><span class="p">:</span>
             <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values_to_dict</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-            <span class="n">method</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">method</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_method&quot;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">method</span><span class="p">)</span> <span class="ow">and</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
-            <span class="c1"># See if it matches the keyword part</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
-                    <span class="n">method</span> <span class="o">=</span> <span class="n">key</span>
-                    <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">method</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;advanced_method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using method given by </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using method given by </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">elif</span> <span class="p">(</span>
             <span class="n">method</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span>
             <span class="ow">and</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;DFT&quot;</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-                <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;functional&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_functional&quot;</span><span class="p">]</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="c1"># Might be first part of name, or Gaussian-encoded name</span>
-                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
-                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="c1"># Might be the internal Gaussian name</span>
-                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
-                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
-                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize functional &#39;</span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_functional</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
-            <span class="n">basis</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;basis&quot;</span><span class="p">]</span>
             <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
@@ -570,10 +536,32 @@
                 <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;dispersion&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span>
             <span class="p">):</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; with the </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;dispersion&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> dispersion correction&quot;</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, using the </span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2"> basis set.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">calculation</span><span class="si">}</span><span class="s2"> using </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
 
+        <span class="k">if</span> <span class="n">method_data</span> <span class="o">!=</span> <span class="p">{}:</span>
+            <span class="k">if</span> <span class="s2">&quot;nobasis&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">method_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;nobasis&quot;</span><span class="p">]:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; with basis set </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;freeze core?&quot;</span> <span class="ow">in</span> <span class="n">method_data</span> <span class="ow">and</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;freeze core?&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with no core orbitals frozen.&quot;</span>
+                <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with the core orbitals frozen.&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot; with core orbitals frozen depending on </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;freeze-cores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;. If the method uses a basis set, it will be </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; If the method supports freezing core orbitals, it will be run &quot;</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with no core orbitals frozen.&quot;</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with the core orbitals frozen.&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; with core orbitals frozen depending on </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;freeze-cores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="c1"># Spin</span>
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;spin-restricted&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
@@ -651,6 +639,8 @@
 
         <span class="n">_</span><span class="p">,</span> <span class="n">starting_configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
+        <span class="n">max_atno</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">starting_configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
+
         <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">current_values_to_dict</span><span class="p">(</span>
             <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
         <span class="p">)</span>
@@ -674,26 +664,7 @@
                 <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;SP&quot;</span><span class="p">)</span>
 
         <span class="c1"># Figure out what we are doing!</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-            <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_method&quot;</span><span class="p">]</span>
-
-        <span class="c1"># If we don&#39;t recognize the string presume (hope?) it is a Gaussian method</span>
-        <span class="k">if</span> <span class="n">method_string</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
-            <span class="n">method_data</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">method_string</span><span class="p">]</span>
-            <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># See if it matches the keyword part</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">method_string</span> <span class="o">==</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
-                    <span class="n">method_string</span> <span class="o">=</span> <span class="n">key</span>
-                    <span class="n">method_data</span> <span class="o">=</span> <span class="n">mdata</span>
-                    <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-                    <span class="k">break</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">method_data</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="n">method</span> <span class="o">=</span> <span class="n">method_string</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
         <span class="c1"># How to handle spin restricted.</span>
         <span class="n">multiplicity</span> <span class="o">=</span> <span class="n">starting_configuration</span><span class="o">.</span><span class="n">spin_multiplicity</span>
@@ -708,65 +679,57 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">restricted</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="c1"># And possible frozen core</span>
+        <span class="k">if</span> <span class="s2">&quot;freeze core?&quot;</span> <span class="ow">in</span> <span class="n">method_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;freeze core?&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+                <span class="n">method_options</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FULL&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">method_options</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FC&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">method_options</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">method_options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mopts</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mopts</span> <span class="o">=</span> <span class="s2">&quot;=(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">method_options</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+
         <span class="n">basis</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;basis&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;DFT&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-                <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;functional&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">functional</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_functional&quot;</span><span class="p">]</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">functional</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="c1"># Might be first part of name, or Gaussian-encoded name</span>
-                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
-                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="c1"># Might be the internal Gaussian name</span>
-                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">functional</span> <span class="o">==</span> <span class="n">_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
-                        <span class="n">functional</span> <span class="o">=</span> <span class="n">_key</span>
-                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize functional &#39;</span><span class="si">{</span><span class="n">functional</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-
+            <span class="n">functional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_functional</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
             <span class="n">functional_data</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">dft_functionals</span><span class="p">[</span><span class="n">functional</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">restricted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">functional_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">functional_data</span><span class="p">[</span><span class="s2">&quot;dispersion&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;dispersion&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
                 <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;EmpiricalDispersion=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;dispersion&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;HF&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">restricted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RHF/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RHF</span><span class="si">{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROHF/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROHF</span><span class="si">{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UHF/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="c1"># keywords.add(&quot;Guess=Mix&quot;)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UHF</span><span class="si">{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;MP&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">restricted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;CCSD&quot;</span><span class="p">,</span> <span class="s2">&quot;CCSD(T)&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">restricted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;CBS-4M&quot;</span><span class="p">,</span> <span class="s2">&quot;CBS-QB3&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gversion</span> <span class="o">==</span> <span class="s2">&quot;g09&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
@@ -776,20 +739,26 @@
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">restricted</span> <span class="ow">and</span> <span class="n">multiplicity</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
+                    <span class="n">mopts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NoOpt&quot;</span><span class="p">)</span>
+                    <span class="n">mopts</span> <span class="o">=</span> <span class="s2">&quot;=(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">method_options</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
                     <span class="k">if</span> <span class="n">restricted</span> <span class="ow">and</span> <span class="n">multiplicity</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">=NoOpt&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">=(NoOpt)&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">restricted</span> <span class="ow">and</span> <span class="n">multiplicity</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_atno</span> <span class="o">&gt;</span> <span class="mi">36</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> cannot handle systems with atoms heavier than Kr (36)&quot;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;CBS-APNO&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gversion</span> <span class="o">==</span> <span class="s2">&quot;g09&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
@@ -798,12 +767,18 @@
                         <span class="s2">&quot;optimizing the structure during the calculation.&quot;</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">=NoOpt&quot;</span><span class="p">)</span>
+                    <span class="n">mopts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NoOpt&quot;</span><span class="p">)</span>
+                    <span class="n">mopts</span> <span class="o">=</span> <span class="s2">&quot;=(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">method_options</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_atno</span> <span class="o">&gt;</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> cannot handle systems with atoms heavier than Ar (18)&quot;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="s2">&quot;G1&quot;</span><span class="p">,</span>
             <span class="s2">&quot;G2&quot;</span><span class="p">,</span>
@@ -818,23 +793,29 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gversion</span> <span class="o">==</span> <span class="s2">&quot;g09&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;G09 does not appear to be able to run the CBS methods without &quot;</span>
+                        <span class="s2">&quot;G09 does not appear to be able to run the Gn methods without &quot;</span>
                         <span class="s2">&quot;optimizing the structure during the calculation.&quot;</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Energy</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">=(NoOpt)&quot;</span><span class="p">)</span>
+                    <span class="n">mopts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NoOpt&quot;</span><span class="p">)</span>
+                    <span class="n">mopts</span> <span class="o">=</span> <span class="s2">&quot;=(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">method_options</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_atno</span> <span class="o">&gt;</span> <span class="mi">36</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> cannot handle systems with atoms heavier than Kr (36)&quot;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;AM1&quot;</span><span class="p">,</span> <span class="s2">&quot;PM3&quot;</span><span class="p">,</span> <span class="s2">&quot;PM3MM&quot;</span><span class="p">,</span> <span class="s2">&quot;PM6&quot;</span><span class="p">,</span> <span class="s2">&quot;PDDG&quot;</span><span class="p">,</span> <span class="s2">&quot;PM7&quot;</span><span class="p">,</span> <span class="s2">&quot;PM7MOPAC&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">restricted</span> <span class="ow">and</span> <span class="n">multiplicity</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RO</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}{</span><span class="n">mopts</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;use symmetry&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;loose&quot;</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Symmetry=Loose&quot;</span><span class="p">)</span>
@@ -842,10 +823,6 @@
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;NoSymmetry&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;use symmetry&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Symmetry=None&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s2">&quot;freeze core&quot;</span> <span class="ow">in</span> <span class="n">method_data</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;freeze core?&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
-                <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;maximum iterations&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MaxCycle=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;maximum iterations&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -855,6 +832,32 @@
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;bond orders&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Wiberg&quot;</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Pop=NBORead&quot;</span><span class="p">)</span>
             <span class="n">extra_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;$nbo bndidx $end&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">starting_configuration</span><span class="o">.</span><span class="n">to_smiles</span><span class="p">(</span>
+                    <span class="n">canonical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;openbabel&quot;</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">starting_configuration</span><span class="o">.</span><span class="n">to_smiles</span><span class="p">(</span>
+                    <span class="n">canonical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hydrogens</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;openbabel&quot;</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">starting_configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">starting_configuration</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">starting_configuration</span><span class="o">.</span><span class="n">spin_multiplicity</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_gaussian</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">extra_lines</span><span class="o">=</span><span class="n">extra_lines</span><span class="p">)</span>
 
@@ -878,6 +881,9 @@
                 <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
             <span class="p">)</span>
 
+        <span class="c1"># Calculate the enthalpy of formation, if possible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_enthalpy_of_formation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
         <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">table</span> <span class="o">=</span> <span class="p">{</span>
@@ -894,32 +900,15 @@
         <span class="c1"># The semiempirical energy is the enthalpy, not energy!</span>
         <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="c1"># Figure out the method.</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;recommended&quot;</span><span class="p">:</span>
-                <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">method_string</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;advanced_method&quot;</span><span class="p">]</span>
-
-            <span class="c1"># If we don&#39;t recognize the string presume (hope?) it is a Gaussian method</span>
-            <span class="k">if</span> <span class="n">method_string</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
-                <span class="n">method_data</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">method_string</span><span class="p">]</span>
-                <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># See if it matches the keyword part</span>
-                <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">method_string</span> <span class="o">==</span> <span class="n">_mdata</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]:</span>
-                        <span class="n">method_string</span> <span class="o">=</span> <span class="n">_key</span>
-                        <span class="n">method_data</span> <span class="o">=</span> <span class="n">_mdata</span>
-                        <span class="n">method</span> <span class="o">=</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
-                        <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">method_data</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">method</span> <span class="o">=</span> <span class="n">method_string</span>
+            <span class="c1"># # Figure out the method.</span>
+            <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;AM1&quot;</span><span class="p">,</span> <span class="s2">&quot;PM3&quot;</span><span class="p">,</span> <span class="s2">&quot;PM3MM&quot;</span><span class="p">,</span> <span class="s2">&quot;PM6&quot;</span><span class="p">,</span> <span class="s2">&quot;PDDG&quot;</span><span class="p">,</span> <span class="s2">&quot;PM7&quot;</span><span class="p">,</span> <span class="s2">&quot;PM7MOPAC&quot;</span><span class="p">):</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">mdata</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H(298)&quot;</span><span class="p">)</span>
+                <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\N{GREEK CAPITAL LETTER DELTA}</span><span class="s2">fH</span><span class="se">\N{SUPERSCRIPT ZERO}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
                 <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">:{</span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span><span class="si">}}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">mdata</span><span class="p">:</span>
                     <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
@@ -934,6 +923,17 @@
                 <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;DfH0&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfH0&quot;</span><span class="p">]</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="se">\N{GREEK CAPITAL LETTER DELTA}</span><span class="s2">fH</span><span class="se">\N{SUPERSCRIPT ZERO}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Q_</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;kJ/mol&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s1">&#39;kcal/mol&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;kcal/mol&quot;</span><span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span>
+
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">mdata</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -944,16 +944,25 @@
                     <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">&quot;Virial Ratio&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;RMS Density&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Cluster Energy with triples&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Cluster Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP5 Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP4 Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP4SDQ Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP4DQ Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP3 Energy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MP2 Energy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;S&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;P&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;virial ratio&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;RMS density difference&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E qcisd_t&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E qcisd&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E ccsd_t&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E cc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp4sdq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp4dq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E mp2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E scf&quot;</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -966,33 +975,33 @@
                     <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">&quot;metadata/symmetry_detected&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;metadata/symmetry_used&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry used&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;symmetry group&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;symmetry group used&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry used&quot;</span><span class="p">),</span>
         <span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;E(β-homo)&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;E β homo)&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;α&quot;</span><span class="p">,</span> <span class="s2">&quot;β&quot;</span><span class="p">):</span>
                 <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo)&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Energy&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo)&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Energy&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-gap)&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-Gap&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-homo)&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Symmetry&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sym(</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-lumo)&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Symmetry&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> homo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Energy&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> lumo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Energy&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> gap&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-Gap&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Symmetry&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Symmetry&quot;</span><span class="p">),</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="p">(</span><span class="s2">&quot;E(homo)&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Energy&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;E(lumo)&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Energy&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;E(gap)&quot;</span><span class="p">,</span> <span class="s2">&quot;Gap&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;Sym(homo)&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Symmetry&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;Sym(lumo)&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Symmetry&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E homo&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Energy&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E lumo&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Energy&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E gap&quot;</span><span class="p">,</span> <span class="s2">&quot;Gap&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;HOMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Symmetry&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;LUMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Symmetry&quot;</span><span class="p">),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">(</span><span class="s2">&quot;dipole_moment_magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;Dipole moment&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;dipole moment magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;Dipole moment&quot;</span><span class="p">),</span>
             <span class="p">]</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
@@ -1007,8 +1016,8 @@
                     <span class="n">table</span><span class="p">[</span><span class="s2">&quot;Units&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;metadata/cpu_time&quot;</span><span class="p">,</span> <span class="s2">&quot;CPU time&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;metadata/wall_time&quot;</span><span class="p">,</span> <span class="s2">&quot;Wall-clock time&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;cpu time&quot;</span><span class="p">,</span> <span class="s2">&quot;CPU time&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;elapsed time&quot;</span><span class="p">,</span> <span class="s2">&quot;Elapsed time&quot;</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -1030,7 +1039,7 @@
         <span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Results&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+        <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
         <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>

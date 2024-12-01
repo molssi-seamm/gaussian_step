@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2024.11.18 documentation</title>
+    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../_static/documentation_options.js?v=24807a2d"></script>
+    <script src="../_static/documentation_options.js?v=63911625"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="prev" title="gaussian_step" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.11.18" />
+  <meta name="docsearch:version" content="2024.12.1" />
   </head>
   
   
@@ -524,7 +524,7 @@ data in variables for other stages to access</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="gaussian_step.energy_parameters.EnergyParameters.parameters">
-<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'advanced_functional':</span> <span class="pre">{'default':</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'DFT</span> <span class="pre">Functional:',</span> <span class="pre">'enumeration':</span> <span class="pre">['PBE</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE-98</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">revised',</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'HSE06</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Heyd,</span> <span class="pre">Scuseria</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE0</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">and</span> <span class="pre">Adamo'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">exchange-correlation</span> <span class="pre">functional</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'advanced_method':</span> <span class="pre">{'default':</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Method:',</span> <span class="pre">'enumeration':</span> <span class="pre">['AM1:</span> <span class="pre">AM1</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3MM:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">with</span> <span class="pre">MM</span> <span class="pre">corrections',</span> <span class="pre">'PM6:</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PDDG:</span> <span class="pre">PDDG</span> <span class="pre">variant</span> <span class="pre">of</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7:</span> <span class="pre">modified</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7MOPAC:</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">as</span> <span class="pre">in</span> <span class="pre">MOPAC',</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'HF:</span> <span class="pre">Hartree-Fock</span> <span class="pre">self</span> <span class="pre">consistent</span> <span class="pre">field</span> <span class="pre">(SCF)',</span> <span class="pre">'MP2:</span> <span class="pre">2nd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP3:</span> <span class="pre">3rd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDTQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP5:</span> <span class="pre">5th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'CCD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">doubles',</span> <span class="pre">'CCSD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles',</span> <span class="pre">'CCSD(T):</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles</span> <span class="pre">plus</span> <span class="pre">triples',</span> <span class="pre">'CBS-4M:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'CBS-QB3:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'CBS-APNO:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'G1:</span> <span class="pre">Gaussian-1</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G2:</span> <span class="pre">Gaussian-2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G2MP2:</span> <span class="pre">Gaussian-2</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3:</span> <span class="pre">Gaussian-3</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3MP2:</span> <span class="pre">Gaussian-3</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3B3:</span> <span class="pre">Gaussian-3</span> <span class="pre">B3LYP</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3MP2B3:</span> <span class="pre">Gaussian-3</span> <span class="pre">MP2</span> <span class="pre">B3LYP</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G4:</span> <span class="pre">Gaussian-4</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G4MP2:</span> <span class="pre">Gaussian-4</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">computational</span> <span class="pre">method</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'apply</span> <span class="pre">bond</span> <span class="pre">orders':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Apply</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">to</span> <span class="pre">structure:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">the</span> <span class="pre">calculated</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">to</span> <span class="pre">update</span> <span class="pre">the</span> <span class="pre">structure',</span> <span class="pre">'kind':</span> <span class="pre">'bool'},</span> <span class="pre">'basis':</span> <span class="pre">{'default':</span> <span class="pre">'6-31G**',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Basis:',</span> <span class="pre">'enumeration':</span> <span class="pre">('6-31G',</span> <span class="pre">'6-31G*',</span> <span class="pre">'6-31G**',</span> <span class="pre">'cc-pVDZ',</span> <span class="pre">'cc-pVTZ',</span> <span class="pre">'cc-pVQZ',</span> <span class="pre">'Def2SV',</span> <span class="pre">'Def2SVP',</span> <span class="pre">'Def2SVPP',</span> <span class="pre">'Def2TZP'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">basis</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'bond</span> <span class="pre">orders':</span> <span class="pre">{'default':</span> <span class="pre">'Wiberg',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Calculate</span> <span class="pre">bond</span> <span class="pre">orders:',</span> <span class="pre">'enumeration':</span> <span class="pre">('Wiberg',</span> <span class="pre">'none'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">calculate</span> <span class="pre">the</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">and</span> <span class="pre">if</span> <span class="pre">so</span> <span class="pre">how.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'calculate</span> <span class="pre">gradient':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Calculate</span> <span class="pre">gradient:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">calculate</span> <span class="pre">the</span> <span class="pre">gradient:',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'convergence':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Energy</span> <span class="pre">convergence</span> <span class="pre">criterion:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Criterion</span> <span class="pre">for</span> <span class="pre">convergence</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">RMS</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">density</span> <span class="pre">(10^-N)</span> <span class="pre">and</span> <span class="pre">maximum</span> <span class="pre">change</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">density</span> <span class="pre">matrix</span> <span class="pre">(10^-(N+2)).',</span> <span class="pre">'kind':</span> <span class="pre">'integer'},</span> <span class="pre">'create</span> <span class="pre">tables':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Create</span> <span class="pre">tables</span> <span class="pre">as</span> <span class="pre">needed:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">create</span> <span class="pre">tables</span> <span class="pre">as</span> <span class="pre">needed</span> <span class="pre">for</span> <span class="pre">results</span> <span class="pre">being</span> <span class="pre">saved</span> <span class="pre">into</span> <span class="pre">tables.',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'dispersion':</span> <span class="pre">{'default':</span> <span class="pre">'GD3BJ',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Dispersion</span> <span class="pre">correction:',</span> <span class="pre">'enumeration':</span> <span class="pre">['none',</span> <span class="pre">'GD3BJ',</span> <span class="pre">'GD3',</span> <span class="pre">'DG2'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">dispersion</span> <span class="pre">correction</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'freeze-cores':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Freeze</span> <span class="pre">core</span> <span class="pre">orbitals:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">freeze</span> <span class="pre">the</span> <span class="pre">core</span> <span class="pre">orbitals</span> <span class="pre">in</span> <span class="pre">correlated</span> <span class="pre">methods',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'functional':</span> <span class="pre">{'default':</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'DFT</span> <span class="pre">Functional:',</span> <span class="pre">'enumeration':</span> <span class="pre">['PBE</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE-98</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">revised',</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'HSE06</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Heyd,</span> <span class="pre">Scuseria</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE0</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">and</span> <span class="pre">Adamo'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">exchange-correlation</span> <span class="pre">functional</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'ignore</span> <span class="pre">convergence':</span> <span class="pre">{'default':</span> <span class="pre">'no',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Ignore</span> <span class="pre">lack</span> <span class="pre">of</span> <span class="pre">convergence:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">ignore</span> <span class="pre">lack</span> <span class="pre">of</span> <span class="pre">convergence</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">SCF.</span> <span class="pre">Otherwise,</span> <span class="pre">an</span> <span class="pre">error</span> <span class="pre">is</span> <span class="pre">thrown.',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'input</span> <span class="pre">only':</span> <span class="pre">{'default':</span> <span class="pre">'no',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Write</span> <span class="pre">the</span> <span class="pre">input</span> <span class="pre">files</span> <span class="pre">and</span> <span class="pre">stop:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">&quot;Don't</span> <span class="pre">run</span> <span class="pre">MOPAC.</span> <span class="pre">Just</span> <span class="pre">write</span> <span class="pre">the</span> <span class="pre">input</span> <span class="pre">files.&quot;,</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'level':</span> <span class="pre">{'default':</span> <span class="pre">'recommended',</span> <span class="pre">'description':</span> <span class="pre">'The</span> <span class="pre">level</span> <span class="pre">of</span> <span class="pre">disclosure</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">interface',</span> <span class="pre">'enumeration':</span> <span class="pre">('recommended',</span> <span class="pre">'advanced'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">&quot;How</span> <span class="pre">much</span> <span class="pre">detail</span> <span class="pre">to</span> <span class="pre">show</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">GUI.</span> <span class="pre">Currently</span> <span class="pre">'recommended'</span> <span class="pre">or</span> <span class="pre">'advanced',</span> <span class="pre">which</span> <span class="pre">shows</span> <span class="pre">everything.&quot;,</span> <span class="pre">'kind':</span> <span class="pre">'string'},</span> <span class="pre">'maximum</span> <span class="pre">iterations':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Maximum</span> <span class="pre">iterations:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Maximum</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">SCF</span> <span class="pre">iterations.',</span> <span class="pre">'kind':</span> <span class="pre">'integer'},</span> <span class="pre">'method':</span> <span class="pre">{'default':</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Method:',</span> <span class="pre">'enumeration':</span> <span class="pre">['AM1:</span> <span class="pre">AM1</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3MM:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">with</span> <span class="pre">MM</span> <span class="pre">corrections',</span> <span class="pre">'PM6:</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PDDG:</span> <span class="pre">PDDG</span> <span class="pre">variant</span> <span class="pre">of</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7:</span> <span class="pre">modified</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7MOPAC:</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">as</span> <span class="pre">in</span> <span class="pre">MOPAC',</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'HF:</span> <span class="pre">Hartree-Fock</span> <span class="pre">self</span> <span class="pre">consistent</span> <span class="pre">field</span> <span class="pre">(SCF)',</span> <span class="pre">'MP2:</span> <span class="pre">2nd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP3:</span> <span class="pre">3rd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDTQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'CCD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">doubles',</span> <span class="pre">'CCSD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles',</span> <span class="pre">'CCSD(T):</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles</span> <span class="pre">plus</span> <span class="pre">triples',</span> <span class="pre">'CBS-QB3:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">computational</span> <span class="pre">method</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'results':</span> <span class="pre">{'default':</span> <span class="pre">{},</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'results',</span> <span class="pre">'enumeration':</span> <span class="pre">(),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">results</span> <span class="pre">to</span> <span class="pre">save</span> <span class="pre">to</span> <span class="pre">variables</span> <span class="pre">or</span> <span class="pre">in</span> <span class="pre">tables.</span> <span class="pre">',</span> <span class="pre">'kind':</span> <span class="pre">'dictionary'},</span> <span class="pre">'spin-restricted':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Spin-restricted:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',</span> <span class="pre">'yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">restrict</span> <span class="pre">the</span> <span class="pre">spin</span> <span class="pre">(RHF,</span> <span class="pre">ROHF,</span> <span class="pre">RKS)</span> <span class="pre">or</span> <span class="pre">not</span> <span class="pre">(UHF,</span> <span class="pre">UKS).</span> <span class="pre">Default</span> <span class="pre">is</span> <span class="pre">restricted</span> <span class="pre">for</span> <span class="pre">singlets,</span> <span class="pre">unrestricted</span> <span class="pre">otherwise.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'use</span> <span class="pre">symmetry':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Use</span> <span class="pre">symmetry:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'loose',</span> <span class="pre">'identify</span> <span class="pre">only',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">symmetry,</span> <span class="pre">and</span> <span class="pre">if</span> <span class="pre">so</span> <span class="pre">how</span> <span class="pre">much.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'}}</span></em><a class="headerlink" href="#gaussian_step.energy_parameters.EnergyParameters.parameters" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'advanced_functional':</span> <span class="pre">{'default':</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'DFT</span> <span class="pre">Functional:',</span> <span class="pre">'enumeration':</span> <span class="pre">['PBE</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE-98</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">revised',</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'HSE06</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Heyd,</span> <span class="pre">Scuseria</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE0</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">and</span> <span class="pre">Adamo'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">exchange-correlation</span> <span class="pre">functional</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'advanced_method':</span> <span class="pre">{'default':</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Method:',</span> <span class="pre">'enumeration':</span> <span class="pre">['AM1:</span> <span class="pre">AM1</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3MM:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">with</span> <span class="pre">MM</span> <span class="pre">corrections',</span> <span class="pre">'PM6:</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PDDG:</span> <span class="pre">PDDG</span> <span class="pre">variant</span> <span class="pre">of</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7:</span> <span class="pre">modified</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7MOPAC:</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">as</span> <span class="pre">in</span> <span class="pre">MOPAC',</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'HF:</span> <span class="pre">Hartree-Fock</span> <span class="pre">self</span> <span class="pre">consistent</span> <span class="pre">field</span> <span class="pre">(SCF)',</span> <span class="pre">'MP2:</span> <span class="pre">2nd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP3:</span> <span class="pre">3rd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDTQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP5:</span> <span class="pre">5th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'QCISD:</span> <span class="pre">Quadratic</span> <span class="pre">CI',</span> <span class="pre">'QCISD(T):</span> <span class="pre">Quadratic</span> <span class="pre">CI</span> <span class="pre">with</span> <span class="pre">triples</span> <span class="pre">correction',</span> <span class="pre">'CCD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">doubles',</span> <span class="pre">'CCSD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles',</span> <span class="pre">'CCSD(T):</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles</span> <span class="pre">plus</span> <span class="pre">triples',</span> <span class="pre">'CBS-4M:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'CBS-QB3:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'CBS-APNO:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.',</span> <span class="pre">'G1:</span> <span class="pre">Gaussian-1</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G2:</span> <span class="pre">Gaussian-2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G2MP2:</span> <span class="pre">Gaussian-2</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3:</span> <span class="pre">Gaussian-3</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3MP2:</span> <span class="pre">Gaussian-3</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3B3:</span> <span class="pre">Gaussian-3</span> <span class="pre">B3LYP</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G3MP2B3:</span> <span class="pre">Gaussian-3</span> <span class="pre">MP2</span> <span class="pre">B3LYP</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G4:</span> <span class="pre">Gaussian-4</span> <span class="pre">composite</span> <span class="pre">method',</span> <span class="pre">'G4MP2:</span> <span class="pre">Gaussian-4</span> <span class="pre">MP2</span> <span class="pre">composite</span> <span class="pre">method'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">computational</span> <span class="pre">method</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'apply</span> <span class="pre">bond</span> <span class="pre">orders':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Apply</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">to</span> <span class="pre">structure:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">the</span> <span class="pre">calculated</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">to</span> <span class="pre">update</span> <span class="pre">the</span> <span class="pre">structure',</span> <span class="pre">'kind':</span> <span class="pre">'bool'},</span> <span class="pre">'basis':</span> <span class="pre">{'default':</span> <span class="pre">'6-31G**',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Basis:',</span> <span class="pre">'enumeration':</span> <span class="pre">('6-31G',</span> <span class="pre">'6-31G*',</span> <span class="pre">'6-31G**',</span> <span class="pre">'cc-pVDZ',</span> <span class="pre">'cc-pVTZ',</span> <span class="pre">'cc-pVQZ',</span> <span class="pre">'Def2SV',</span> <span class="pre">'Def2SVP',</span> <span class="pre">'Def2SVPP',</span> <span class="pre">'Def2TZP'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">basis</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'bond</span> <span class="pre">orders':</span> <span class="pre">{'default':</span> <span class="pre">'Wiberg',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Calculate</span> <span class="pre">bond</span> <span class="pre">orders:',</span> <span class="pre">'enumeration':</span> <span class="pre">('Wiberg',</span> <span class="pre">'none'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">calculate</span> <span class="pre">the</span> <span class="pre">bond</span> <span class="pre">orders</span> <span class="pre">and</span> <span class="pre">if</span> <span class="pre">so</span> <span class="pre">how.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'calculate</span> <span class="pre">gradient':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Calculate</span> <span class="pre">gradient:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">calculate</span> <span class="pre">the</span> <span class="pre">gradient:',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'convergence':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Energy</span> <span class="pre">convergence</span> <span class="pre">criterion:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Criterion</span> <span class="pre">for</span> <span class="pre">convergence</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">RMS</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">density</span> <span class="pre">(10^-N)</span> <span class="pre">and</span> <span class="pre">maximum</span> <span class="pre">change</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">density</span> <span class="pre">matrix</span> <span class="pre">(10^-(N+2)).',</span> <span class="pre">'kind':</span> <span class="pre">'integer'},</span> <span class="pre">'create</span> <span class="pre">tables':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Create</span> <span class="pre">tables</span> <span class="pre">as</span> <span class="pre">needed:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">create</span> <span class="pre">tables</span> <span class="pre">as</span> <span class="pre">needed</span> <span class="pre">for</span> <span class="pre">results</span> <span class="pre">being</span> <span class="pre">saved</span> <span class="pre">into</span> <span class="pre">tables.',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'dispersion':</span> <span class="pre">{'default':</span> <span class="pre">'GD3BJ',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Dispersion</span> <span class="pre">correction:',</span> <span class="pre">'enumeration':</span> <span class="pre">['none',</span> <span class="pre">'GD3BJ',</span> <span class="pre">'GD3',</span> <span class="pre">'DG2'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">dispersion</span> <span class="pre">correction</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'freeze-cores':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Freeze</span> <span class="pre">core</span> <span class="pre">orbitals:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">freeze</span> <span class="pre">the</span> <span class="pre">core</span> <span class="pre">orbitals</span> <span class="pre">in</span> <span class="pre">correlated</span> <span class="pre">methods',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'functional':</span> <span class="pre">{'default':</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'DFT</span> <span class="pre">Functional:',</span> <span class="pre">'enumeration':</span> <span class="pre">['PBE</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE-98</span> <span class="pre">:</span> <span class="pre">GGA</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">revised',</span> <span class="pre">'B3LYP</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Becke</span> <span class="pre">and</span> <span class="pre">Lee,</span> <span class="pre">Yang,</span> <span class="pre">and</span> <span class="pre">Parr',</span> <span class="pre">'HSE06</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Heyd,</span> <span class="pre">Scuseria</span> <span class="pre">and</span> <span class="pre">Ernzerhof',</span> <span class="pre">'PBE0</span> <span class="pre">:</span> <span class="pre">hybrid</span> <span class="pre">functional</span> <span class="pre">of</span> <span class="pre">Perdew,</span> <span class="pre">Burke</span> <span class="pre">and</span> <span class="pre">Ernzerhof,</span> <span class="pre">and</span> <span class="pre">Adamo'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">exchange-correlation</span> <span class="pre">functional</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'ignore</span> <span class="pre">convergence':</span> <span class="pre">{'default':</span> <span class="pre">'no',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Ignore</span> <span class="pre">lack</span> <span class="pre">of</span> <span class="pre">convergence:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">ignore</span> <span class="pre">lack</span> <span class="pre">of</span> <span class="pre">convergence</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">SCF.</span> <span class="pre">Otherwise,</span> <span class="pre">an</span> <span class="pre">error</span> <span class="pre">is</span> <span class="pre">thrown.',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'input</span> <span class="pre">only':</span> <span class="pre">{'default':</span> <span class="pre">'no',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Write</span> <span class="pre">the</span> <span class="pre">input</span> <span class="pre">files</span> <span class="pre">and</span> <span class="pre">stop:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">&quot;Don't</span> <span class="pre">run</span> <span class="pre">MOPAC.</span> <span class="pre">Just</span> <span class="pre">write</span> <span class="pre">the</span> <span class="pre">input</span> <span class="pre">files.&quot;,</span> <span class="pre">'kind':</span> <span class="pre">'boolean'},</span> <span class="pre">'level':</span> <span class="pre">{'default':</span> <span class="pre">'recommended',</span> <span class="pre">'description':</span> <span class="pre">'The</span> <span class="pre">level</span> <span class="pre">of</span> <span class="pre">disclosure</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">interface',</span> <span class="pre">'enumeration':</span> <span class="pre">('recommended',</span> <span class="pre">'advanced'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">&quot;How</span> <span class="pre">much</span> <span class="pre">detail</span> <span class="pre">to</span> <span class="pre">show</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">GUI.</span> <span class="pre">Currently</span> <span class="pre">'recommended'</span> <span class="pre">or</span> <span class="pre">'advanced',</span> <span class="pre">which</span> <span class="pre">shows</span> <span class="pre">everything.&quot;,</span> <span class="pre">'kind':</span> <span class="pre">'string'},</span> <span class="pre">'maximum</span> <span class="pre">iterations':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Maximum</span> <span class="pre">iterations:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Maximum</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">SCF</span> <span class="pre">iterations.',</span> <span class="pre">'kind':</span> <span class="pre">'integer'},</span> <span class="pre">'method':</span> <span class="pre">{'default':</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Method:',</span> <span class="pre">'enumeration':</span> <span class="pre">['AM1:</span> <span class="pre">AM1</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM3MM:</span> <span class="pre">PM3</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">with</span> <span class="pre">MM</span> <span class="pre">corrections',</span> <span class="pre">'PM6:</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PDDG:</span> <span class="pre">PDDG</span> <span class="pre">variant</span> <span class="pre">of</span> <span class="pre">PM6</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7:</span> <span class="pre">modified</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF',</span> <span class="pre">'PM7MOPAC:</span> <span class="pre">PM7</span> <span class="pre">semiempirical</span> <span class="pre">HF</span> <span class="pre">as</span> <span class="pre">in</span> <span class="pre">MOPAC',</span> <span class="pre">'DFT:</span> <span class="pre">Kohn-Sham</span> <span class="pre">density</span> <span class="pre">functional</span> <span class="pre">theory',</span> <span class="pre">'HF:</span> <span class="pre">Hartree-Fock</span> <span class="pre">self</span> <span class="pre">consistent</span> <span class="pre">field</span> <span class="pre">(SCF)',</span> <span class="pre">'MP2:</span> <span class="pre">2nd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP3:</span> <span class="pre">3rd-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDTQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'MP4(SDQ):</span> <span class="pre">4th-order</span> <span class="pre">Møller–Plesset</span> <span class="pre">perturbation</span> <span class="pre">theory',</span> <span class="pre">'CCD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">doubles',</span> <span class="pre">'CCSD:</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles',</span> <span class="pre">'CCSD(T):</span> <span class="pre">coupled</span> <span class="pre">cluster</span> <span class="pre">singles</span> <span class="pre">&amp;</span> <span class="pre">doubles</span> <span class="pre">plus</span> <span class="pre">triples',</span> <span class="pre">'CBS-QB3:</span> <span class="pre">Complete</span> <span class="pre">Basis</span> <span class="pre">Set</span> <span class="pre">method</span> <span class="pre">of</span> <span class="pre">Petersson,</span> <span class="pre">et</span> <span class="pre">al.'],</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">computational</span> <span class="pre">method</span> <span class="pre">to</span> <span class="pre">use.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'results':</span> <span class="pre">{'default':</span> <span class="pre">{},</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'results',</span> <span class="pre">'enumeration':</span> <span class="pre">(),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">results</span> <span class="pre">to</span> <span class="pre">save</span> <span class="pre">to</span> <span class="pre">variables</span> <span class="pre">or</span> <span class="pre">in</span> <span class="pre">tables.</span> <span class="pre">',</span> <span class="pre">'kind':</span> <span class="pre">'dictionary'},</span> <span class="pre">'spin-restricted':</span> <span class="pre">{'default':</span> <span class="pre">'default',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Spin-restricted:',</span> <span class="pre">'enumeration':</span> <span class="pre">('default',</span> <span class="pre">'yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">restrict</span> <span class="pre">the</span> <span class="pre">spin</span> <span class="pre">(RHF,</span> <span class="pre">ROHF,</span> <span class="pre">RKS)</span> <span class="pre">or</span> <span class="pre">not</span> <span class="pre">(UHF,</span> <span class="pre">UKS).</span> <span class="pre">Default</span> <span class="pre">is</span> <span class="pre">restricted</span> <span class="pre">for</span> <span class="pre">singlets,</span> <span class="pre">unrestricted</span> <span class="pre">otherwise.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'},</span> <span class="pre">'use</span> <span class="pre">symmetry':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Use</span> <span class="pre">symmetry:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'loose',</span> <span class="pre">'identify</span> <span class="pre">only',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'s',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">symmetry,</span> <span class="pre">and</span> <span class="pre">if</span> <span class="pre">so</span> <span class="pre">how</span> <span class="pre">much.',</span> <span class="pre">'kind':</span> <span class="pre">'enumeration'}}</span></em><a class="headerlink" href="#gaussian_step.energy_parameters.EnergyParameters.parameters" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1031,6 +1031,32 @@ data in variables for other stages to access</p>
 <dt class="sig sig-object py" id="gaussian_step.substep.Substep">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">Substep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title='no</span> <span class="pre">title'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;Logger</span> <span class="pre">Gaussian</span> <span class="pre">(WARNING)&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module='gaussian_step.substep'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.calculate_enthalpy_of_formation">
+<span class="sig-name descname"><span class="pre">calculate_enthalpy_of_formation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.calculate_enthalpy_of_formation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.calculate_enthalpy_of_formation" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the enthalpy of formation from the results of a calculation.</p>
+<p>This uses tabulated values of the enthalpy of formation of the atoms for
+the elements and tabulated energies calculated for atoms with the current
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – The results of the calculation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.get_functional">
+<span class="sig-name descname"><span class="pre">get_functional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.get_functional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.get_functional" title="Link to this definition">#</a></dt>
+<dd><p>Work out the DFT functional</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.get_method">
+<span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.get_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.get_method" title="Link to this definition">#</a></dt>
+<dd><p>The method … HF, DFT, … used.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="gaussian_step.substep.Substep.git_revision">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#gaussian_step.substep.Substep.git_revision" title="Link to this definition">#</a></dt>
@@ -1069,12 +1095,6 @@ data in variables for other stages to access</p>
 <dd class="field-odd"><p><strong>data</strong> (<em>dict</em><em>(</em><em>)</em>) – Dictionary of results from the calculation (results.tag file)</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="gaussian_step.substep.Substep.method">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#gaussian_step.substep.Substep.method" title="Link to this definition">#</a></dt>
-<dd><p>The method … HF, DFT, … used.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1154,6 +1174,293 @@ data in variables for other stages to access</p>
 <div><p>1253656 =&gt; ‘1.20 MiB’
 1253656678 =&gt; ‘1.17 GiB’</p>
 </div></blockquote>
+</dd></dl>
+
+</section>
+<section id="module-gaussian_step.thermodynamics">
+<span id="gaussian-step-thermodynamics-module"></span><h2>gaussian_step.thermodynamics module<a class="headerlink" href="#module-gaussian_step.thermodynamics" title="Link to this heading">#</a></h2>
+<p>Non-graphical part of the Thermodynamics step in a Gaussian flowchart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gaussian_step.thermodynamics.</span></span><span class="sig-name descname"><span class="pre">Thermodynamics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title='Thermodynamics'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module='gaussian_step.thermodynamics'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;Logger</span> <span class="pre">Gaussian</span> <span class="pre">(WARNING)&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics.html#Thermodynamics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gaussian_step.optimization.Optimization" title="gaussian_step.optimization.Optimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimization</span></code></a></p>
+<p>The non-graphical part of a Thermodynamics step in a flowchart.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.parser" title="Link to this definition">#</a></dt>
+<dd><p>The parser object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>configargparse.ArgParser</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.options">
+<span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.options" title="Link to this definition">#</a></dt>
+<dd><p>It contains a two item tuple containing the populated namespace and the
+list of remaining argument strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.subflowchart">
+<span class="sig-name descname"><span class="pre">subflowchart</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.subflowchart" title="Link to this definition">#</a></dt>
+<dd><p>A SEAMM Flowchart object that represents a subflowchart, if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>seamm.Flowchart</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.parameters" title="Link to this definition">#</a></dt>
+<dd><p>The control parameters for Thermodynamics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters" title="gaussian_step.thermodynamics_parameters.ThermodynamicsParameters">ThermodynamicsParameters</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics</span></code>, <a class="reference internal" href="#gaussian_step.thermodynamics.Thermodynamics" title="gaussian_step.thermodynamics.Thermodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Thermodynamics</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ThermodynamicsParameters</span></code></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics.html#Thermodynamics.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.analyze" title="Link to this definition">#</a></dt>
+<dd><p>Analyze and print the thermodynamic and vibrational data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indent</strong> (<em>str</em>) – An extra indentation for the output</p></li>
+<li><p><strong>data</strong> (<em>{}</em>) – The data from the Gaussian calculation.</p></li>
+<li><p><strong>out</strong> (<em>[</em><em>]</em>) – <p>?</p>
+</p></li>
+<li><p><strong>table</strong> (<em>{} = None</em>) – The tabular data for the main output.</p></li>
+<li><p><strong>P</strong> (<em>{}</em>) – The control parameters.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.description_text">
+<span class="sig-name descname"><span class="pre">description_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Thermodynamics'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics.html#Thermodynamics.description_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.description_text" title="Link to this definition">#</a></dt>
+<dd><p>Create the text description of what this step will do.
+The dictionary of control values is passed in as P so that
+the code can test values, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>P</strong> (<em>dict</em>) – An optional dictionary of the current values of the control
+parameters.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A description of the current step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.git_revision">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.git_revision" title="Link to this definition">#</a></dt>
+<dd><p>The git version of this module.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.header">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.header" title="Link to this definition">#</a></dt>
+<dd><p>A printable header for this section of output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics.html#Thermodynamics.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.run" title="Link to this definition">#</a></dt>
+<dd><p>Run a Thermodynamics step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keywords</strong> (<em>set</em><em>(</em><em>)</em>) – Any existing keywords.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The next node object in the flowchart.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>seamm.Node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.version">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.version" title="Link to this definition">#</a></dt>
+<dd><p>The semantic version of this module.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gaussian_step.thermodynamics_parameters">
+<span id="gaussian-step-thermodynamics-parameters-module"></span><h2>gaussian_step.thermodynamics_parameters module<a class="headerlink" href="#module-gaussian_step.thermodynamics_parameters" title="Link to this heading">#</a></h2>
+<p>Control parameters for the Thermodynamics step in a SEAMM flowchart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_parameters.ThermodynamicsParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gaussian_step.thermodynamics_parameters.</span></span><span class="sig-name descname"><span class="pre">ThermodynamicsParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics_parameters.html#ThermodynamicsParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gaussian_step.optimization_parameters.OptimizationParameters" title="gaussian_step.optimization_parameters.OptimizationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizationParameters</span></code></a></p>
+<p>The control parameters for Thermodynamics.</p>
+<p>You need to replace the “time” entry in dictionary below these comments with the
+definitions of parameters to control this step. The keys are parameters for the
+current plugin,the values are dictionaries as outlined below.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span>
+        <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(),</span>
+        <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;.1f&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Simulation time:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;The time to simulate in the dynamics run.&quot;</span><span class="p">)</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl>
+<dt>parameters<span class="classifier">{str: {str: str}}</span></dt><dd><p>A dictionary containing the parameters for the current step.
+Each key of the dictionary is a dictionary that contains the
+the following keys:</p>
+</dd>
+<dt>parameters[“default”] :</dt><dd><p>The default value of the parameter, used to reset it.</p>
+</dd>
+<dt>parameters[“kind”]<span class="classifier">enum()</span></dt><dd><p>Specifies the kind of a variable. One of  “integer”, “float”, “string”,
+“boolean”, or “enum”</p>
+<p>While the “kind” of a variable might be a numeric value, it may still have
+enumerated custom values meaningful to the user. For instance, if the parameter
+is a convergence criterion for an optimizer, custom values like “normal”,
+“precise”, etc, might be adequate. In addition, any parameter can be set to a
+variable of expression, indicated by having “$” as the first character in the
+field. For example, $OPTIMIZER_CONV.</p>
+</dd>
+<dt>parameters[“default_units”]<span class="classifier">str</span></dt><dd><p>The default units, used for resetting the value.</p>
+</dd>
+<dt>parameters[“enumeration”]: tuple</dt><dd><p>A tuple of enumerated values.</p>
+</dd>
+<dt>parameters[“format_string”]: str</dt><dd><p>A format string for “pretty” output.</p>
+</dd>
+<dt>parameters[“description”]: str</dt><dd><p>A short string used as a prompt in the GUI.</p>
+</dd>
+<dt>parameters[“help_text”]: str</dt><dd><p>A longer string to display as help for the user.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Thermodynamics</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics</span></code>, <a class="reference internal" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters" title="gaussian_step.thermodynamics_parameters.ThermodynamicsParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ThermodynamicsParameters</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ThermodynamicsStep</span></code></p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_parameters.ThermodynamicsParameters.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'P':</span> <span class="pre">{'default':</span> <span class="pre">1.0,</span> <span class="pre">'default_units':</span> <span class="pre">'atm',</span> <span class="pre">'description':</span> <span class="pre">'Pressure:',</span> <span class="pre">'enumeration':</span> <span class="pre">(),</span> <span class="pre">'format_string':</span> <span class="pre">'.2f',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">pressure</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">calculation.',</span> <span class="pre">'kind':</span> <span class="pre">'float'},</span> <span class="pre">'T':</span> <span class="pre">{'default':</span> <span class="pre">298.15,</span> <span class="pre">'default_units':</span> <span class="pre">'K',</span> <span class="pre">'description':</span> <span class="pre">'Temperature:',</span> <span class="pre">'enumeration':</span> <span class="pre">(),</span> <span class="pre">'format_string':</span> <span class="pre">'.2f',</span> <span class="pre">'help_text':</span> <span class="pre">'The</span> <span class="pre">temperature</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">calculation.',</span> <span class="pre">'kind':</span> <span class="pre">'float'},</span> <span class="pre">'optimize</span> <span class="pre">first':</span> <span class="pre">{'default':</span> <span class="pre">'yes',</span> <span class="pre">'default_units':</span> <span class="pre">'',</span> <span class="pre">'description':</span> <span class="pre">'Optimize</span> <span class="pre">structure</span> <span class="pre">first:',</span> <span class="pre">'enumeration':</span> <span class="pre">('yes',</span> <span class="pre">'no'),</span> <span class="pre">'format_string':</span> <span class="pre">'',</span> <span class="pre">'help_text':</span> <span class="pre">'Whether</span> <span class="pre">to</span> <span class="pre">optimize</span> <span class="pre">the</span> <span class="pre">structure</span> <span class="pre">before</span> <span class="pre">calculating</span> <span class="pre">the</span> <span class="pre">frequencies.',</span> <span class="pre">'kind':</span> <span class="pre">'boolean'}}</span></em><a class="headerlink" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters.parameters" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gaussian_step.thermodynamics_step">
+<span id="gaussian-step-thermodynamics-step-module"></span><h2>gaussian_step.thermodynamics_step module<a class="headerlink" href="#module-gaussian_step.thermodynamics_step" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_step.ThermodynamicsStep">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gaussian_step.thermodynamics_step.</span></span><span class="sig-name descname"><span class="pre">ThermodynamicsStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics_step.html#ThermodynamicsStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class needed for the stevedore integration.</p>
+<p>This must provide a <cite>description()</cite> method that returns a dict containing a
+description of this node, and <cite>create_node()</cite> and <cite>create_tk_node()</cite> methods
+for creating the graphical and non-graphical nodes.</p>
+<p>The dictionary for the description is the class variable just below these
+comments. The felds are as follows:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>my_description<span class="classifier">{str, str}</span></dt><dd><p>A human-readable description of this step. It can be
+several lines long, and needs to be clear to non-expert users.
+It contains the following keys: description, group, name.</p>
+</dd>
+<dt>my_description[“description”]<span class="classifier">tuple</span></dt><dd><p>A description of the Thermodynamics step. It must be
+clear to non-experts.</p>
+</dd>
+<dt>my_description[“group”]<span class="classifier">str</span></dt><dd><p>Which group in the menus to put this step. If the group does
+not exist it will be created. Common groups are “Building”,
+“Control”, “Custom”, “Data”, and “Simulations”.</p>
+</dd>
+<dt>my_description[“name”]<span class="classifier">str</span></dt><dd><p>The name of this step, to be displayed in the menus.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_step.ThermodynamicsStep.create_node">
+<span class="sig-name descname"><span class="pre">create_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics_step.html#ThermodynamicsStep.create_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_node" title="Link to this definition">#</a></dt>
+<dd><p>Create and return the new node object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flowchart</strong> (<em>seamm.Node</em>) – A non-graphical SEAMM node</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – Various keyword arguments such as title, namespace or
+extension representing the title displayed in the flowchart,
+the namespace for the plugins of a subflowchart and
+the extension, respectively.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#gaussian_step.thermodynamics.Thermodynamics" title="gaussian_step.thermodynamics.Thermodynamics">Thermodynamics</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_step.ThermodynamicsStep.create_tk_node">
+<span class="sig-name descname"><span class="pre">create_tk_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics_step.html#ThermodynamicsStep.create_tk_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_tk_node" title="Link to this definition">#</a></dt>
+<dd><p>Create and return the graphical Tk node object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>tk.Canvas</em>) – The Tk Canvas widget</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – Various keyword arguments such as tk_flowchart, node, x, y, w, h
+representing a graphical flowchart object, a non-graphical node for
+a step, and dimensions of the graphical node.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#gaussian_step.tk_thermodynamics.TkThermodynamics" title="gaussian_step.tk_thermodynamics.TkThermodynamics">TkThermodynamics</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_step.ThermodynamicsStep.description">
+<span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/thermodynamics_step.html#ThermodynamicsStep.description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.description" title="Link to this definition">#</a></dt>
+<dd><p>Return a description of what this step does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>description</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict(str, str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics_step.ThermodynamicsStep.my_description">
+<span class="sig-name descname"><span class="pre">my_description</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'description':</span> <span class="pre">'Calculate</span> <span class="pre">the</span> <span class="pre">(harmonic)</span> <span class="pre">thermodynamic</span> <span class="pre">functions',</span> <span class="pre">'group':</span> <span class="pre">'Calculation',</span> <span class="pre">'name':</span> <span class="pre">'Thermodynamics'}</span></em><a class="headerlink" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.my_description" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1489,6 +1796,189 @@ section.</p></li>
 </dd></dl>
 
 </section>
+<section id="module-gaussian_step.tk_thermodynamics">
+<span id="gaussian-step-tk-thermodynamics-module"></span><h2>gaussian_step.tk_thermodynamics module<a class="headerlink" href="#module-gaussian_step.tk_thermodynamics" title="Link to this heading">#</a></h2>
+<p>The graphical part of a Thermodynamics step</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gaussian_step.tk_thermodynamics.</span></span><span class="sig-name descname"><span class="pre">TkThermodynamics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/tk_thermodynamics.html#TkThermodynamics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gaussian_step.tk_optimization.TkOptimization" title="gaussian_step.tk_optimization.TkOptimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">TkOptimization</span></code></a></p>
+<p>The graphical part of a Thermodynamics step in a flowchart.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.tk_flowchart">
+<span class="sig-name descname"><span class="pre">tk_flowchart</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.tk_flowchart" title="Link to this definition">#</a></dt>
+<dd><p>The flowchart that we belong to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TkFlowchart = None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.node">
+<span class="sig-name descname"><span class="pre">node</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.node" title="Link to this definition">#</a></dt>
+<dd><p>The corresponding node of the non-graphical flowchart</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Node = None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.canvas" title="Link to this definition">#</a></dt>
+<dd><p>The Tk Canvas to draw on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tkCanvas = None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.dialog">
+<span class="sig-name descname"><span class="pre">dialog</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.dialog" title="Link to this definition">#</a></dt>
+<dd><p>The Pmw dialog object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dialog</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.x">
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.x" title="Link to this definition">#</a></dt>
+<dd><p>The x-coordinate of the center of the picture of the node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int = None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.y">
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.y" title="Link to this definition">#</a></dt>
+<dd><p>The y-coordinate of the center of the picture of the node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int = None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.w">
+<span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.w" title="Link to this definition">#</a></dt>
+<dd><p>The width in pixels of the picture of the node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int = 200</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.h">
+<span class="sig-name descname"><span class="pre">h</span></span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.h" title="Link to this definition">#</a></dt>
+<dd><p>The height in pixels of the picture of the node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int = 50</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.self">
+<span class="sig-name descname"><span class="pre">self</span></span><span class="sig-paren">[</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">]</span><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.self" title="Link to this definition">#</a></dt>
+<dd><p>A dictionary of tk widgets built using the information
+contained in Thermodynamics_parameters.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Thermodynamics</span></code>, <a class="reference internal" href="#gaussian_step.tk_thermodynamics.TkThermodynamics" title="gaussian_step.tk_thermodynamics.TkThermodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ThermodynamicsParameters</span></code></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog">
+<span class="sig-name descname"><span class="pre">create_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Edit</span> <span class="pre">Gaussian</span> <span class="pre">Thermodynamics</span> <span class="pre">Step'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/tk_thermodynamics.html#TkThermodynamics.create_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog" title="Link to this definition">#</a></dt>
+<dd><p>Create the dialog. A set of widgets will be chosen by default
+based on what is specified in the Thermodynamics_parameters
+module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog" title="gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics.reset_dialog</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog">
+<span class="sig-name descname"><span class="pre">reset_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/tk_thermodynamics.html#TkThermodynamics.reset_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog" title="Link to this definition">#</a></dt>
+<dd><p>Layout the widgets, letting our parents go first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.reset_thermodynamics">
+<span class="sig-name descname"><span class="pre">reset_thermodynamics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/tk_thermodynamics.html#TkThermodynamics.reset_thermodynamics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_thermodynamics" title="Link to this definition">#</a></dt>
+<dd><p>Layout the widgets in the dialog.</p>
+<p>The widgets are chosen by default from the information in
+Thermodynamics_parameter.</p>
+<p>This function simply lays them out row by row with
+aligned labels. You may wish a more complicated layout that
+is controlled by values of some of the control parameters.
+If so, edit or override this method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>widget</strong> (<em>Tk Widget = None</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog" title="gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics.create_dialog</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.tk_thermodynamics.TkThermodynamics.right_click">
+<span class="sig-name descname"><span class="pre">right_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/tk_thermodynamics.html#TkThermodynamics.right_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.right_click" title="Link to this definition">#</a></dt>
+<dd><p>Handles the right click event on the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>Tk Event</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TkThermodynamics.edit</span></code></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-gaussian_step">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gaussian_step" title="Link to this heading">#</a></h2>
 <p>gaussian_step
@@ -1640,13 +2130,15 @@ A SEAMM plug-in for Gaussian</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.substep">gaussian_step.substep module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep"><code class="docutils literal notranslate"><span class="pre">Substep</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.calculate_enthalpy_of_formation"><code class="docutils literal notranslate"><span class="pre">Substep.calculate_enthalpy_of_formation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.get_functional"><code class="docutils literal notranslate"><span class="pre">Substep.get_functional()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.get_method"><code class="docutils literal notranslate"><span class="pre">Substep.get_method()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.git_revision"><code class="docutils literal notranslate"><span class="pre">Substep.git_revision</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.global_options"><code class="docutils literal notranslate"><span class="pre">Substep.global_options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.gversion"><code class="docutils literal notranslate"><span class="pre">Substep.gversion</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.input_only"><code class="docutils literal notranslate"><span class="pre">Substep.input_only</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.is_runable"><code class="docutils literal notranslate"><span class="pre">Substep.is_runable</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.make_plots"><code class="docutils literal notranslate"><span class="pre">Substep.make_plots()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.method"><code class="docutils literal notranslate"><span class="pre">Substep.method</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.options"><code class="docutils literal notranslate"><span class="pre">Substep.options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.parse_fchk"><code class="docutils literal notranslate"><span class="pre">Substep.parse_fchk()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.parse_output"><code class="docutils literal notranslate"><span class="pre">Substep.parse_output()</span></code></a></li>
@@ -1657,6 +2149,39 @@ A SEAMM plug-in for Gaussian</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.thermodynamics">gaussian_step.thermodynamics module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics"><code class="docutils literal notranslate"><span class="pre">Thermodynamics</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.parser"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.options"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.subflowchart"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.subflowchart</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.parameters"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parameters</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.analyze"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.analyze()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.description_text"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.description_text()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.git_revision"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.git_revision</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.header"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.header</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.run"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.version"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.thermodynamics_parameters">gaussian_step.thermodynamics_parameters module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsParameters</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_parameters.ThermodynamicsParameters.parameters"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsParameters.parameters</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.thermodynamics_step">gaussian_step.thermodynamics_step module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_node"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.create_node()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.create_tk_node"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.create_tk_node()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.description"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.description()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics_step.ThermodynamicsStep.my_description"><code class="docutils literal notranslate"><span class="pre">ThermodynamicsStep.my_description</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.tk_energy">gaussian_step.tk_energy module</a><ul class="visible nav section-nav flex-column">
@@ -1699,6 +2224,25 @@ A SEAMM plug-in for Gaussian</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_optimization.TkOptimization.reset_dialog"><code class="docutils literal notranslate"><span class="pre">TkOptimization.reset_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_optimization.TkOptimization.reset_optimization"><code class="docutils literal notranslate"><span class="pre">TkOptimization.reset_optimization()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_optimization.TkOptimization.right_click"><code class="docutils literal notranslate"><span class="pre">TkOptimization.right_click()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.tk_thermodynamics">gaussian_step.tk_thermodynamics module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.tk_flowchart"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.tk_flowchart</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.node"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.node</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.canvas"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.canvas</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.dialog</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.x"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.x</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.y"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.w"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.w</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.h"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.h</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.self"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.self</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.create_dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.create_dialog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_dialog"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.reset_dialog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.reset_thermodynamics"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.reset_thermodynamics()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.tk_thermodynamics.TkThermodynamics.right_click"><code class="docutils literal notranslate"><span class="pre">TkThermodynamics.right_click()</span></code></a></li>
 </ul>
 </li>
 </ul>

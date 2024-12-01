@@ -92,6 +92,30 @@ gaussian\_step.substep module
    :undoc-members:
    :show-inheritance:
 
+gaussian\_step.thermodynamics module
+------------------------------------
+
+.. automodule:: gaussian_step.thermodynamics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.thermodynamics\_parameters module
+------------------------------------------------
+
+.. automodule:: gaussian_step.thermodynamics_parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.thermodynamics\_step module
+------------------------------------------
+
+.. automodule:: gaussian_step.thermodynamics_step
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gaussian\_step.tk\_energy module
 --------------------------------
 
@@ -112,6 +136,14 @@ gaussian\_step.tk\_optimization module
 --------------------------------------
 
 .. automodule:: gaussian_step.tk_optimization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gaussian\_step.tk\_thermodynamics module
+----------------------------------------
+
+.. automodule:: gaussian_step.tk_thermodynamics
    :members:
    :undoc-members:
    :show-inheritance:

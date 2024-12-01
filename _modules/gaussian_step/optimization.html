@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2024.11.18 documentation</title>
+    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=24807a2d"></script>
+    <script src="../../_static/documentation_options.js?v=63911625"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.11.18" />
+  <meta name="docsearch:version" content="2024.12.1" />
   </head>
   
   
@@ -508,7 +508,7 @@
     <span class="k">def</span> <span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="s2">&quot;Geometry optimization&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare information about what this node will do&quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">P</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values_to_dict</span><span class="p">()</span>
 
         <span class="n">text</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">description_text</span><span class="p">(</span><span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="n">calculation</span><span class="p">)</span>
@@ -674,12 +674,12 @@
             <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;System is an atom, so nothing to optimize.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Information about the optimization</span>
-            <span class="k">if</span> <span class="s2">&quot;Optimization Number of geometries&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">n_steps</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Optimization Number of geometries&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;N steps optimization&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">n_steps</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N steps optimization&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">n_steps</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_steps</span>
-            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Geometry Optimization Converged&quot;</span><span class="p">]:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N steps optimization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_steps</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;optimization is converged&quot;</span><span class="p">]:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;The geometry optimization converged in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> steps.&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
@@ -688,12 +688,12 @@
                 <span class="p">)</span>
                 <span class="n">table2</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
-                    <span class="s2">&quot;Maximum Force&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;RMS Force&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Maximum Displacement&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;RMS Displacement&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;maximum atom force&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;RMS atom force&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;maximum atom displacement&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;RMS atom displacement&quot;</span><span class="p">,</span>
                 <span class="p">):</span>
-                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; Trajectory&quot;</span><span class="p">]]</span>
+                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; trajectory&quot;</span><span class="p">]]</span>
                     <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
                     <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; Threshold&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span>
@@ -715,10 +715,10 @@
                     <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
                 <span class="p">)</span>
 
-            <span class="c1"># If calculating 2nd derivatives each step have the vibrations</span>
-            <span class="k">if</span> <span class="s2">&quot;vibfreqs&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">imaginary</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;vibfreqs&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;number of saddle modes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span>
+            <span class="c1"># If calculating 2nd derivatives each step has the vibrations</span>
+            <span class="k">if</span> <span class="s2">&quot;vibrational frequencies&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">imaginary</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;vibrational frequencies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N saddle modes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span>
                 <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
                 <span class="k">if</span> <span class="s2">&quot;trans&quot;</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;ts&quot;</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -727,7 +727,7 @@
                             <span class="s2">&quot;with one mode with negative curvature of &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> cm^-1.&quot;</span>
                         <span class="p">)</span>
-                        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ts frequency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;TS frequency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
                             <span class="s2">&quot; Optimization to a transition state was requested, &quot;</span>
@@ -766,7 +766,7 @@
 
         <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
-                <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Geometry Optimization Converged&quot;</span><span class="p">]</span>
+                <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;optimization is converged&quot;</span><span class="p">]</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;ignore unconverged optimization&quot;</span><span class="p">]</span>
             <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Gaussian geometry optimization failed to converge.&quot;</span><span class="p">)</span></div>
