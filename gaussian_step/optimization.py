@@ -49,7 +49,7 @@ class Optimization(gaussian_step.Energy):
     def description_text(self, P=None, calculation="Geometry optimization"):
         """Prepare information about what this node will do"""
 
-        if not P:
+        if P is None:
             P = self.parameters.values_to_dict()
 
         text = super().description_text(P=P, calculation=calculation)
@@ -209,12 +209,12 @@ class Optimization(gaussian_step.Energy):
             text += "System is an atom, so nothing to optimize."
         else:
             # Information about the optimization
-            if "Optimization Number of geometries" in data:
-                n_steps = data["Optimization Number of geometries"][0]
+            if "N steps optimization" in data:
+                n_steps = data["N steps optimization"]
             else:
                 n_steps = -1
-            data["nsteps"] = n_steps
-            if data["Geometry Optimization Converged"]:
+            data["N steps optimization"] = n_steps
+            if data["optimization is converged"]:
                 text += f"The geometry optimization converged in {n_steps} steps."
             else:
                 text += (
@@ -223,12 +223,12 @@ class Optimization(gaussian_step.Energy):
                 )
                 table2 = {}
                 for key in (
-                    "Maximum Force",
-                    "RMS Force",
-                    "Maximum Displacement",
-                    "RMS Displacement",
+                    "maximum atom force",
+                    "RMS atom force",
+                    "maximum atom displacement",
+                    "RMS atom displacement",
                 ):
-                    table2[key] = [f"{v:.6f}" for v in data[key + " Trajectory"]]
+                    table2[key] = [f"{v:.6f}" for v in data[key + " trajectory"]]
                     table2[key].append("-")
                     table2[key].append(f"{data[key + ' Threshold']:.6f}")
                 tmp = tabulate(
@@ -250,10 +250,10 @@ class Optimization(gaussian_step.Energy):
                     textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
                 )
 
-            # If calculating 2nd derivatives each step have the vibrations
-            if "vibfreqs" in data:
-                imaginary = [-v for v in data["vibfreqs"] if v < 0]
-                data["number of saddle modes"] = len(imaginary)
+            # If calculating 2nd derivatives each step has the vibrations
+            if "vibrational frequencies" in data:
+                imaginary = [-v for v in data["vibrational frequencies"] if v < 0]
+                data["N saddle modes"] = len(imaginary)
                 target = P["target"].lower()
                 if "trans" in target or target == "ts":
                     if len(imaginary) == 1:
@@ -262,7 +262,7 @@ class Optimization(gaussian_step.Energy):
                             "with one mode with negative curvature of "
                             f"{imaginary[0]:.2f} cm^-1."
                         )
-                        data["ts frequency"] = round(imaginary[0], 2)
+                        data["TS frequency"] = round(imaginary[0], 2)
                     elif len(imaginary) == 0:
                         text += (
                             " Optimization to a transition state was requested, "
@@ -301,7 +301,7 @@ class Optimization(gaussian_step.Energy):
 
         if configuration.n_atoms > 1:
             if (
-                not data["Geometry Optimization Converged"]
+                not data["optimization is converged"]
                 and not P["ignore unconverged optimization"]
             ):
                 raise RuntimeError("Gaussian geometry optimization failed to converge.")

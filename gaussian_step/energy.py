@@ -60,54 +60,16 @@ class Energy(Substep):
         if not P:
             P = self.parameters.values_to_dict()
 
-        # if P["level"] == "recommended":
-        #     method = P["method"]
-        # else:
-        #     method = P["advanced_method"]
-
-        # if not self.is_expr(method) and method not in gaussian_step.methods:
-        #     # See if it matches the keyword part
-        #     for key, mdata in gaussian_step.methods.items():
-        #         if method == mdata["method"]:
-        #             method = key
-        #             if P["level"] == "recommended":
-        #                 self.parameters["method"].value = method
-        #             else:
-        #                 self.parameters["advanced_method"].value = method
-
         method, method_data = self.get_method(P)
 
         if self.is_expr(method):
-            text = f"{calculation} using method given by {method}."
+            text = f"{calculation} using method given by {method}"
         elif (
             method in gaussian_step.methods
             and gaussian_step.methods[method]["method"] == "DFT"
         ):
-            # if P["level"] == "recommended":
-            #     functional = P["functional"]
-            # else:
-            #     functional = P["advanced_functional"]
-            # found = functional in gaussian_step.dft_functionals
-            # if not found:
-            #     # Might be first part of name, or Gaussian-encoded name
-            #     for _key, _data in gaussian_step.dft_functionals.items():
-            #         if functional == _key.split(":")[0].strip():
-            #             functional = _key
-            #             found = True
-            #             break
-            # if not found:
-            #     # Might be the internal Gaussian name
-            #     for _key, _data in gaussian_step.dft_functionals.items():
-            #         if functional == _data["name"]:
-            #             functional = _key
-            #             found = True
-            #             break
-            # if not found:
-            #     raise ValueError(f"Don't recognize functional '{functional}'")
-
             functional = self.get_functional(P)
 
-            basis = P["basis"]
             text = f"{calculation} using {method} using {functional}"
             if (
                 functional in gaussian_step.dft_functionals
@@ -115,10 +77,32 @@ class Energy(Substep):
                 and P["dispersion"] != "none"
             ):
                 text += f" with the {P['dispersion']} dispersion correction"
-            text += f", using the {basis} basis set."
         else:
-            text = f"{calculation} using {method}."
+            text = f"{calculation} using {method}"
 
+        if method_data != {}:
+            if "nobasis" not in method_data or not method_data["nobasis"]:
+                text += f" with basis set {P['basis']}"
+            if "freeze core?" in method_data and method_data["freeze core?"]:
+                if P["freeze-cores"] == "no":
+                    text += " with no core orbitals frozen."
+                elif P["freeze-cores"] == "yes":
+                    text += " with the core orbitals frozen."
+                else:
+                    text += (
+                        f" with core orbitals frozen depending on {P['freeze-cores']}."
+                    )
+            else:
+                text += "."
+        else:
+            text += f". If the method uses a basis set, it will be {P['basis']}."
+            text += " If the method supports freezing core orbitals, it will be run "
+            if P["freeze-cores"] == "no":
+                text += " with no core orbitals frozen."
+            elif P["freeze-cores"] == "yes":
+                text += " with the core orbitals frozen."
+            else:
+                text += f" with core orbitals frozen depending on {P['freeze-cores']}."
         # Spin
         if P["spin-restricted"] == "default":
             text += (
@@ -218,27 +202,6 @@ class Energy(Substep):
                 keywords.add("SP")
 
         # Figure out what we are doing!
-        # if P["level"] == "recommended":
-        #     method_string = P["method"]
-        # else:
-        #     method_string = P["advanced_method"]
-
-        # # If we don't recognize the string presume (hope?) it is a Gaussian method
-        # if method_string in gaussian_step.methods:
-        #     method_data = gaussian_step.methods[method_string]
-        #     method = method_data["method"]
-        # else:
-        #     # See if it matches the keyword part
-        #     for key, mdata in gaussian_step.methods.items():
-        #         if method_string == mdata["method"]:
-        #             method_string = key
-        #             method_data = mdata
-        #             method = method_data["method"]
-        #             break
-        #     else:
-        #         method_data = {}
-        #         method = method_string
-
         method, method_data = self.get_method(P)
 
         # How to handle spin restricted.
@@ -254,67 +217,57 @@ class Energy(Substep):
         else:
             restricted = False
 
+        # And possible frozen core
+        if "freeze core?" in method_data:
+            if method_data["freeze core?"] and P["freeze-cores"] == "no":
+                method_options = ["FULL"]
+            else:
+                method_options = ["FC"]
+        else:
+            method_options = []
+
+        if len(method_options) == 0:
+            mopts = ""
+        else:
+            mopts = "=(" + ", ".join(method_options) + ")"
+
         basis = P["basis"]
         if method == "DFT":
-            # if P["level"] == "recommended":
-            #     functional = P["functional"]
-            # else:
-            #     functional = P["advanced_functional"]
-            # found = functional in gaussian_step.dft_functionals
-            # if not found:
-            #     # Might be first part of name, or Gaussian-encoded name
-            #     for _key, _data in gaussian_step.dft_functionals.items():
-            #         if functional == _key.split(":")[0].strip():
-            #             functional = _key
-            #             found = True
-            #             break
-            # if not found:
-            #     # Might be the internal Gaussian name
-            #     for _key, _data in gaussian_step.dft_functionals.items():
-            #         if functional == _data["name"]:
-            #             functional = _key
-            #             found = True
-            #             break
-            # if not found:
-            #     raise ValueError(f"Don't recognize functional '{functional}'")
-
             functional = self.get_functional(P)
-
             functional_data = gaussian_step.dft_functionals[functional]
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"R{functional_data['name']}/{basis}")
+                    keywords.add(f"R{functional_data['name']}{mopts}/{basis}")
                 else:
-                    keywords.add(f"RO{functional_data['name']}/{basis}")
+                    keywords.add(f"RO{functional_data['name']}{mopts}/{basis}")
             else:
-                keywords.add(f"U{functional_data['name']}/{basis}")
+                keywords.add(f"U{functional_data['name']}{mopts}/{basis}")
             if len(functional_data["dispersion"]) > 1 and P["dispersion"] != "none":
                 keywords.add(f"EmpiricalDispersion={P['dispersion']}")
         elif method == "HF":
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"RHF/{basis}")
+                    keywords.add(f"RHF{mopts}/{basis}")
                 else:
-                    keywords.add(f"ROHF/{basis}")
+                    keywords.add(f"ROHF{mopts}/{basis}")
             else:
-                keywords.add(f"UHF/{basis}")
-            # keywords.add("Guess=Mix")
+                keywords.add(f"UHF{mopts}/{basis}")
         elif method[0:2] == "MP":
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"R{method}/{basis}")
+                    keywords.add(f"R{method}{mopts}/{basis}")
                 else:
-                    keywords.add(f"RO{method}/{basis}")
+                    keywords.add(f"RO{method}{mopts}/{basis}")
             else:
-                keywords.add(f"U{method}/{basis}")
+                keywords.add(f"U{method}{mopts}/{basis}")
         elif method in ("CCSD", "CCSD(T)"):
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"R{method}/{basis}")
+                    keywords.add(f"R{method}{mopts}/{basis}")
                 else:
-                    keywords.add(f"RO{method}/{basis}")
+                    keywords.add(f"RO{method}{mopts}/{basis}")
             else:
-                keywords.add(f"U{method}/{basis}")
+                keywords.add(f"U{method}{mopts}/{basis}")
         elif method in ("CBS-4M", "CBS-QB3"):
             if self.gversion == "g09":
                 if self.__class__ == Energy:
@@ -324,20 +277,22 @@ class Energy(Substep):
                     )
                 else:
                     if restricted and multiplicity != 1:
-                        keywords.add(f"RO{method}")
+                        keywords.add(f"RO{method}{mopts}")
                     else:
-                        keywords.add(f"{method}")
+                        keywords.add(f"{method}{mopts}")
             else:
                 if self.__class__ == Energy:
+                    mopts.append("NoOpt")
+                    mopts = "=(" + ", ".join(method_options) + ")"
                     if restricted and multiplicity != 1:
-                        keywords.add(f"RO{method}=NoOpt")
+                        keywords.add(f"RO{method}{mopts}")
                     else:
-                        keywords.add(f"{method}=(NoOpt)")
+                        keywords.add(f"{method}{mopts}")
                 else:
                     if restricted and multiplicity != 1:
-                        keywords.add(f"RO{method}")
+                        keywords.add(f"RO{method}{mopts}")
                     else:
-                        keywords.add(f"{method}")
+                        keywords.add(f"{method}{mopts}")
             if max_atno > 36:
                 raise RuntimeError(
                     f"{method} cannot handle systems with atoms heavier than Kr (36)"
@@ -350,12 +305,14 @@ class Energy(Substep):
                         "optimizing the structure during the calculation."
                     )
                 else:
-                    keywords.add(f"{method}")
+                    keywords.add(f"{method}{mopts}")
             else:
                 if self.__class__ == Energy:
-                    keywords.add(f"{method}=NoOpt")
+                    mopts.append("NoOpt")
+                    mopts = "=(" + ", ".join(method_options) + ")"
+                    keywords.add(f"{method}{mopts}")
                 else:
-                    keywords.add(f"{method}")
+                    keywords.add(f"{method}{mopts}")
             if max_atno > 18:
                 raise RuntimeError(
                     f"{method} cannot handle systems with atoms heavier than Ar (18)"
@@ -374,27 +331,29 @@ class Energy(Substep):
             if self.gversion == "g09":
                 if self.__class__ == Energy:
                     raise RuntimeError(
-                        "G09 does not appear to be able to run the CBS methods without "
+                        "G09 does not appear to be able to run the Gn methods without "
                         "optimizing the structure during the calculation."
                     )
                 else:
-                    keywords.add(f"{method}")
+                    keywords.add(f"{method}{mopts}")
             else:
                 if self.__class__ == Energy:
-                    keywords.add(f"{method}=(NoOpt)")
+                    mopts.append("NoOpt")
+                    mopts = "=(" + ", ".join(method_options) + ")"
+                    keywords.add(f"{method}{mopts}")
                 else:
-                    keywords.add(f"{method}")
+                    keywords.add(f"{method}{mopts}")
             if max_atno > 36:
                 raise RuntimeError(
                     f"{method} cannot handle systems with atoms heavier than Kr (36)"
                 )
         elif method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
             if restricted and multiplicity != 1:
-                keywords.add(f"RO{method}")
+                keywords.add(f"RO{method}{mopts}")
             else:
-                keywords.add(f"{method}")
+                keywords.add(f"{method}{mopts}")
         else:
-            keywords.add(f"{method}/{basis}")
+            keywords.add(f"{method}{mopts}/{basis}")
 
         if P["use symmetry"] == "loose":
             keywords.add("Symmetry=Loose")
@@ -402,10 +361,6 @@ class Energy(Substep):
             keywords.add("NoSymmetry")
         elif P["use symmetry"] == "no":
             keywords.add("Symmetry=None")
-
-        if "freeze core" in method_data:
-            if method_data["freeze core?"] and P["freeze-cores"] == "no":
-                keywords.add("FULL")
 
         if P["maximum iterations"] != "default":
             keywords.add(f"MaxCycle={P['maximum iterations']}")
@@ -481,27 +436,6 @@ class Energy(Substep):
         key = "energy"
         if key in data:
             # # Figure out the method.
-            # if P["level"] == "recommended":
-            #     method_string = P["method"]
-            # else:
-            #     method_string = P["advanced_method"]
-
-            # # If we don't recognize the string presume (hope?) it is a Gaussian method
-            # if method_string in gaussian_step.methods:
-            #     method_data = gaussian_step.methods[method_string]
-            #     method = method_data["method"]
-            # else:
-            #     # See if it matches the keyword part
-            #     for _key, _mdata in gaussian_step.methods.items():
-            #         if method_string == _mdata["method"]:
-            #             method_string = _key
-            #             method_data = _mdata
-            #             method = method_data["method"]
-            #             break
-            #     else:
-            #         method_data = {}
-            #         method = method_string
-
             method, method_data = self.get_method(P)
 
             if method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
@@ -545,16 +479,25 @@ class Energy(Substep):
                     table["Units"].append("")
 
         for key in (
-            "Virial Ratio",
-            "RMS Density",
-            "Cluster Energy with triples",
-            "Cluster Energy",
-            "MP5 Energy",
-            "MP4 Energy",
-            "MP4SDQ Energy",
-            "MP4DQ Energy",
-            "MP3 Energy",
-            "MP2 Energy",
+            "E_0",
+            "H",
+            "F",
+            "S",
+            "T",
+            "P",
+            "virial ratio",
+            "RMS density difference",
+            "E qcisd_t",
+            "E qcisd",
+            "E ccsd_t",
+            "E cc",
+            "E mp5",
+            "E mp4",
+            "E mp4sdq",
+            "E mp4dq",
+            "E mp3",
+            "E mp2",
+            "E scf",
         ):
             if key in data:
                 tmp = data[key]
@@ -567,33 +510,33 @@ class Energy(Substep):
                     table["Units"].append("")
 
         keys = [
-            ("metadata/symmetry_detected", "Symmetry"),
-            ("metadata/symmetry_used", "Symmetry used"),
+            ("symmetry group", "Symmetry"),
+            ("symmetry group used", "Symmetry used"),
         ]
-        if "E(β-homo)" in data:
+        if "E β homo)" in data:
             for letter in ("α", "β"):
                 keys.extend(
                     [
-                        (f"E({letter}-homo)", f"{letter}-HOMO Energy"),
-                        (f"E({letter}-lumo)", f"{letter}-LUMO Energy"),
-                        (f"E({letter}-gap)", f"{letter}-Gap"),
-                        (f"Sym({letter}-homo)", f"{letter}-HOMO Symmetry"),
-                        (f"Sym({letter}-lumo)", f"{letter}-LUMO Symmetry"),
+                        (f"E {letter} homo", f"{letter}-HOMO Energy"),
+                        (f"E {letter} lumo", f"{letter}-LUMO Energy"),
+                        (f"E {letter} gap", f"{letter}-Gap"),
+                        (f"{letter} HOMO symmetry", f"{letter}-HOMO Symmetry"),
+                        (f"{letter} LUMO symmetry", f"{letter}-LUMO Symmetry"),
                     ]
                 )
         else:
             keys.extend(
                 [
-                    ("E(homo)", "HOMO Energy"),
-                    ("E(lumo)", "LUMO Energy"),
-                    ("E(gap)", "Gap"),
-                    ("Sym(homo)", "HOMO Symmetry"),
-                    ("Sym(lumo)", "LUMO Symmetry"),
+                    ("E homo", "HOMO Energy"),
+                    ("E lumo", "LUMO Energy"),
+                    ("E gap", "Gap"),
+                    ("HOMO symmetry", "HOMO Symmetry"),
+                    ("LUMO symmetry", "LUMO Symmetry"),
                 ]
             )
         keys.extend(
             [
-                ("dipole_moment_magnitude", "Dipole moment"),
+                ("dipole moment magnitude", "Dipole moment"),
             ]
         )
         for key, name in keys:
@@ -608,8 +551,8 @@ class Energy(Substep):
                     table["Units"].append("")
 
         for key, name in (
-            ("metadata/cpu_time", "CPU time"),
-            ("metadata/wall_time", "Wall-clock time"),
+            ("cpu time", "CPU time"),
+            ("elapsed time", "Elapsed time"),
         ):
             if key in data:
                 tmp = data[key]
@@ -631,7 +574,7 @@ class Energy(Substep):
         )
         length = len(tmp.splitlines()[0])
         text_lines = []
-        text_lines.append("Results".center(length))
+        text_lines.append(f"Results for {self.model}".center(length))
         text_lines.append(tmp)
 
         if text != "":

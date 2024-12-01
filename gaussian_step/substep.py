@@ -221,15 +221,25 @@ class Substep(seamm.Node):
         # Check if have the data
         atom_energies = None
         correction_energy = None
-        column = self.model + " correction"
-        if personal_table is not None and self.model in personal_table.columns:
-            atom_energies = personal_table[self.model].to_list()
-            if column in personal_table.columns:
-                correction_energy = personal_table[column].to_list()
-        elif self.model in table.columns:
-            atom_energies = table[self.model].to_list()
-            if column in table.columns:
-                correction_energy = table[column].to_list()
+        if self.model.startswith("U") or self.model.startswith("R"):
+            column = self.model[1:]
+        else:
+            column = self.model
+
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f"Looking for '{column}' in")
+            for i, col in enumerate(table.columns, start=1):
+                self.logger.debug(f"\t{i:5d}: {col}")
+
+        column2 = column + " correction"
+        if personal_table is not None and column in personal_table.columns:
+            atom_energies = personal_table[column].to_list()
+            if column2 in personal_table.columns:
+                correction_energy = personal_table[column2].to_list()
+        elif column in table.columns:
+            atom_energies = table[column].to_list()
+            if column2 in table.columns:
+                correction_energy = table[column2].to_list()
 
         DfH0gas = None
         if personal_table is not None and "ΔfH°gas" in personal_table.columns:
@@ -249,10 +259,10 @@ class Substep(seamm.Node):
                 # Don't have the data for this element
                 return
             Ecorr += count * (DfH0gas[atno - 1] - atom_energies[atno - 1])
-            if not isnan(correction_energy[atno - 1]):
+            if correction_energy is not None and not isnan(correction_energy[atno - 1]):
                 Ecorr += count * correction_energy[atno - 1]
 
-        data["DfH0"] = Q_(data["enthalpy"], "E_h").m_as("kJ/mol") + Ecorr
+        data["DfH0"] = Q_(data["H"], "E_h").m_as("kJ/mol") + Ecorr
 
         return
 
@@ -546,10 +556,10 @@ class Substep(seamm.Node):
         line = next(it)
         data["calculation"] = line[0:10].strip()
         data["method"] = line[10:40].strip()
-        data["basis"] = line[40:70].strip()
 
         # The rest of the file consists of a line defining the data.
         # If the data is a scalar, it is on the control line, otherwise it follows
+        translation = self.metadata["translation"]
         while True:
             try:
                 line = next(it)
@@ -557,6 +567,8 @@ class Substep(seamm.Node):
                 break
             try:
                 key = line[0:40].strip()
+                if key in translation:
+                    key = translation[key]
                 code = line[43]
                 is_array = line[47:49] == "N="
                 if is_array:
@@ -690,28 +702,28 @@ class Substep(seamm.Node):
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "Maximum" and tmp2 == "Force":
                     max_force.append(float(value))
-                    data["Maximum Force Threshold"] = float(threshold)
+                    data["maximum atom force threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "RMS" and tmp2 == "Force":
                     rms_force.append(float(value))
-                    data["RMS Force Threshold"] = float(threshold)
+                    data["RMS atom force threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "Maximum" and tmp2 == "Displacement":
                     max_displacement.append(float(value))
-                    data["Maximum Displacement Threshold"] = float(threshold)
+                    data["maximum atom displacement threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "RMS" and tmp2 == "Displacement":
                     rms_displacement.append(float(value))
-                    data["RMS Displacement Threshold"] = float(threshold)
+                    data["RMS atom displacement threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
             elif line == " Optimization completed.":
@@ -725,16 +737,18 @@ class Substep(seamm.Node):
                 converged = True
                 break
 
+        data["N steps optimization"] = n_steps
+
         if converged is not None:
-            data["Geometry Optimization Converged"] = converged
-            data["Maximum Force"] = max_force[-1]
-            data["RMS Force"] = rms_force[-1]
-            data["Maximum Displacement"] = max_displacement[-1]
-            data["RMS Displacement"] = rms_displacement[-1]
-            data["Maximum Force Trajectory"] = max_force
-            data["RMS Force Trajectory"] = rms_force
-            data["Maximum Displacement Trajectory"] = max_displacement
-            data["RMS Displacement Trajectory"] = rms_displacement
+            data["optimization is converged"] = converged
+            data["maximum atom force"] = max_force[-1]
+            data["RMS atom force"] = rms_force[-1]
+            data["maximum atom displacement"] = max_displacement[-1]
+            data["RMS atom displacement"] = rms_displacement[-1]
+        data["maximum atom force Trajectory"] = max_force
+        data["RMS atom force Trajectory"] = rms_force
+        data["maximum atom displacement Trajectory"] = max_displacement
+        data["RMS atom displacement Trajectory"] = rms_displacement
 
         # CBS calculations
 
@@ -798,17 +812,16 @@ class Substep(seamm.Node):
                         key = key.strip()
                         value = float(value.strip())
                         if "(0 K)" in key:
-                            key = "E(0 K)"
+                            key = "E 0"
                         elif "Free Energy" in key:
-                            key = "Free Energy"
+                            key = "F"
                         elif "Energy" in key:
-                            key = "Energy"
+                            key = "energy"
                         elif "Enthalpy" in key:
-                            key = "Enthalpy"
-                        data[f"Composite/{key}"] = value
-                data["Composite/model"] = method
+                            key = "H"
+                        data[key] = value
+                data["model"] = method
                 data["Composite/summary"] = "\n".join(text)
-                data["Total Energy"] = data["Composite/Free Energy"]
 
         # Gn calculations. No header!!!!!
 
@@ -854,6 +867,7 @@ class Substep(seamm.Node):
                     text.append(line)
 
             if found:
+                translation = self.metadata["translation"]
                 text = text[::-1]
                 for line in text:
                     line = line.strip()
@@ -871,9 +885,12 @@ class Substep(seamm.Node):
                             key = key.split(" ", 1)[1]
                         elif key == "E(Empiric)":
                             key = "E(empirical)"
-                        data[f"Composite/{key}"] = value
+                        key = "Composite/" + key
+                        if key in translation:
+                            key = translation[key]
+                        data[key] = value
 
-                data["Composite/model"] = method
+                data["model"] = method
                 tmp = " " * 20 + f"{method[0:2]} composite method extrapolation\n\n"
                 data["Composite/summary"] = tmp + "\n".join(text)
                 data["Total Energy"] = data["Composite/Free Energy"]
@@ -966,61 +983,61 @@ class Substep(seamm.Node):
                 for i, letter in enumerate(["α", "β"]):
                     Es = new["moenergies"][i]
                     homo = homos[i]
-                    new[f"N({letter}-homo)"] = homo + 1
-                    new[f"E({letter}-homo)"] = Es[homo]
+                    new[f"{letter} HOMO orbital number"] = homo + 1
+                    new[f"E {letter} homo"] = Es[homo]
                     if homo > 0:
-                        new[f"E({letter}-homo-1)"] = Es[homo - 1]
+                        new[f"E {letter} nhomo"] = Es[homo - 1]
                     if homo + 1 < len(Es):
-                        new[f"E({letter}-lumo)"] = Es[homo + 1]
-                        new[f"E({letter}-gap)"] = Es[homo + 1] - Es[homo]
+                        new[f"E {letter} lumo"] = Es[homo + 1]
+                        new[f"E {letter} gap"] = Es[homo + 1] - Es[homo]
                     if homo + 2 < len(Es):
-                        new[f"E({letter}-lumo+1)"] = Es[homo + 2]
+                        new[f"E {letter} slumo"] = Es[homo + 2]
                     if "mosyms" in new:
                         syms = new["mosyms"][i]
-                        new[f"Sym({letter}-homo)"] = syms[homo]
+                        new[f"{letter} HOMO symmetry"] = syms[homo]
                         if homo > 0:
-                            new[f"Sym({letter}-homo-1)"] = syms[homo - 1]
+                            new[f"{letter} NHOMO symmetry"] = syms[homo - 1]
                         if homo + 1 < len(syms):
-                            new[f"Sym({letter}-lumo)"] = syms[homo + 1]
+                            new[f"{letter} LUMO symmetry)"] = syms[homo + 1]
                         if homo + 2 < len(syms):
-                            new[f"Sym({letter}-lumo+1)"] = syms[homo + 2]
+                            new[f"{letter} SLUMO symmetry"] = syms[homo + 2]
             else:
                 Es = new["moenergies"][0]
                 homo = homos[0]
-                new["N(homo)"] = homo + 1
-                new["E(homo)"] = Es[homo]
+                new["HOMO orbital number"] = homo + 1
+                new["E homo"] = Es[homo]
                 if homo > 0:
-                    new["E(homo-1)"] = Es[homo - 1]
+                    new["E nhomo"] = Es[homo - 1]
                 if homo + 1 < len(Es):
-                    new["E(lumo)"] = Es[homo + 1]
-                    new["E(gap)"] = Es[homo + 1] - Es[homo]
+                    new["E lumo"] = Es[homo + 1]
+                    new["E gap"] = Es[homo + 1] - Es[homo]
                 if homo + 2 < len(Es):
-                    new["E(lumo+1)"] = Es[homo + 2]
+                    new["E slumo"] = Es[homo + 2]
                 if "mosyms" in new:
                     syms = new["mosyms"][0]
-                    new["Sym(homo)"] = syms[homo]
+                    new["HOMO symmetry"] = syms[homo]
                     if homo > 0:
-                        new["Sym(homo-1)"] = syms[homo - 1]
+                        new["NHOMO symmetry"] = syms[homo - 1]
                     if homo + 1 < len(syms):
-                        new["Sym(lumo)"] = syms[homo + 1]
+                        new["LUMO symmetry"] = syms[homo + 1]
                     if homo + 2 < len(syms):
-                        new["Sym(lumo+1)"] = syms[homo + 2]
+                        new["SLUMO symmetry"] = syms[homo + 2]
 
         # moments
         if "moments" in new:
             moments = new["moments"]
-            new["multipole_reference"] = moments[0]
-            new["dipole_moment"] = moments[1]
-            new["dipole_moment_magnitude"] = np.linalg.norm(moments[1])
+            new["multipole reference point"] = moments[0]
+            new["dipole moment"] = moments[1]
+            new["dipole moment magnitude"] = np.linalg.norm(moments[1])
             if len(moments) > 2:
-                new["quadrupole_moment"] = moments[2]
+                new["quadrupole moment"] = moments[2]
             if len(moments) > 3:
-                new["octapole_moment"] = moments[3]
+                new["octapole moment"] = moments[3]
             if len(moments) > 4:
-                new["hexadecapole_moment"] = moments[4]
+                new["hexadecapole moment"] = moments[4]
             del new["moments"]
 
-        for key in ("metadata/symmetry_detected", "metadata/symmetry_used"):
+        for key in ("symmetry group", "symmetry group used"):
             if key in new:
                 new[key] = new[key].capitalize()
 
@@ -1275,11 +1292,26 @@ class Substep(seamm.Node):
                     data = vars(cclib.io.ccread(path))
                     data = self.process_data(data)
                 except Exception as e:
-                    print(f"cclib raised exception {e}")
+                    self.logger.warning(f"\ncclib raised exception {e}\nPlease report!")
                     data = {}
             else:
                 data = {}
 
+            # Switch to standard names
+            translation = self.metadata["translation"]
+            keys = [*data.keys()]
+            for key in keys:
+                if key in translation:
+                    to = translation[key]
+                    if to in data and data[to] != data[key]:
+                        self.logger.warning(
+                            f"Overwriting {to} with {key}\n"
+                            f"\t{data[key]} --> {data[to]}"
+                        )
+                    data[to] = data[key]
+                    del data[key]
+
+            # Adding timing information from SEAMM
             data["SEAMM elapsed time"] = round(t, 1)
             data["SEAMM np"] = n_threads
 
@@ -1287,7 +1319,7 @@ class Substep(seamm.Node):
             self.logger.debug(f"{pprint.pformat(data)}")
             self.logger.debug(80 * "*")
 
-            success = data["metadata/success"] if "metadata/success" in data else False
+            success = "success" if "success" in data else False
 
             if not success:
                 raise RuntimeError("Gaussian did not complete successfully")
@@ -1306,47 +1338,44 @@ class Substep(seamm.Node):
             if path.exists():
                 data = self.parse_output(path, data)
 
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug("After second parse output")
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
-
-            # Explicitly pull out the energy and gradients to standard name
-            if "Total Energy" in data:
-                data["energy"] = data["Total Energy"]
-                del data["Total Energy"]
-            if "Cartesian Gradient" in data:
-                tmp = np.array(data["Cartesian Gradient"])
-                data["gradients"] = tmp.reshape(-1, 3).tolist()
-                del data["Cartesian Gradient"]
-            if "zpve" in data:
-                data["zpe"] = data["zpve"]
-
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
-
             # The model chemistry
-            # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
-            if "Composite/model" in data:
-                self.model = data["Composite/model"]
-                data["enthalpy"] = data["Composite/Enthalpy"]
-                data["free_energy"] = data["Composite/Free Energy"]
-                data["zpe"] = data["Composite/E(ZPE)"]
-            elif "metadata/methods" in data and "metadata/basis_set" in data:
-                self.model = (
-                    f"{data['metadata/methods'][-1]}/{data['method']}/"
-                    f"{data['metadata/basis_set']}"
-                )
+            if "model" in data:
+                self.model = data["model"]
+            elif "method" in data:
+                if data["method"].endswith("DFT"):
+                    model = data["method"] + "/" + data["density functional"]
+                else:
+                    model = data["method"]
+                if "basis set name" in data:
+                    self.model = model + "/" + data["basis set name"]
+                else:
+                    self.model = model
             else:
                 self.model = "unknown"
             self.logger.debug(f"model = {self.model}")
-
             data["model"] = "Gaussian/" + self.model
+
+            # Capitalize symmetry names
+            for key in ("symmetry group", "symmetry group used"):
+                if key in data:
+                    data[key] = data[key].capitalize()
+
+            # Check for QCI and change the energy names
+            if "QCISD" in data["model"]:
+                if "E cc" in data:
+                    data["E qcisd"] = data["E cc"]
+                    del data["E cc"]
+                if "E ccsd_t" in data:
+                    data["E qcisd_t"] = data["E ccsd_t"]
+                    del data["E ccsd_t"]
+
+            # printer.normal(f"\n\n\n\n\nData:\n{pprint.pformat(data)}\n\n\n\n\n")
+
+            # Debug output
+            if self.logger.isEnabledFor(logging.DEBUG):
+                keys = "\n".join(data.keys())
+                self.logger.debug(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # If ran successfully, put out the success file
             if data["success"]:

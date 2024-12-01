@@ -28,6 +28,11 @@ from .optimization_parameters import OptimizationParameters  # noqa: F401
 from .optimization_step import OptimizationStep  # noqa: F401
 from .tk_optimization import TkOptimization  # noqa: F401
 
+from .thermodynamics_step import ThermodynamicsStep  # noqa: F401
+from .thermodynamics import Thermodynamics  # noqa: F401
+from .thermodynamics_parameters import ThermodynamicsParameters  # noqa: F401
+from .tk_thermodynamics import TkThermodynamics  # noqa: F401
+
 # Handle versioneer
 from ._version import get_versions
 

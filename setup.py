@@ -84,11 +84,13 @@ setup(
             'Gaussian = gaussian_step:GaussianStep',
         ],
         'org.molssi.seamm.gaussian': [
+            'Thermodynamics = gaussian_step:ThermodynamicsStep',
             'Energy = gaussian_step:EnergyStep',
             'Optimization = gaussian_step:OptimizationStep'
         ],
 
         'org.molssi.seamm.gaussian.tk': [
+            'Thermodynamics = gaussian_step:ThermodynamicsStep',
             'Energy = gaussian_step:EnergyStep',
             'Optimization = gaussian_step:OptimizationStep'
         ],
