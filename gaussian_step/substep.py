@@ -2,25 +2,34 @@
 
 """Setup and run Gaussian"""
 
+from collections import Counter
 import configparser
+import csv
+from datetime import datetime, timezone
 import gzip
 import importlib
 import logging
+from math import isnan
 import os
 from pathlib import Path
+import pkg_resources
+import platform
 import pprint
 import re
 import shutil
 import string
+import time
 
 import cclib
+from cpuinfo import get_cpu_info
 import numpy as np
+import pandas
 
 import gaussian_step
 import seamm
 import seamm_exec
 import seamm.data
-from seamm_util import Configuration
+from seamm_util import Configuration, Q_
 import seamm_util.printing as printing
 
 logger = logging.getLogger("Gaussian")
@@ -101,6 +110,51 @@ class Substep(seamm.Node):
         )
 
         self._input_only = False
+        self._timing_data = []
+        self._timing_path = Path("~/.seamm.d/timing/gaussian.csv").expanduser()
+
+        # Set up the timing information
+        self._timing_header = [
+            "node",  # 0
+            "cpu",  # 1
+            "cpu_version",  # 2
+            "cpu_count",  # 3
+            "cpu_speed",  # 4
+            "date",  # 5
+            "SMILES",  # 6
+            "H_SMILES",  # 7
+            "formula",  # 8
+            "net_charge",  # 9
+            "spin_multiplicity",  # 10
+            "model",  # 11
+            "keywords",  # 12
+            "symmetry",  # 13
+            "symmetry_used",  # 14
+            "nbf",  # 15
+            "nproc",  # 16
+            "time",  # 17
+        ]
+        try:
+            self._timing_path.parent.mkdir(parents=True, exist_ok=True)
+
+            self._timing_data = 18 * [""]
+            self._timing_data[0] = platform.node()
+            tmp = get_cpu_info()
+            if "arch" in tmp:
+                self._timing_data[1] = tmp["arch"]
+            if "cpuinfo_version_string" in tmp:
+                self._timing_data[2] = tmp["cpuinfo_version_string"]
+            if "count" in tmp:
+                self._timing_data[3] = str(tmp["count"])
+            if "hz_advertized_friendly" in tmp:
+                self._timing_data[3] = tmp["hz_advertized_friendly"]
+
+            if not self._timing_path.exists():
+                with self._timing_path.open("w", newline="") as fd:
+                    writer = csv.writer(fd)
+                    writer.writerow(self._timing_header)
+        except Exception:
+            self._timing_data = None
 
     @property
     def version(self):
@@ -135,17 +189,142 @@ class Substep(seamm.Node):
         return True
 
     @property
-    def method(self):
-        """The method ... HF, DFT, ... used."""
-        return self._method
-
-    @method.setter
-    def method(self, value):
-        self._method = value
-
-    @property
     def options(self):
         return self.parent.options
+
+    def calculate_enthalpy_of_formation(self, data):
+        """Calculate the enthalpy of formation from the results of a calculation.
+
+        This uses tabulated values of the enthalpy of formation of the atoms for
+        the elements and tabulated energies calculated for atoms with the current
+        method.
+
+        Parameters
+        ----------
+        data : dict
+            The results of the calculation.
+        """
+        # Read the tabulated values from either user or data directory
+        personal_file = Path("~/.seamm.d/data/atom_energies.csv").expanduser()
+        if personal_file.exists():
+            personal_table = pandas.read_csv(personal_file, index_col=False)
+        else:
+            personal_table = None
+
+        path = Path(pkg_resources.resource_filename(__name__, "data/"))
+        csv_file = path / "atom_energies.csv"
+        table = pandas.read_csv(csv_file, index_col=False)
+
+        self.logger.debug(f"self.model = {self.model}")
+        self.logger.debug("\n\t".join(table.columns))
+
+        # Check if have the data
+        atom_energies = None
+        correction_energy = None
+        if self.model.startswith("U") or self.model.startswith("R"):
+            column = self.model[1:]
+        else:
+            column = self.model
+
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f"Looking for '{column}' in")
+            for i, col in enumerate(table.columns, start=1):
+                self.logger.debug(f"\t{i:5d}: {col}")
+
+        column2 = column + " correction"
+        if personal_table is not None and column in personal_table.columns:
+            atom_energies = personal_table[column].to_list()
+            if column2 in personal_table.columns:
+                correction_energy = personal_table[column2].to_list()
+        elif column in table.columns:
+            atom_energies = table[column].to_list()
+            if column2 in table.columns:
+                correction_energy = table[column2].to_list()
+
+        DfH0gas = None
+        if personal_table is not None and "ΔfH°gas" in personal_table.columns:
+            DfH0gas = personal_table["ΔfH°gas"].to_list()
+        elif "ΔfH°gas" in table.columns:
+            DfH0gas = table["ΔfH°gas"].to_list()
+
+        if DfH0gas is None or atom_energies is None:
+            return
+
+        # Get the atomic numbers and counts
+        _, configuration = self.get_system_configuration(None)
+        counts = Counter(configuration.atoms.atomic_numbers)
+        Ecorr = 0.0
+        for atno, count in counts.items():
+            if isnan(atom_energies[atno - 1]):
+                # Don't have the data for this element
+                return
+            Ecorr += count * (DfH0gas[atno - 1] - atom_energies[atno - 1])
+            if correction_energy is not None and not isnan(correction_energy[atno - 1]):
+                Ecorr += count * correction_energy[atno - 1]
+
+        data["DfH0"] = Q_(data["H"], "E_h").m_as("kJ/mol") + Ecorr
+
+        return
+
+    def get_functional(self, P=None):
+        """Work out the DFT functional"""
+        if P is None:
+            P = self.parameters.current_values_to_dict(
+                context=seamm.flowchart_variables._data
+            )
+        if P["level"] == "recommended":
+            functional = P["functional"]
+        else:
+            functional = P["advanced_functional"]
+        found = functional in gaussian_step.dft_functionals
+        if not found:
+            # Might be first part of name, or Gaussian-encoded name
+            for _key, _data in gaussian_step.dft_functionals.items():
+                if functional == _key.split(":")[0].strip():
+                    functional = _key
+                    found = True
+                    break
+        if not found:
+            # Might be the internal Gaussian name
+            for _key, _data in gaussian_step.dft_functionals.items():
+                if functional == _data["name"]:
+                    functional = _key
+                    found = True
+                    break
+        if not found:
+            raise ValueError(f"Don't recognize functional '{functional}'")
+
+        return functional
+
+    def get_method(self, P=None):
+        """The method ... HF, DFT, ... used."""
+        # Figure out the method.
+        if P is None:
+            P = self.parameters.current_values_to_dict(
+                context=seamm.flowchart_variables._data
+            )
+        if P["level"] == "recommended":
+            method_string = P["method"]
+        else:
+            method_string = P["advanced_method"]
+
+        # If we don't recognize the string presume (hope?) it is a Gaussian method
+        if method_string in gaussian_step.methods:
+            method_data = gaussian_step.methods[method_string]
+            method = method_data["method"]
+        else:
+            # See if it matches the keyword part
+            for _key, _mdata in gaussian_step.methods.items():
+                if method_string == _mdata["method"]:
+                    method_string = _key
+                    method_data = _mdata
+                    method = method_data["method"]
+                    break
+            else:
+                method_data = {}
+                method = method_string
+
+        return method, method_data
 
     def make_plots(self, data):
         """Create the density and orbital plots if requested.
@@ -377,10 +556,10 @@ class Substep(seamm.Node):
         line = next(it)
         data["calculation"] = line[0:10].strip()
         data["method"] = line[10:40].strip()
-        data["basis"] = line[40:70].strip()
 
         # The rest of the file consists of a line defining the data.
         # If the data is a scalar, it is on the control line, otherwise it follows
+        translation = self.metadata["translation"]
         while True:
             try:
                 line = next(it)
@@ -388,6 +567,8 @@ class Substep(seamm.Node):
                 break
             try:
                 key = line[0:40].strip()
+                if key in translation:
+                    key = translation[key]
                 code = line[43]
                 is_array = line[47:49] == "N="
                 if is_array:
@@ -521,28 +702,28 @@ class Substep(seamm.Node):
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "Maximum" and tmp2 == "Force":
                     max_force.append(float(value))
-                    data["Maximum Force Threshold"] = float(threshold)
+                    data["maximum atom force threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "RMS" and tmp2 == "Force":
                     rms_force.append(float(value))
-                    data["RMS Force Threshold"] = float(threshold)
+                    data["RMS atom force threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "Maximum" and tmp2 == "Displacement":
                     max_displacement.append(float(value))
-                    data["Maximum Displacement Threshold"] = float(threshold)
+                    data["maximum atom displacement threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
 
                 tmp1, tmp2, value, threshold, criterion = next(it).split()
                 if tmp1 == "RMS" and tmp2 == "Displacement":
                     rms_displacement.append(float(value))
-                    data["RMS Displacement Threshold"] = float(threshold)
+                    data["RMS atom displacement threshold"] = float(threshold)
                     if criterion != "YES":
                         converged = False
             elif line == " Optimization completed.":
@@ -556,16 +737,18 @@ class Substep(seamm.Node):
                 converged = True
                 break
 
+        data["N steps optimization"] = n_steps
+
         if converged is not None:
-            data["Geometry Optimization Converged"] = converged
-            data["Maximum Force"] = max_force[-1]
-            data["RMS Force"] = rms_force[-1]
-            data["Maximum Displacement"] = max_displacement[-1]
-            data["RMS Displacement"] = rms_displacement[-1]
-            data["Maximum Force Trajectory"] = max_force
-            data["RMS Force Trajectory"] = rms_force
-            data["Maximum Displacement Trajectory"] = max_displacement
-            data["RMS Displacement Trajectory"] = rms_displacement
+            data["optimization is converged"] = converged
+            data["maximum atom force"] = max_force[-1]
+            data["RMS atom force"] = rms_force[-1]
+            data["maximum atom displacement"] = max_displacement[-1]
+            data["RMS atom displacement"] = rms_displacement[-1]
+        data["maximum atom force Trajectory"] = max_force
+        data["RMS atom force Trajectory"] = rms_force
+        data["maximum atom displacement Trajectory"] = max_displacement
+        data["RMS atom displacement Trajectory"] = rms_displacement
 
         # CBS calculations
 
@@ -583,14 +766,15 @@ class Substep(seamm.Node):
         # CBS-4 (0 K)=               -78.439921 CBS-4 Energy=                 -78.436908
         # CBS-4 Enthalpy=            -78.435964 CBS-4 Free Energy=            -78.460753
 
-        if P["method"][0:4] == "CBS-":
+        method, method_data = self.get_method(P)
+        self.logger.debug(f"Checking for CBS extrapolation for {method}")
+        if method[0:4] == "CBS-":
             # Need last section
-            if P["method"] in gaussian_step.methods:
-                method = gaussian_step.methods[P["method"]]["method"]
+            if method == "CBS-4M":
+                match = "CBS-4 Enthalpy="
             else:
-                method = P["method"]
-
-            match = f"{method} Enthalpy="
+                match = f"{method} Enthalpy="
+            self.logger.debug(f"Looking for '{match}'")
             text = []
             found = False
             for line in reversed(lines):
@@ -602,6 +786,7 @@ class Substep(seamm.Node):
                     found = True
                     text.append(line)
 
+            self.logger.debug(f"Found CBS extrapolation: {found}")
             if found:
                 text = text[::-1]
                 it = iter(text)
@@ -627,17 +812,16 @@ class Substep(seamm.Node):
                         key = key.strip()
                         value = float(value.strip())
                         if "(0 K)" in key:
-                            key = "E(0 K)"
+                            key = "E 0"
                         elif "Free Energy" in key:
-                            key = "Free Energy"
+                            key = "F"
                         elif "Energy" in key:
-                            key = "Energy"
+                            key = "energy"
                         elif "Enthalpy" in key:
-                            key = "Enthalpy"
-                        data[f"Composite/{key}"] = value
-                data["Composite/model"] = method
+                            key = "H"
+                        data[key] = value
+                data["model"] = method
                 data["Composite/summary"] = "\n".join(text)
-                data["Total Energy"] = data["Composite/Free Energy"]
 
         # Gn calculations. No header!!!!!
 
@@ -649,7 +833,7 @@ class Substep(seamm.Node):
         # G4(0 K)=                  -78.521880 G4 Energy=                   -78.518825
         # G4 Enthalpy=              -78.517880 G4 Free Energy=              -78.542752
 
-        if P["method"] in (
+        if method in (
             "G1",
             "G2",
             "G3",
@@ -661,8 +845,16 @@ class Substep(seamm.Node):
             "G4MP2",
         ):
             # Need last section
-            method = P["method"][0:2]
-            match = f"{method} Enthalpy="
+            if method == "G2":
+                match = "G2MP2 Enthalpy="
+            elif method == "G3B3":
+                match = "G3 Enthalpy="
+                method = "G3"
+            elif method == "G3MP2B3":
+                match = "G3MP2 Enthalpy="
+                method = "G3MP2"
+            else:
+                match = f"{method} Enthalpy="
             text = []
             found = False
             for line in reversed(lines):
@@ -675,6 +867,7 @@ class Substep(seamm.Node):
                     text.append(line)
 
             if found:
+                translation = self.metadata["translation"]
                 text = text[::-1]
                 for line in text:
                     line = line.strip()
@@ -688,13 +881,16 @@ class Substep(seamm.Node):
                         key, value = p.split("=", 1)
                         key = key.strip()
                         value = float(value.strip())
-                        if method in key:
+                        if key.startswith(method):
                             key = key.split(" ", 1)[1]
                         elif key == "E(Empiric)":
                             key = "E(empirical)"
-                        data[f"Composite/{key}"] = value
+                        key = "Composite/" + key
+                        if key in translation:
+                            key = translation[key]
+                        data[key] = value
 
-                data["Composite/model"] = method
+                data["model"] = method
                 tmp = " " * 20 + f"{method[0:2]} composite method extrapolation\n\n"
                 data["Composite/summary"] = tmp + "\n".join(text)
                 data["Total Energy"] = data["Composite/Free Energy"]
@@ -787,61 +983,61 @@ class Substep(seamm.Node):
                 for i, letter in enumerate(["α", "β"]):
                     Es = new["moenergies"][i]
                     homo = homos[i]
-                    new[f"N({letter}-homo)"] = homo + 1
-                    new[f"E({letter}-homo)"] = Es[homo]
+                    new[f"{letter} HOMO orbital number"] = homo + 1
+                    new[f"E {letter} homo"] = Es[homo]
                     if homo > 0:
-                        new[f"E({letter}-homo-1)"] = Es[homo - 1]
+                        new[f"E {letter} nhomo"] = Es[homo - 1]
                     if homo + 1 < len(Es):
-                        new[f"E({letter}-lumo)"] = Es[homo + 1]
-                        new[f"E({letter}-gap)"] = Es[homo + 1] - Es[homo]
+                        new[f"E {letter} lumo"] = Es[homo + 1]
+                        new[f"E {letter} gap"] = Es[homo + 1] - Es[homo]
                     if homo + 2 < len(Es):
-                        new[f"E({letter}-lumo+1)"] = Es[homo + 2]
+                        new[f"E {letter} slumo"] = Es[homo + 2]
                     if "mosyms" in new:
                         syms = new["mosyms"][i]
-                        new[f"Sym({letter}-homo)"] = syms[homo]
+                        new[f"{letter} HOMO symmetry"] = syms[homo]
                         if homo > 0:
-                            new[f"Sym({letter}-homo-1)"] = syms[homo - 1]
+                            new[f"{letter} NHOMO symmetry"] = syms[homo - 1]
                         if homo + 1 < len(syms):
-                            new[f"Sym({letter}-lumo)"] = syms[homo + 1]
+                            new[f"{letter} LUMO symmetry)"] = syms[homo + 1]
                         if homo + 2 < len(syms):
-                            new[f"Sym({letter}-lumo+1)"] = syms[homo + 2]
+                            new[f"{letter} SLUMO symmetry"] = syms[homo + 2]
             else:
                 Es = new["moenergies"][0]
                 homo = homos[0]
-                new["N(homo)"] = homo + 1
-                new["E(homo)"] = Es[homo]
+                new["HOMO orbital number"] = homo + 1
+                new["E homo"] = Es[homo]
                 if homo > 0:
-                    new["E(homo-1)"] = Es[homo - 1]
+                    new["E nhomo"] = Es[homo - 1]
                 if homo + 1 < len(Es):
-                    new["E(lumo)"] = Es[homo + 1]
-                    new["E(gap)"] = Es[homo + 1] - Es[homo]
+                    new["E lumo"] = Es[homo + 1]
+                    new["E gap"] = Es[homo + 1] - Es[homo]
                 if homo + 2 < len(Es):
-                    new["E(lumo+1)"] = Es[homo + 2]
+                    new["E slumo"] = Es[homo + 2]
                 if "mosyms" in new:
                     syms = new["mosyms"][0]
-                    new["Sym(homo)"] = syms[homo]
+                    new["HOMO symmetry"] = syms[homo]
                     if homo > 0:
-                        new["Sym(homo-1)"] = syms[homo - 1]
+                        new["NHOMO symmetry"] = syms[homo - 1]
                     if homo + 1 < len(syms):
-                        new["Sym(lumo)"] = syms[homo + 1]
+                        new["LUMO symmetry"] = syms[homo + 1]
                     if homo + 2 < len(syms):
-                        new["Sym(lumo+1)"] = syms[homo + 2]
+                        new["SLUMO symmetry"] = syms[homo + 2]
 
         # moments
         if "moments" in new:
             moments = new["moments"]
-            new["multipole_reference"] = moments[0]
-            new["dipole_moment"] = moments[1]
-            new["dipole_moment_magnitude"] = np.linalg.norm(moments[1])
+            new["multipole reference point"] = moments[0]
+            new["dipole moment"] = moments[1]
+            new["dipole moment magnitude"] = np.linalg.norm(moments[1])
             if len(moments) > 2:
-                new["quadrupole_moment"] = moments[2]
+                new["quadrupole moment"] = moments[2]
             if len(moments) > 3:
-                new["octapole_moment"] = moments[3]
+                new["octapole moment"] = moments[3]
             if len(moments) > 4:
-                new["hexadecapole_moment"] = moments[4]
+                new["hexadecapole moment"] = moments[4]
             del new["moments"]
 
-        for key in ("metadata/symmetry_detected", "metadata/symmetry_used"):
+        for key in ("symmetry group", "symmetry group used"):
             if key in new:
                 new[key] = new[key].capitalize()
 
@@ -864,8 +1060,8 @@ class Substep(seamm.Node):
         directory.mkdir(parents=True, exist_ok=True)
 
         # Check for successful run, don't rerun
-        success = directory / "success.dat"
-        if not success.exists():
+        success_file = directory / "success.dat"
+        if not success_file.exists():
             # Get the system & configuration
             system, configuration = self.get_system_configuration(None)
 
@@ -1062,6 +1258,10 @@ class Substep(seamm.Node):
                 self.logger.debug(f"{cmd=}")
                 self.logger.debug(f"{env=}")
 
+                self._timing_data[12] = " ".join(keywords)
+                self._timing_data[5] = datetime.now(timezone.utc).isoformat()
+                t0 = time.time_ns()
+
                 result = executor.run(
                     cmd=[cmd],
                     config=config,
@@ -1072,6 +1272,11 @@ class Substep(seamm.Node):
                     shell=True,
                     env=env,
                 )
+
+                t = (time.time_ns() - t0) / 1.0e9
+                if self._timing_data is not None:
+                    self._timing_data[17] = f"{t:.3f}"
+                    self._timing_data[16] = str(n_threads)
 
                 if not result:
                     self.logger.error("There was an error running Gaussian")
@@ -1087,10 +1292,37 @@ class Substep(seamm.Node):
                     data = vars(cclib.io.ccread(path))
                     data = self.process_data(data)
                 except Exception as e:
-                    print(f"cclib raised exception {e}")
+                    self.logger.warning(f"\ncclib raised exception {e}\nPlease report!")
                     data = {}
             else:
                 data = {}
+
+            # Switch to standard names
+            translation = self.metadata["translation"]
+            keys = [*data.keys()]
+            for key in keys:
+                if key in translation:
+                    to = translation[key]
+                    if to in data and data[to] != data[key]:
+                        self.logger.warning(
+                            f"Overwriting {to} with {key}\n"
+                            f"\t{data[key]} --> {data[to]}"
+                        )
+                    data[to] = data[key]
+                    del data[key]
+
+            # Adding timing information from SEAMM
+            data["SEAMM elapsed time"] = round(t, 1)
+            data["SEAMM np"] = n_threads
+
+            self.logger.debug("after cclib")
+            self.logger.debug(f"{pprint.pformat(data)}")
+            self.logger.debug(80 * "*")
+
+            success = "success" if "success" in data else False
+
+            if not success:
+                raise RuntimeError("Gaussian did not complete successfully")
 
             # Get the data from the formatted checkpoint file
             data = self.parse_fchk(directory / "gaussian.fchk", data)
@@ -1106,46 +1338,69 @@ class Substep(seamm.Node):
             if path.exists():
                 data = self.parse_output(path, data)
 
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug("After second parse output")
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
-
-            # Explicitly pull out the energy and gradients to standard name
-            if "Total Energy" in data:
-                data["energy"] = data["Total Energy"]
-                del data["Total Energy"]
-            if "Cartesian Gradient" in data:
-                tmp = np.array(data["Cartesian Gradient"])
-                data["gradients"] = tmp.reshape(-1, 3).tolist()
-                del data["Cartesian Gradient"]
-
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
-
             # The model chemistry
-            # self.model = f"{data['metadata/functional']}/{data['metadata/basis_set']}"
-            if "Composite/model" in data:
-                self.model = data["Composite/model"]
-            elif "metadata/methods" in data and "metadata/basis_set" in data:
-                self.model = (
-                    f"{data['metadata/methods'][-1]}/{data['method']}/"
-                    f"{data['metadata/basis_set']}"
-                )
+            if "model" in data:
+                self.model = data["model"]
+            elif "method" in data:
+                if data["method"].endswith("DFT"):
+                    model = data["method"] + "/" + data["density functional"]
+                else:
+                    model = data["method"]
+                if "basis set name" in data:
+                    self.model = model + "/" + data["basis set name"]
+                else:
+                    self.model = model
             else:
                 self.model = "unknown"
             self.logger.debug(f"model = {self.model}")
-
             data["model"] = "Gaussian/" + self.model
+
+            # Capitalize symmetry names
+            for key in ("symmetry group", "symmetry group used"):
+                if key in data:
+                    data[key] = data[key].capitalize()
+
+            # Check for QCI and change the energy names
+            if "QCISD" in data["model"]:
+                if "E cc" in data:
+                    data["E qcisd"] = data["E cc"]
+                    del data["E cc"]
+                if "E ccsd_t" in data:
+                    data["E qcisd_t"] = data["E ccsd_t"]
+                    del data["E ccsd_t"]
+
+            # printer.normal(f"\n\n\n\n\nData:\n{pprint.pformat(data)}\n\n\n\n\n")
+
+            # Debug output
+            if self.logger.isEnabledFor(logging.DEBUG):
+                keys = "\n".join(data.keys())
+                self.logger.debug(f"Data keys:\n{keys}")
+                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
 
             # If ran successfully, put out the success file
             if data["success"]:
-                success.write_text("success")
+                success_file.write_text("success")
+
+                if self._timing_data is not None:
+                    self._timing_data[11] = data["model"]
+                    if "metadata/symmetry_detected" in data:
+                        self._timing_data[13] = str(data["metadata/symmetry_detected"])
+                    else:
+                        self._timing_data[13] = ""
+                    if "metadata/symmetry_used" in data:
+                        self._timing_data[14] = str(data["metadata/symmetry_used"])
+                    else:
+                        self._timing_data[14] = ""
+                    if "Number of basis functions" in data:
+                        self._timing_data[15] = str(data["Number of basis functions"])
+                    else:
+                        self._timing_data[15] = ""
+                    try:
+                        with self._timing_path.open("a", newline="") as fd:
+                            writer = csv.writer(fd)
+                            writer.writerow(self._timing_data)
+                    except Exception:
+                        pass
 
         # Add other citations here or in the appropriate place in the code.
         # Add the bibtex to data/references.bib, and add a self.reference.cite

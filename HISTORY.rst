@@ -1,6 +1,13 @@
 =======
 History
 =======
+2024.12.1: Added thermodynamics step
+    * Access the FREQ command in Gaussian to calculation the thermodynamic functions.
+    * Added code and data for calculating enthalpy of formation for many computational
+      models including the 6-31G and 6-311G basis set families.
+    * Added output of timing data to the standard directory ~/.seamm.d/timing
+    * Cleaned up and standardized the names of result data
+      
 2024.11.18: Enhancement: added properties
     * Added properties for the energy and enthalpy, etc. from composite models.
     * Protected the code from crashing is Gaussian failed.
