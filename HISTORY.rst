@@ -1,6 +1,8 @@
 =======
 History
 =======
+2024.12.1.1: Bugfix: Typographical problems with the output.
+
 2024.12.1: Added thermodynamics step
     * Access the FREQ command in Gaussian to calculation the thermodynamic functions.
     * Added code and data for calculating enthalpy of formation for many computational

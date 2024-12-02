@@ -82,7 +82,7 @@ class Energy(Substep):
 
         if method_data != {}:
             if "nobasis" not in method_data or not method_data["nobasis"]:
-                text += f" with basis set {P['basis']}"
+                text += f" with the {P['basis']} basis set"
             if "freeze core?" in method_data and method_data["freeze core?"]:
                 if P["freeze-cores"] == "no":
                     text += " with no core orbitals frozen."
@@ -95,7 +95,8 @@ class Energy(Substep):
             else:
                 text += "."
         else:
-            text += f". If the method uses a basis set, it will be {P['basis']}."
+            text += f". If the method uses a basis set, it will be the {P['basis']}"
+            text += " basis set."
             text += " If the method supports freezing core orbitals, it will be run "
             if P["freeze-cores"] == "no":
                 text += " with no core orbitals frozen."
@@ -133,13 +134,17 @@ class Energy(Substep):
         else:
             # Plotting
             plots = []
-            if P["total density"]:
-                plots.append("total density")
+            for key in ("total density", "total spin density"):
+                plt = P[key] if isinstance(P[key], bool) else P[key] == "yes"
+                if plt:
+                    plots.append(key)
+
             # if P["difference density"]:
             #     plots.append("difference density")
-            if P["total spin density"]:
-                plots.append("spin density")
-            if P["orbitals"]:
+
+            key = "orbitals"
+            plt = P[key] if isinstance(P[key], bool) else P[key] == "yes"
+            if plt:
                 if len(plots) > 0:
                     text += f"\nThe {', '.join(plots)} and orbitals "
                     text += f"{P['selected orbitals']} will be plotted."
