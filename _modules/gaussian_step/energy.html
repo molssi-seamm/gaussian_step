@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.12.1 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.12.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=63911625"></script>
+    <script src="../../_static/documentation_options.js?v=3dc5ab1c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.1" />
+  <meta name="docsearch:version" content="2024.12.1.1" />
   </head>
   
   
@@ -541,7 +541,7 @@
 
         <span class="k">if</span> <span class="n">method_data</span> <span class="o">!=</span> <span class="p">{}:</span>
             <span class="k">if</span> <span class="s2">&quot;nobasis&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">method_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;nobasis&quot;</span><span class="p">]:</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; with basis set </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; with the </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> basis set&quot;</span>
             <span class="k">if</span> <span class="s2">&quot;freeze core?&quot;</span> <span class="ow">in</span> <span class="n">method_data</span> <span class="ow">and</span> <span class="n">method_data</span><span class="p">[</span><span class="s2">&quot;freeze core?&quot;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
                     <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with no core orbitals frozen.&quot;</span>
@@ -554,7 +554,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;. If the method uses a basis set, it will be </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;. If the method uses a basis set, it will be the </span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; basis set.&quot;</span>
             <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; If the method supports freezing core orbitals, it will be run &quot;</span>
             <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;freeze-cores&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; with no core orbitals frozen.&quot;</span>
@@ -592,13 +593,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Plotting</span>
             <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total density&quot;</span><span class="p">]:</span>
-                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;total density&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;total density&quot;</span><span class="p">,</span> <span class="s2">&quot;total spin density&quot;</span><span class="p">):</span>
+                <span class="n">plt</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">else</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+                <span class="k">if</span> <span class="n">plt</span><span class="p">:</span>
+                    <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
             <span class="c1"># if P[&quot;difference density&quot;]:</span>
             <span class="c1">#     plots.append(&quot;difference density&quot;)</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;total spin density&quot;</span><span class="p">]:</span>
-                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;spin density&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]:</span>
+
+            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;orbitals&quot;</span>
+            <span class="n">plt</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">else</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+            <span class="k">if</span> <span class="n">plt</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span><span class="si">}</span><span class="s2"> and orbitals &quot;</span>
                     <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;selected orbitals&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> will be plotted.&quot;</span>
