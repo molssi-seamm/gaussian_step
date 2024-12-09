@@ -338,6 +338,13 @@ class Gaussian(seamm.Node):
                 node.run()
             node = node.next()
 
+        # Handle any cleanup of files requested
+        node = self.subflowchart.get_node("1").next()
+        while node is not None:
+            if node.is_runable:
+                node.cleanup()
+            node = node.next()
+
         return next_node
 
     def analyze(self, indent="", fchk=[], output=[], configuration=None, **kwargs):

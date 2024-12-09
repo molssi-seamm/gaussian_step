@@ -173,12 +173,10 @@ class Energy(Substep):
 
         return self.header + "\n" + __(text, **P, indent=4 * " ").__str__()
 
-    def run(self, keywords=None, extra_lines=None):
+    def run(self, keywords=None, extra_sections={}):
         """Run a single-point Gaussian calculation."""
         if keywords is None:
             keywords = set()
-        if extra_lines is None:
-            extra_lines = []
 
         _, starting_configuration = self.get_system_configuration(None)
 
@@ -374,7 +372,7 @@ class Energy(Substep):
 
         if P["bond orders"] == "Wiberg":
             keywords.add("Pop=NBORead")
-            extra_lines.append("$nbo bndidx $end")
+            extra_sections["NBO input"] = "$nbo bndidx $end"
 
         if self._timing_data is not None:
             try:
@@ -402,7 +400,7 @@ class Energy(Substep):
             except Exception:
                 self._timing_data[10] = ""
 
-        data = self.run_gaussian(keywords, extra_lines=extra_lines)
+        data = self.run_gaussian(keywords, extra_sections=extra_sections)
 
         if not self.input_only:
             # Follow instructions for where to put the coordinates,
@@ -518,25 +516,25 @@ class Energy(Substep):
             ("symmetry group", "Symmetry"),
             ("symmetry group used", "Symmetry used"),
         ]
-        if "E β homo)" in data:
-            for letter in ("α", "β"):
+        if self.model[0] == "U":
+            for letter, symbol in (("alpha", "α"), ("beta", "β")):
                 keys.extend(
                     [
-                        (f"E {letter} homo", f"{letter}-HOMO Energy"),
-                        (f"E {letter} lumo", f"{letter}-LUMO Energy"),
-                        (f"E {letter} gap", f"{letter}-Gap"),
-                        (f"{letter} HOMO symmetry", f"{letter}-HOMO Symmetry"),
-                        (f"{letter} LUMO symmetry", f"{letter}-LUMO Symmetry"),
+                        (f"E {letter} homo", f"{symbol}-HOMO Energy"),
+                        (f"E {letter} lumo", f"{symbol}-LUMO Energy"),
+                        (f"E {letter} gap", f"{symbol}-Gap"),
+                        (f"{letter} HOMO symmetry", f"{symbol}-HOMO Symmetry"),
+                        (f"{letter} LUMO symmetry", f"{symbol}-LUMO Symmetry"),
                     ]
                 )
         else:
             keys.extend(
                 [
-                    ("E homo", "HOMO Energy"),
-                    ("E lumo", "LUMO Energy"),
-                    ("E gap", "Gap"),
-                    ("HOMO symmetry", "HOMO Symmetry"),
-                    ("LUMO symmetry", "LUMO Symmetry"),
+                    ("E alpha homo", "HOMO Energy"),
+                    ("E alpha lumo", "LUMO Energy"),
+                    ("E alpha gap", "Gap"),
+                    ("alpha HOMO symmetry", "HOMO Symmetry"),
+                    ("alpha LUMO symmetry", "LUMO Symmetry"),
                 ]
             )
         keys.extend(
@@ -724,7 +722,7 @@ class Energy(Substep):
         # Write the structure locally for use in density and orbital plots
         obConversion = openbabel.OBConversion()
         obConversion.SetOutFormat("sdf")
-        obMol = configuration.to_OBMol(properties="all")
+        obMol = configuration.to_OBMol(properties="*")
         title = f"SEAMM={system.name}/{configuration.name}"
         obMol.SetTitle(title)
         sdf = obConversion.WriteString(obMol)
