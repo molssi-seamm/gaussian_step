@@ -10,8 +10,25 @@ from tabulate import tabulate
 import gaussian_step
 import seamm
 import seamm.data
+from seamm_util import Q_
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __
+
+
+try:
+    from itertools import batched
+except ImportError:
+    from itertools import islice
+
+    def batched(iterable, n):
+        "Batch data into tuples of length n. The last batch may be shorter."
+        # batched('ABCDEFG', 3) --> ABC DEF G
+        if n < 1:
+            raise ValueError("n must be at least one")
+        it = iter(iterable)
+        while batch := tuple(islice(it, n)):
+            yield batch
+
 
 logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
@@ -76,23 +93,31 @@ class Optimization(gaussian_step.Energy):
         else:
             added += "and no more than {max geometry steps} steps."
 
-        if P["recalc hessian"] == "never":
-            pass
-        elif self.is_expr(P["recalc hessian"]):
-            added += " Whether and how to calculate the Hessian will be determined by "
-            added += "{recalc hessian}."
-        elif "every" in P["recalc hessian"]:
-            added += " The Hessian will be recalculated every step."
-        elif P["recalc hessian"] == "at beginning":
-            added += " The Hessian will be calculated once at the beginning."
-        elif P["recalc hessian"] == "HF at beginning":
-            added += (
-                " The Hartree-Fock Hessian will be calculated once at the beginning."
-            )
-        else:
-            added += " The Hessian will be recalculated every {recalc hessian} steps."
-        if P["recalc hessian"] != "never":
-            added += " Note that calculating the second derivatives is quite expensive!"
+        if P["hessian"] == "default guess":
+            added += " The Hessian will be initialized with a default guess."
+        elif self.is_expr(P["hessian"]):
+            added += " How the Hessian is initialized will be determined by {hessian}."
+        elif P["hessian"] == "read from checkpoint":
+            added += " The initial Hessian will be read from the checkpoint file."
+        elif P["hessian"] == "from property on configuration":
+            added += " The initial Hessian will be read from the configuration."
+        elif P["hessian"] == "calculate":
+            if self.is_expr(P["recalc hessian"]):
+                added += " When to calculate the Hessian will be determined by "
+                added += "{recalc hessian}."
+            elif "every" in P["recalc hessian"]:
+                added += " The Hessian will be recalculated every step."
+            elif P["recalc hessian"] == "at beginning":
+                added += " The Hessian will be calculated once at the beginning."
+            elif P["recalc hessian"] == "HF at beginning":
+                added += (
+                    " The Hartree-Fock Hessian will be calculated once at the "
+                    "beginning."
+                )
+            else:
+                added += (
+                    " The Hessian will be recalculated every {recalc hessian} steps."
+                )
 
         if (
             isinstance(P["input only"], bool)
@@ -106,7 +131,111 @@ class Optimization(gaussian_step.Energy):
 
         return text + "\n" + __(added, **P, indent=4 * " ").__str__()
 
-    def run(self, keywords=None):
+    def format_force_constants(
+        self,
+        n_atoms,
+        force_constants,
+        fc_units,
+        energy=0.0,
+        energy_units="E_h",
+        gradients=None,
+        gradient_units="E_h/Å",
+    ):
+        """Format the force constants for the Gaussian input.
+
+        Parameters
+        ----------
+        n_atoms : int
+            The number of atoms in the system
+        force_constants : [float]
+            The force constants in lower triangular order or as a square matrix
+        fc_units: str
+            The units of the force constants
+        energy : float
+            The energy, optional
+        energy_units : str
+            The units of the energy, defaults to Hartrees
+        gradients : [float]
+            The gradients, optional
+        gradient_units : str
+            The units of the gradients, defaults to Hartrees/Å
+
+        Returns
+        -------
+        []
+            The section lines
+
+        Note
+        ----
+        From the Gaussian documentation:
+
+        FCCards
+        Requests that read the energy (although value is not used), cartesian forces and
+        force constants from the input stream, as written out by Punch=Derivatives. The
+        format for this input is:
+
+        Energy  	Format (D24.16)
+        Cartesian forces  	Lines of format (6F12.8)
+        Force constants	Lines of format (6F12.8)
+
+        The force constants are in lower triangular form: ((F(J,I),J=1,I),I=1,3Natoms),
+        where 3Natoms is the number of Cartesian coordinates.
+        """
+
+        lines = []
+
+        # The energy is not used, but is required
+        tmp = Q_(energy, energy_units).m_as("E_h")
+        lines.append(f"{tmp:24.16e}")
+
+        # The gradients
+        if gradients is None:
+            tmp = [0.0] * 3 * n_atoms
+        elif (
+            len(gradients) == n_atoms
+            and isinstance(gradients[0], (list, tuple))
+            and len(gradients[0]) == 3
+        ):
+            tmp = [v for row in gradients for v in row]
+        elif isinstance(gradients, (list, tuple)) and len(gradients) == 3 * n_atoms:
+            tmp = gradients
+        else:
+            raise ValueError(
+                f"Can't handle gradients of type {type(gradients)}. Wrong dimensions?"
+            )
+
+        fac = Q_(1.0, gradient_units).m_as("E_h/Å")
+        for row in batched(tmp, 6):
+            lines.append("".join([f"{fac * v:12.8f}" for v in row]))
+
+        # The force constants
+        ndof = 3 * n_atoms
+        ntri = ndof * (ndof + 1) // 2
+        if len(force_constants) == ntri:
+            tmp = force_constants
+        elif (
+            len(force_constants) == ndof
+            and isinstance(force_constants[0], (list, tuple))
+            and len(force_constants[0]) == ndof
+        ):
+            # Square matrix
+            tmp = [v for i, row in enumerate(force_constants) for v in row[: i + 1]]
+        else:
+            raise ValueError(
+                f"Can't handle force constants of type {type(force_constants)}. "
+                "Wrong dimensions?"
+            )
+
+        fac = Q_(1.0, fc_units).m_as("E_h/a_0^2")
+        for row in batched(tmp, 6):
+            lines.append("".join([f"{fac * v:12.8f}" for v in row]))
+
+        # Section ends in blank line
+        lines.append("")
+
+        return lines
+
+    def run(self, keywords=None, extra_sections={}):
         """Run an optimization calculation with Gaussian"""
         if keywords is None:
             keywords = set()
@@ -151,17 +280,62 @@ class Optimization(gaussian_step.Energy):
             if P["ignore curvature error"]:
                 subkeywords.append("NoEigenTest")
 
-        # Handle options for the calculation of the Hessian
-        if P["recalc hessian"] == "every step":
-            subkeywords.append("CalcAll")
-        elif P["recalc hessian"] == "at beginning":
-            subkeywords.append("CalcFC")
-        elif P["recalc hessian"] == "HF at beginning":
-            subkeywords.append("CalcHFFC")
-        elif P["recalc hessian"] == "never":
+        # Handle options for the Hessian
+        if P["hessian"] == "default guess":
             pass
-        else:
-            subkeywords.append(f"RecalcFC={P['recalc hessian']}")
+        elif P["hessian"] == "read from checkpoint":
+            subkeywords.append("ReadFC")
+        elif P["hessian"] == "from property on configuration":
+            subkeywords.append("FCCards")
+            properties = configuration.properties.get(
+                "force constants*", include_system_properties=True
+            )
+
+            print("properties:")
+            print("\t" + "\n\t".join(properties.keys()))
+
+            possibilities = [*properties]
+            if len(possibilities) == 0:
+                raise ValueError(
+                    "No force constants found in the configuration properties."
+                )
+            elif len(possibilities) == 1:
+                d2E = properties[possibilities[0]]["value"]
+                units = configuration.properties.units(possibilities[0])
+            else:
+                printer.normal(
+                    "   Warning: found more than one set of force constants:"
+                )
+                printer.normal("\t" + "\n\t".join(possibilities))
+                print.normal(f"    using {possibilities[-1]}.")
+                d2E = properties[possibilities[-1]]["value"]
+                units = configuration.properties.units(possibilities[-1])
+
+            extra_sections["Initial force constants"] = self.format_force_constants(
+                configuration.n_atoms,
+                d2E,
+                units,
+            )
+
+        elif P["hessian"] == "calculate":
+            if P["recalc hessian"] == "every step":
+                subkeywords.append("CalcAll")
+            elif P["recalc hessian"] == "at beginning":
+                subkeywords.append("CalcFC")
+            elif P["recalc hessian"] == "HF at beginning":
+                subkeywords.append("CalcHFFC")
+            else:
+                try:
+                    tmp = int(P["recalc hessian"])
+                    if tmp < 1:
+                        raise ValueError(
+                            "The Hessian recalculation interval must be > 0"
+                        )
+                except Exception:
+                    raise ValueError(
+                        "Calculating the Hessian must either be a keyword or integer."
+                    )
+                subkeywords.append(f"RecalcFC={P['recalc hessian']}")
 
         coordinates = P["coordinates"]
         if "GIC" in coordinates:
@@ -178,7 +352,7 @@ class Optimization(gaussian_step.Energy):
         elif len(subkeywords) > 1:
             keywords.add(f"Opt=({','.join(subkeywords)})")
 
-        super().run(keywords=keywords)
+        super().run(keywords=keywords, extra_sections=extra_sections)
 
     def analyze(self, indent="", data={}, out=[], table=None, P=None):
         """Parse the output and generating the text output and store the
@@ -221,6 +395,11 @@ class Optimization(gaussian_step.Energy):
                     f"Warning: The geometry optimization did not converge in {n_steps} "
                     "steps."
                 )
+
+                printer.normal(__(text, indent=self.indent + 4 * " "))
+                printer.normal("")
+                text = ""
+
                 table2 = {}
                 for key in (
                     "maximum atom force",
@@ -228,27 +407,26 @@ class Optimization(gaussian_step.Energy):
                     "maximum atom displacement",
                     "RMS atom displacement",
                 ):
+                    if key + " trajectory" not in data:
+                        continue
                     table2[key] = [f"{v:.6f}" for v in data[key + " trajectory"]]
                     table2[key].append("-")
                     table2[key].append(f"{data[key + ' Threshold']:.6f}")
-                tmp = tabulate(
-                    table2,
-                    headers="keys",
-                    tablefmt="rounded_outline",
-                    colalign=("decimal", "decimal", "decimal", "decimal"),
-                    disable_numparse=True,
-                )
-                length = len(tmp.splitlines()[0])
-                text_lines = []
-                text_lines.append("Convergence".center(length))
-                text_lines.append(tmp)
-
-                printer.normal(__(text, indent=self.indent + 4 * " "))
-                printer.normal("")
-                text = ""
-                printer.normal(
-                    textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
-                )
+                if table2 != {}:
+                    tmp = tabulate(
+                        table2,
+                        headers="keys",
+                        tablefmt="rounded_outline",
+                        colalign=("decimal", "decimal", "decimal", "decimal"),
+                        disable_numparse=True,
+                    )
+                    length = len(tmp.splitlines()[0])
+                    text_lines = []
+                    text_lines.append("Convergence".center(length))
+                    text_lines.append(tmp)
+                    printer.normal(
+                        textwrap.indent("\n".join(text_lines), self.indent + 7 * " ")
+                    )
 
             # If calculating 2nd derivatives each step has the vibrations
             if "vibrational frequencies" in data:

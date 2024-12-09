@@ -8,6 +8,7 @@ import csv
 from datetime import datetime, timezone
 import gzip
 import importlib
+import json
 import logging
 from math import isnan
 import os
@@ -29,7 +30,7 @@ import gaussian_step
 import seamm
 import seamm_exec
 import seamm.data
-from seamm_util import Configuration, Q_
+from seamm_util import CompactJSONEncoder, Configuration, Q_
 import seamm_util.printing as printing
 
 logger = logging.getLogger("Gaussian")
@@ -204,6 +205,9 @@ class Substep(seamm.Node):
         data : dict
             The results of the calculation.
         """
+        if "H" not in data:
+            return
+
         # Read the tabulated values from either user or data directory
         personal_file = Path("~/.seamm.d/data/atom_energies.csv").expanduser()
         if personal_file.exists():
@@ -265,6 +269,23 @@ class Substep(seamm.Node):
         data["DfH0"] = Q_(data["H"], "E_h").m_as("kJ/mol") + Ecorr
 
         return
+
+    def cleanup(self):
+        """Perform any requested cleanup at the end of the calculation."""
+        P = self.parameters.current_values_to_dict(
+            context=seamm.flowchart_variables._data
+        )
+        handling = P["file handling"]
+        if handling == "keep all":
+            pass
+        elif handling == "remove checkpoint files":
+            directory = Path(self.directory)
+            step_no = int(self._id[-1])
+            chkpoint = directory.parent / f"{step_no}.chk"
+            chkpoint.unlink(missing_ok=True)
+        elif handling == "remove all":
+            directory = Path(self.directory)
+            shutil.rmtree(directory)
 
     def get_functional(self, P=None):
         """Work out the DFT functional"""
@@ -548,6 +569,9 @@ class Substep(seamm.Node):
         """
         lines = path.read_text().splitlines()
 
+        if len(lines) < 2:
+            return data
+
         it = iter(lines)
         # Ignore first potentially truncated title line
         next(it)
@@ -745,10 +769,10 @@ class Substep(seamm.Node):
             data["RMS atom force"] = rms_force[-1]
             data["maximum atom displacement"] = max_displacement[-1]
             data["RMS atom displacement"] = rms_displacement[-1]
-        data["maximum atom force Trajectory"] = max_force
-        data["RMS atom force Trajectory"] = rms_force
-        data["maximum atom displacement Trajectory"] = max_displacement
-        data["RMS atom displacement Trajectory"] = rms_displacement
+        data["maximum atom force trajectory"] = max_force
+        data["RMS atom force trajectory"] = rms_force
+        data["maximum atom displacement trajectory"] = max_displacement
+        data["RMS atom displacement trajectory"] = rms_displacement
 
         # CBS calculations
 
@@ -944,6 +968,98 @@ class Substep(seamm.Node):
 
         return data
 
+    def parse_punch(self, path, n_atoms, data):
+        """Digest the Gaussian punch file.
+
+        Parameters
+        ----------
+        path : pathlib.Path
+            The path to the Punch file.
+        n_atoms : int
+            The number of atoms in the configuration
+        data : dict
+            The current data for the calculation.
+
+        Returns
+        -------
+        dict
+        """
+        lines = path.read_text().splitlines()
+        n_lines = len(lines)
+
+        # Coordinates come first
+        if n_lines < n_atoms:
+            printer.important("Warning: Punch file does not have coordinates.")
+        else:
+            XYZs = []
+            start = 0
+            stop = n_atoms
+            for line in lines[start:stop]:
+                atno, x, y, z = line.replace("D", "E").split()
+                XYZs.append(float(x))
+                XYZs.append(float(y))
+                XYZs.append(float(z))
+            # What is in data[] is the standard orientation not the input orientation
+            # so replace with this, which is in the input orientation
+            data["Current cartesian coordinates"] = XYZs
+
+        # Gradients next if they are here
+        start = stop
+        stop = start + n_atoms
+        if n_lines > start and n_lines < stop:
+            printer.important("Warning: Punch file does not have complete gradients.")
+        if n_lines >= 2 * n_atoms:
+            XYZs = []
+            for line in lines[start:stop]:
+                x, y, z = line.replace("D", "E").split()
+                XYZs.append(float(x))
+                XYZs.append(float(y))
+                XYZs.append(float(z))
+
+            if len(XYZs) != 3 * n_atoms:
+                raise RuntimeError("Error in the number of gradients in the Punch file")
+
+            if "gradients" in data:
+                # Check that the same values to 4 figures
+                for x0, x1 in zip(data["gradients"], XYZs):
+                    if abs(x0 - x1) > 0.0001:
+                        text = "Error in the gradients from the Punch file:"
+                        text += "\n"
+                        for xyz0, xyz1 in zip(data["gradients"], XYZs):
+                            old = ""
+                            new = ""
+                            for x0 in xyz0:
+                                old += f"{x0:9.4f} "
+                            for x1 in xyz1:
+                                new += f"{x1:9.4f} "
+                            text += f"\n\t{old} <-- {new}"
+                        raise RuntimeError(text)
+            data["gradients"] = XYZs
+
+        # Force constants. Triangular matrix, 3 per line.
+        ntri = (3 * n_atoms) * (3 * n_atoms + 1) // 2
+        n = ntri // 3 if ntri % 3 == 0 else ntri // 3 + 1
+        start = stop
+        stop = start + n
+        if n_lines > start and n_lines < stop:
+            printer.important(
+                "Warning: Punch file does not have complete force constants."
+            )
+        if n_lines >= stop:
+            count = 0
+            d2E = []
+            factor = Q_(1.0, "E_h/a_0^2").m_as("kcal/mol/Å^2")
+            for line in lines[start:stop]:
+                for tmp in line.replace("D", "E").split():
+                    d2E.append(float(tmp) * factor)
+                    count += 1
+                    if count == ntri:
+                        break
+            if count == ntri:
+                data["force constants"] = d2E
+
+        return data
+
     def process_data(self, data):
         """Massage the cclib data to a more easily used form."""
         self.logger.debug(pprint.pformat(data))
@@ -980,7 +1096,7 @@ class Substep(seamm.Node):
         if "homos" in new and "moenergies" in new:
             homos = new["homos"]
             if len(homos) == 2:
-                for i, letter in enumerate(["α", "β"]):
+                for i, letter in enumerate(["alpha", "beta"]):
                     Es = new["moenergies"][i]
                     homo = homos[i]
                     new[f"{letter} HOMO orbital number"] = homo + 1
@@ -1004,24 +1120,34 @@ class Substep(seamm.Node):
             else:
                 Es = new["moenergies"][0]
                 homo = homos[0]
-                new["HOMO orbital number"] = homo + 1
-                new["E homo"] = Es[homo]
+                new["alpha HOMO orbital number"] = homo + 1
+                new["beta HOMO orbital number"] = homo + 1
+                new["E alpha homo"] = Es[homo]
+                new["E beta homo"] = Es[homo]
                 if homo > 0:
-                    new["E nhomo"] = Es[homo - 1]
+                    new["E alpha nhomo"] = Es[homo - 1]
+                    new["E beta nhomo"] = Es[homo - 1]
                 if homo + 1 < len(Es):
-                    new["E lumo"] = Es[homo + 1]
-                    new["E gap"] = Es[homo + 1] - Es[homo]
+                    new["E alpha lumo"] = Es[homo + 1]
+                    new["E beta lumo"] = Es[homo + 1]
+                    new["E alpha gap"] = Es[homo + 1] - Es[homo]
+                    new["E beta gap"] = Es[homo + 1] - Es[homo]
                 if homo + 2 < len(Es):
-                    new["E slumo"] = Es[homo + 2]
+                    new["E alpha slumo"] = Es[homo + 2]
+                    new["E beta slumo"] = Es[homo + 2]
                 if "mosyms" in new:
                     syms = new["mosyms"][0]
-                    new["HOMO symmetry"] = syms[homo]
+                    new["alpha HOMO symmetry"] = syms[homo]
+                    new["beta HOMO symmetry"] = syms[homo]
                     if homo > 0:
-                        new["NHOMO symmetry"] = syms[homo - 1]
+                        new["alpha NHOMO symmetry"] = syms[homo - 1]
+                        new["beta NHOMO symmetry"] = syms[homo - 1]
                     if homo + 1 < len(syms):
-                        new["LUMO symmetry"] = syms[homo + 1]
+                        new["alpha LUMO symmetry"] = syms[homo + 1]
+                        new["beta LUMO symmetry"] = syms[homo + 1]
                     if homo + 2 < len(syms):
-                        new["SLUMO symmetry"] = syms[homo + 2]
+                        new["alpha SLUMO symmetry"] = syms[homo + 2]
+                        new["beta SLUMO symmetry"] = syms[homo + 2]
 
         # moments
         if "moments" in new:
@@ -1043,7 +1169,7 @@ class Substep(seamm.Node):
 
         return new
 
-    def run_gaussian(self, keywords, extra_lines=None):
+    def run_gaussian(self, keywords, extra_sections={}):
         """Run Gaussian.
 
         Parameters
@@ -1123,14 +1249,21 @@ class Substep(seamm.Node):
             memory = humanize(memory, kilo=1000)
 
             lines = []
-            lines.append("%Chk=gaussian")
+            step_no = int(self._id[-1])
+            if step_no > 1:
+                last_chkpoint = directory.parent / f"{step_no - 1}.chk"
+                if last_chkpoint.exists():
+                    lines.append(f"%OldChk={last_chkpoint}")
+            chkpoint = directory.parent / f"{step_no}.chk"
+            lines.append("%Chk=gaussian.chk")
             lines.append(f"%Mem={memory}")
             lines.append(f"%NProcShared={n_threads}")
 
             lines.append("# " + " ".join(keywords))
+            lines.append("# Punch=(Coord,Derivatives)")
 
             lines.append(" ")
-            lines.append(f"{system.name}/{configuration.name}")
+            lines.append(f"{self.title} of {system.name}/{configuration.name}")
             lines.append(" ")
             lines.append(f"{configuration.charge}    {configuration.spin_multiplicity}")
 
@@ -1142,8 +1275,12 @@ class Substep(seamm.Node):
                 lines.append(f"{symbol:2}   {x:10.6f} {y:10.6f} {z:10.6f}")
             lines.append(" ")
 
-            if extra_lines is not None:
-                lines.extend(extra_lines)
+            for section in (
+                "Initial force constants",
+                "NBO input",
+            ):
+                if section in extra_sections:
+                    lines.extend(extra_sections[section])
 
             files = {"input.dat": "\n".join(lines)}
             self.logger.debug("input.dat:\n" + files["input.dat"])
@@ -1247,12 +1384,22 @@ class Substep(seamm.Node):
                 else:
                     cmd = g_ver
 
-                cmd += " < input.dat > output.txt ; formchk gaussian.chk"
+                if "scratch-dir" in config and config["scratch-dir"] != "":
+                    path = Path(config["scratch-dir"])
+                    try:
+                        path.mkdir(parents=True, exist_ok=True)
+                    except Exception:
+                        pass
+                    else:
+                        env["GAUSS_SCRDIR"] = config["scratch-dir"]
+
+                cmd += " < input.dat > output.txt && formchk gaussian.chk"
 
                 return_files = [
                     "output.txt",
                     "gaussian.chk",
                     "gaussian.fchk",
+                    "fort.7",
                 ]
 
                 self.logger.debug(f"{cmd=}")
@@ -1278,104 +1425,148 @@ class Substep(seamm.Node):
                     self._timing_data[17] = f"{t:.3f}"
                     self._timing_data[16] = str(n_threads)
 
+                # Check for errors
+                chkpoint_ok = True
+                if "stderr" in result and result["stderr"] != "":
+                    if "formchk" in result["stderr"]:
+                        # Something happened with formchk, but it is not fatal
+                        # However, don't reuse the checkpoint file
+                        chkpoint_ok = False
+                    printer.normal("\n\nThere was an error running Gaussian:")
+                    for line in result["stderr"].split("\n"):
+                        printer.normal("\t" + line)
                 if not result:
                     self.logger.error("There was an error running Gaussian")
                     return None
 
-                # self.logger.debug("\n" + pprint.pformat(result))
+                if chkpoint_ok:
+                    (directory / "gaussian.chk").rename(chkpoint)
+                else:
+                    (directory / "gaussian.chk").unlink(missing_ok=True)
 
         if not self.input_only:
-            # And output
-            path = directory / "output.txt"
-            if path.exists():
-                try:
-                    data = vars(cclib.io.ccread(path))
-                    data = self.process_data(data)
-                except Exception as e:
-                    self.logger.warning(f"\ncclib raised exception {e}\nPlease report!")
-                    data = {}
+            # Reget or parse the data
+            data_file = directory / "data.json"
+            if data_file.exists():
+                with data_file.open("rt") as fd:
+                    data = json.load(fd)
+                self.model = data["model"][9:]
             else:
-                data = {}
-
-            # Switch to standard names
-            translation = self.metadata["translation"]
-            keys = [*data.keys()]
-            for key in keys:
-                if key in translation:
-                    to = translation[key]
-                    if to in data and data[to] != data[key]:
+                # And output
+                path = directory / "output.txt"
+                if path.exists():
+                    try:
+                        data = vars(cclib.io.ccread(path))
+                        data = self.process_data(data)
+                    except Exception as e:
                         self.logger.warning(
-                            f"Overwriting {to} with {key}\n"
-                            f"\t{data[key]} --> {data[to]}"
+                            f"\ncclib raised exception {e}\nPlease report!"
                         )
-                    data[to] = data[key]
-                    del data[key]
-
-            # Adding timing information from SEAMM
-            data["SEAMM elapsed time"] = round(t, 1)
-            data["SEAMM np"] = n_threads
-
-            self.logger.debug("after cclib")
-            self.logger.debug(f"{pprint.pformat(data)}")
-            self.logger.debug(80 * "*")
-
-            success = "success" if "success" in data else False
-
-            if not success:
-                raise RuntimeError("Gaussian did not complete successfully")
-
-            # Get the data from the formatted checkpoint file
-            data = self.parse_fchk(directory / "gaussian.fchk", data)
-
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug("After parse_fchk")
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
-
-            # And parse a bit more out of the output
-            if path.exists():
-                data = self.parse_output(path, data)
-
-            # The model chemistry
-            if "model" in data:
-                self.model = data["model"]
-            elif "method" in data:
-                if data["method"].endswith("DFT"):
-                    model = data["method"] + "/" + data["density functional"]
+                        data = {}
                 else:
-                    model = data["method"]
-                if "basis set name" in data:
-                    self.model = model + "/" + data["basis set name"]
+                    data = {}
+
+                # Switch to standard names
+                translation = self.metadata["translation"]
+                keys = [*data.keys()]
+                for key in keys:
+                    if key in translation:
+                        to = translation[key]
+                        if to in data and data[to] != data[key]:
+                            self.logger.warning(
+                                f"Overwriting {to} with {key}\n"
+                                f"\t{data[key]} --> {data[to]}"
+                            )
+                        data[to] = data[key]
+                        del data[key]
+
+                # Adding timing information from SEAMM
+                data["SEAMM elapsed time"] = round(t, 1)
+                data["SEAMM np"] = n_threads
+
+                self.logger.debug("after cclib")
+                self.logger.debug(f"{pprint.pformat(data)}")
+                self.logger.debug(80 * "*")
+
+                success = "success" if "success" in data else False
+
+                if not success:
+                    raise RuntimeError("Gaussian did not complete successfully")
+
+                # Get the data from the formatted checkpoint file
+                data = self.parse_fchk(directory / "gaussian.fchk", data)
+
+                # Debug output
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    keys = "\n".join(data.keys())
+                    self.logger.debug("After parse_fchk")
+                    self.logger.debug(f"Data keys:\n{keys}")
+                    self.logger.debug(f"Data:\n{pprint.pformat(data)}")
+
+                # And parse a bit more out of the output
+                if path.exists():
+                    data = self.parse_output(path, data)
+
+                # And the Punch file, if it exists
+                punch = Path(directory / "fort.7")
+                if punch.exists():
+                    data = self.parse_punch(punch, configuration.n_atoms, data)
+
+                # The model chemistry
+                if "model" in data:
+                    self.model = data["model"]
+                elif "method" in data:
+                    if data["method"].endswith("DFT"):
+                        model = data["method"] + "/" + data["density functional"]
+                    else:
+                        model = data["method"]
+
+                    # Check if the method uses a basis set
+                    methods = gaussian_step.methods
+                    tmp = data["method"][1:]
+                    tmp = [m for m, d in methods.items() if d["method"] == tmp]
+                    if (
+                        len(tmp) == 1
+                        and "nobasis" in methods[tmp[0]]
+                        and methods[tmp[0]]["nobasis"]
+                    ):
+                        self.model = model
+                    elif "basis set name" in data:
+                        self.model = model + "/" + data["basis set name"]
+                    else:
+                        self.model = model
                 else:
-                    self.model = model
-            else:
-                self.model = "unknown"
-            self.logger.debug(f"model = {self.model}")
-            data["model"] = "Gaussian/" + self.model
+                    self.model = "unknown"
+                self.logger.debug(f"model = {self.model}")
+                data["model"] = "Gaussian/" + self.model
 
-            # Capitalize symmetry names
-            for key in ("symmetry group", "symmetry group used"):
-                if key in data:
-                    data[key] = data[key].capitalize()
+                # Capitalize symmetry names
+                for key in ("symmetry group", "symmetry group used"):
+                    if key in data:
+                        data[key] = data[key].capitalize()
 
-            # Check for QCI and change the energy names
-            if "QCISD" in data["model"]:
-                if "E cc" in data:
-                    data["E qcisd"] = data["E cc"]
-                    del data["E cc"]
-                if "E ccsd_t" in data:
-                    data["E qcisd_t"] = data["E ccsd_t"]
-                    del data["E ccsd_t"]
+                # Check for QCI and change the energy names
+                if "QCISD" in data["model"]:
+                    if "E cc" in data:
+                        data["E qcisd"] = data["E cc"]
+                        del data["E cc"]
+                    if "E ccsd_t" in data:
+                        data["E qcisd_t"] = data["E ccsd_t"]
+                        del data["E ccsd_t"]
 
-            # printer.normal(f"\n\n\n\n\nData:\n{pprint.pformat(data)}\n\n\n\n\n")
+                # printer.normal(f"\n\n\n\n\nData:\n{pprint.pformat(data)}\n\n\n\n\n")
 
-            # Debug output
-            if self.logger.isEnabledFor(logging.DEBUG):
-                keys = "\n".join(data.keys())
-                self.logger.debug(f"Data keys:\n{keys}")
-                self.logger.debug(f"Data:\n{pprint.pformat(data)}")
+                # Debug output
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    keys = "\n".join(data.keys())
+                    self.logger.debug(f"Data keys:\n{keys}")
+                    self.logger.debug(f"Data:\n{pprint.pformat(data)}")
+
+                # Save the parsed data as JSON
+                with data_file.open("w") as fd:
+                    json.dump(
+                        data, fd, indent=4, sort_keys=True, cls=CompactJSONEncoder
+                    )
 
             # If ran successfully, put out the success file
             if data["success"]:

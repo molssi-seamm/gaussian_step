@@ -199,6 +199,17 @@ class EnergyParameters(seamm.Parameters):
                 "Whether to use the calculated bond orders to update the structure"
             ),
         },
+        "file handling": {
+            "default": "remove checkpoint files",
+            "kind": "string",
+            "format_string": "s",
+            "enumeration": ("keep all", "remove all", "remove checkpoint files"),
+            "description": "File handling",
+            "help_text": (
+                "How to handle files after a successful calculation."
+                "or 'advanced', which shows everything."
+            ),
+        },
         "results": {
             "default": {},
             "kind": "dictionary",

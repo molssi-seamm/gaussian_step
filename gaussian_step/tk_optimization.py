@@ -95,7 +95,7 @@ class TkOptimization(gaussian_step.TkEnergy):
             self[key] = P[key].widget(opt_frame)
 
         # bindings...
-        for key in ("target",):
+        for key in ("target", "hessian"):
             self[key].bind("<<ComboboxSelected>>", self.reset_optimization)
             self[key].bind("<Return>", self.reset_optimization)
             self[key].bind("<FocusOut>", self.reset_optimization)
@@ -134,6 +134,7 @@ class TkOptimization(gaussian_step.TkEnergy):
             slave.grid_forget()
 
         target = self["target"].get()
+        hessian = self["hessian"].get()
 
         widgets = []
         widgets2 = []
@@ -157,12 +158,23 @@ class TkOptimization(gaussian_step.TkEnergy):
             "geometry convergence",
             "coordinates",
             "max geometry steps",
-            "recalc hessian",
-            "ignore unconverged optimization",
+            "hessian",
         ):
             self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
             widgets.append(self[key])
             row += 1
 
-        sw.align_labels(widgets, sticky=tk.E)
-        sw.align_labels(widgets2, sticky=tk.E)
+        if hessian == "calculate":
+            for key in ("recalc hessian",):
+                self[key].grid(row=row, column=1, sticky=tk.EW)
+                widgets2.append(self[key])
+                row += 1
+
+        for key in ("ignore unconverged optimization",):
+            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
+
+        w1 = sw.align_labels(widgets, sticky=tk.E)
+        w2 = sw.align_labels(widgets2, sticky=tk.E)
+        frame.columnconfigure(0, minsize=w1 - w2 + 30)

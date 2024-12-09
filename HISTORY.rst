@@ -1,6 +1,15 @@
 =======
 History
 =======
+202.12.9: Improvements to thermodynamics step
+    * Added B3LYP atom energies to the thermodynamics step.
+    * Expanded the properties to include essentially everything calculated by Gaussian.
+    * Added the ability to get the initial Hessian for an optimization from propertiesm
+      or from the checkpoint file.
+    * Improved the handling of the checkpoint file so by default it is saved and the
+      next substep uses it for initial guesses, etc.
+    * Added options to remove the checkpoint files at the end of the calculation.
+
 2024.12.1.1: Bugfix: Typographical problems with the output.
 
 2024.12.1: Added thermodynamics step
