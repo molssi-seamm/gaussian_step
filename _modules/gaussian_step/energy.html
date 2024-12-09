@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.12.1.1 documentation</title>
+    <title>gaussian_step.energy &#8212; SEAMM Gaussian Plug-in 2024.12.9 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=3dc5ab1c"></script>
+    <script src="../../_static/documentation_options.js?v=4002252a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.1.1" />
+  <meta name="docsearch:version" content="2024.12.9" />
   </head>
   
   
@@ -635,12 +635,10 @@
 
 <div class="viewcode-block" id="Energy.run">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.energy.Energy.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_lines</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a single-point Gaussian calculation.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">keywords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">extra_lines</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">extra_lines</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">starting_configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
@@ -836,7 +834,7 @@
 
         <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;bond orders&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Wiberg&quot;</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Pop=NBORead&quot;</span><span class="p">)</span>
-            <span class="n">extra_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;$nbo bndidx $end&quot;</span><span class="p">)</span>
+            <span class="n">extra_sections</span><span class="p">[</span><span class="s2">&quot;NBO input&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$nbo bndidx $end&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -864,7 +862,7 @@
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_gaussian</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">extra_lines</span><span class="o">=</span><span class="n">extra_lines</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_gaussian</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="n">extra_sections</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span><span class="p">:</span>
             <span class="c1"># Follow instructions for where to put the coordinates,</span>
@@ -983,25 +981,25 @@
             <span class="p">(</span><span class="s2">&quot;symmetry group&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry&quot;</span><span class="p">),</span>
             <span class="p">(</span><span class="s2">&quot;symmetry group used&quot;</span><span class="p">,</span> <span class="s2">&quot;Symmetry used&quot;</span><span class="p">),</span>
         <span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;E β homo)&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;α&quot;</span><span class="p">,</span> <span class="s2">&quot;β&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;U&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">letter</span><span class="p">,</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;α&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;β&quot;</span><span class="p">)):</span>
                 <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> homo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Energy&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> lumo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Energy&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> gap&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-Gap&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-HOMO Symmetry&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2">-LUMO Symmetry&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> homo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">-HOMO Energy&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> lumo&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">-LUMO Energy&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> gap&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">-Gap&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">-HOMO Symmetry&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">-LUMO Symmetry&quot;</span><span class="p">),</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="p">(</span><span class="s2">&quot;E homo&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Energy&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;E lumo&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Energy&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;E gap&quot;</span><span class="p">,</span> <span class="s2">&quot;Gap&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;HOMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Symmetry&quot;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s2">&quot;LUMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Symmetry&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E alpha homo&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Energy&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E alpha lumo&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Energy&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;E alpha gap&quot;</span><span class="p">,</span> <span class="s2">&quot;Gap&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;alpha HOMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO Symmetry&quot;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;alpha LUMO symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO Symmetry&quot;</span><span class="p">),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
@@ -1189,7 +1187,7 @@
         <span class="c1"># Write the structure locally for use in density and orbital plots</span>
         <span class="n">obConversion</span> <span class="o">=</span> <span class="n">openbabel</span><span class="o">.</span><span class="n">OBConversion</span><span class="p">()</span>
         <span class="n">obConversion</span><span class="o">.</span><span class="n">SetOutFormat</span><span class="p">(</span><span class="s2">&quot;sdf&quot;</span><span class="p">)</span>
-        <span class="n">obMol</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">to_OBMol</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+        <span class="n">obMol</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">to_OBMol</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
         <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SEAMM=</span><span class="si">{</span><span class="n">system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">obMol</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
         <span class="n">sdf</span> <span class="o">=</span> <span class="n">obConversion</span><span class="o">.</span><span class="n">WriteString</span><span class="p">(</span><span class="n">obMol</span><span class="p">)</span>

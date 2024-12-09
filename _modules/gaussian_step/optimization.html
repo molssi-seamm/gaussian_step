@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2024.12.1.1 documentation</title>
+    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2024.12.9 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=3dc5ab1c"></script>
+    <script src="../../_static/documentation_options.js?v=4002252a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.1.1" />
+  <meta name="docsearch:version" content="2024.12.9" />
   </head>
   
   
@@ -465,8 +465,25 @@
 <span class="kn">import</span> <span class="nn">gaussian_step</span>
 <span class="kn">import</span> <span class="nn">seamm</span>
 <span class="kn">import</span> <span class="nn">seamm.data</span>
+<span class="kn">from</span> <span class="nn">seamm_util</span> <span class="kn">import</span> <span class="n">Q_</span>
 <span class="kn">import</span> <span class="nn">seamm_util.printing</span> <span class="k">as</span> <span class="nn">printing</span>
 <span class="kn">from</span> <span class="nn">seamm_util.printing</span> <span class="kn">import</span> <span class="n">FormattedText</span> <span class="k">as</span> <span class="n">__</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">batched</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+
+    <span class="k">def</span> <span class="nf">batched</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="s2">&quot;Batch data into tuples of length n. The last batch may be shorter.&quot;</span>
+        <span class="c1"># batched(&#39;ABCDEFG&#39;, 3) --&gt; ABC DEF G</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be at least one&quot;</span><span class="p">)</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">batch</span> <span class="o">:=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">n</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="n">batch</span>
+
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
@@ -535,23 +552,31 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;and no more than {max geometry steps} steps.&quot;</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;never&quot;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]):</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; Whether and how to calculate the Hessian will be determined by &quot;</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;{recalc hessian}.&quot;</span>
-        <span class="k">elif</span> <span class="s2">&quot;every&quot;</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be recalculated every step.&quot;</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be calculated once at the beginning.&quot;</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
-                <span class="s2">&quot; The Hartree-Fock Hessian will be calculated once at the beginning.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be recalculated every {recalc hessian} steps.&quot;</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;never&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; Note that calculating the second derivatives is quite expensive!&quot;</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default guess&quot;</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be initialized with a default guess.&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]):</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; How the Hessian is initialized will be determined by </span><span class="si">{hessian}</span><span class="s2">.&quot;</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;read from checkpoint&quot;</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The initial Hessian will be read from the checkpoint file.&quot;</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;from property on configuration&quot;</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The initial Hessian will be read from the configuration.&quot;</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;calculate&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]):</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; When to calculate the Hessian will be determined by &quot;</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;{recalc hessian}.&quot;</span>
+            <span class="k">elif</span> <span class="s2">&quot;every&quot;</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be recalculated every step.&quot;</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be calculated once at the beginning.&quot;</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="s2">&quot; The Hartree-Fock Hessian will be calculated once at the &quot;</span>
+                    <span class="s2">&quot;beginning.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="s2">&quot; The Hessian will be recalculated every {recalc hessian} steps.&quot;</span>
+                <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
@@ -566,9 +591,116 @@
         <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">added</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="Optimization.format_force_constants">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.optimization.Optimization.format_force_constants">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_force_constants</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_atoms</span><span class="p">,</span>
+        <span class="n">force_constants</span><span class="p">,</span>
+        <span class="n">fc_units</span><span class="p">,</span>
+        <span class="n">energy</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">energy_units</span><span class="o">=</span><span class="s2">&quot;E_h&quot;</span><span class="p">,</span>
+        <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gradient_units</span><span class="o">=</span><span class="s2">&quot;E_h/Å&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format the force constants for the Gaussian input.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_atoms : int</span>
+<span class="sd">            The number of atoms in the system</span>
+<span class="sd">        force_constants : [float]</span>
+<span class="sd">            The force constants in lower triangular order or as a square matrix</span>
+<span class="sd">        fc_units: str</span>
+<span class="sd">            The units of the force constants</span>
+<span class="sd">        energy : float</span>
+<span class="sd">            The energy, optional</span>
+<span class="sd">        energy_units : str</span>
+<span class="sd">            The units of the energy, defaults to Hartrees</span>
+<span class="sd">        gradients : [float]</span>
+<span class="sd">            The gradients, optional</span>
+<span class="sd">        gradient_units : str</span>
+<span class="sd">            The units of the gradients, defaults to Hartrees/Å</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        []</span>
+<span class="sd">            The section lines</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        From the Gaussian documentation:</span>
+
+<span class="sd">        FCCards</span>
+<span class="sd">        Requests that read the energy (although value is not used), cartesian forces and</span>
+<span class="sd">        force constants from the input stream, as written out by Punch=Derivatives. The</span>
+<span class="sd">        format for this input is:</span>
+
+<span class="sd">        Energy  	Format (D24.16)</span>
+<span class="sd">        Cartesian forces  	Lines of format (6F12.8)</span>
+<span class="sd">        Force constants	Lines of format (6F12.8)</span>
+
+<span class="sd">        The force constants are in lower triangular form: ((F(J,I),J=1,I),I=1,3Natoms),</span>
+<span class="sd">        where 3Natoms is the number of Cartesian coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># The energy is not used, but is required</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">energy_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">:</span><span class="s2">24.16e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># The gradients</span>
+        <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_atoms</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gradients</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gradients</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">gradients</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Can&#39;t handle gradients of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span><span class="si">}</span><span class="s2">. Wrong dimensions?&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">gradient_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h/Å&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
+
+        <span class="c1"># The force constants</span>
+        <span class="n">ndof</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span>
+        <span class="n">ntri</span> <span class="o">=</span> <span class="n">ndof</span> <span class="o">*</span> <span class="p">(</span><span class="n">ndof</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span> <span class="o">==</span> <span class="n">ntri</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">force_constants</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span> <span class="o">==</span> <span class="n">ndof</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force_constants</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">force_constants</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="n">ndof</span>
+        <span class="p">):</span>
+            <span class="c1"># Square matrix</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Can&#39;t handle force constants of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="s2">&quot;Wrong dimensions?&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fc_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h/a_0^2&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
+
+        <span class="c1"># Section ends in blank line</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lines</span></div>
+
+
 <div class="viewcode-block" id="Optimization.run">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.optimization.Optimization.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an optimization calculation with Gaussian&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">keywords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -613,17 +745,62 @@
             <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;ignore curvature error&quot;</span><span class="p">]:</span>
                 <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NoEigenTest&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Handle options for the calculation of the Hessian</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;every step&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcAll&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcFC&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcHFFC&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;never&quot;</span><span class="p">:</span>
+        <span class="c1"># Handle options for the Hessian</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default guess&quot;</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RecalcFC=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;recalc hessian&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;read from checkpoint&quot;</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ReadFC&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;from property on configuration&quot;</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FCCards&quot;</span><span class="p">)</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;force constants*&quot;</span><span class="p">,</span> <span class="n">include_system_properties</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;properties:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+            <span class="n">possibilities</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">properties</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possibilities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;No force constants found in the configuration properties.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">possibilities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">units</span><span class="p">(</span><span class="n">possibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
+                    <span class="s2">&quot;   Warning: found more than one set of force constants:&quot;</span>
+                <span class="p">)</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possibilities</span><span class="p">))</span>
+                <span class="nb">print</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    using </span><span class="si">{</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">units</span><span class="p">(</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="n">extra_sections</span><span class="p">[</span><span class="s2">&quot;Initial force constants&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_force_constants</span><span class="p">(</span>
+                <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                <span class="n">d2E</span><span class="p">,</span>
+                <span class="n">units</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;calculate&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;every step&quot;</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcAll&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcFC&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcHFFC&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">tmp</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;The Hessian recalculation interval must be &gt; 0&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Calculating the Hessian must either be a keyword or integer.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RecalcFC=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;recalc hessian&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;GIC&quot;</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
@@ -640,7 +817,7 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opt=(</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="n">keywords</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="n">keywords</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="n">extra_sections</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Optimization.analyze">
@@ -686,6 +863,11 @@
                     <span class="sa">f</span><span class="s2">&quot;Warning: The geometry optimization did not converge in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="s2">&quot;steps.&quot;</span>
                 <span class="p">)</span>
+
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
                 <span class="n">table2</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
                     <span class="s2">&quot;maximum atom force&quot;</span><span class="p">,</span>
@@ -693,27 +875,26 @@
                     <span class="s2">&quot;maximum atom displacement&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;RMS atom displacement&quot;</span><span class="p">,</span>
                 <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; trajectory&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="k">continue</span>
                     <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; trajectory&quot;</span><span class="p">]]</span>
                     <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
                     <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; Threshold&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span>
-                    <span class="n">table2</span><span class="p">,</span>
-                    <span class="n">headers</span><span class="o">=</span><span class="s2">&quot;keys&quot;</span><span class="p">,</span>
-                    <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;rounded_outline&quot;</span><span class="p">,</span>
-                    <span class="n">colalign</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">),</span>
-                    <span class="n">disable_numparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Convergence&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
-                <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
-                    <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">table2</span> <span class="o">!=</span> <span class="p">{}:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span>
+                        <span class="n">table2</span><span class="p">,</span>
+                        <span class="n">headers</span><span class="o">=</span><span class="s2">&quot;keys&quot;</span><span class="p">,</span>
+                        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;rounded_outline&quot;</span><span class="p">,</span>
+                        <span class="n">colalign</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">),</span>
+                        <span class="n">disable_numparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Convergence&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+                    <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
+                        <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
 
             <span class="c1"># If calculating 2nd derivatives each step has the vibrations</span>
             <span class="k">if</span> <span class="s2">&quot;vibrational frequencies&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
