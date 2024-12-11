@@ -33,6 +33,22 @@ import seamm.data
 from seamm_util import CompactJSONEncoder, Configuration, Q_
 import seamm_util.printing as printing
 
+
+try:
+    from itertools import batched
+except ImportError:
+    from itertools import islice
+
+    def batched(iterable, n):
+        "Batch data into tuples of length n. The last batch may be shorter."
+        # batched('ABCDEFG', 3) --> ABC DEF G
+        if n < 1:
+            raise ValueError("n must be at least one")
+        it = iter(iterable)
+        while batch := tuple(islice(it, n)):
+            yield batch
+
+
 logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
 printer = printing.getPrinter("gaussian")
@@ -1021,20 +1037,26 @@ class Substep(seamm.Node):
 
             if "gradients" in data:
                 # Check that the same values to 4 figures
+                same = True
                 for x0, x1 in zip(data["gradients"], XYZs):
-                    if abs(x0 - x1) > 0.0001:
-                        text = "Error in the gradients from the Punch file:"
-                        text += "\n"
-                        for xyz0, xyz1 in zip(data["gradients"], XYZs):
-                            old = ""
-                            new = ""
-                            for x0 in xyz0:
-                                old += f"{x0:9.4f} "
-                            for x1 in xyz1:
-                                new += f"{x1:9.4f} "
-                            text += f"\n\t{old} <-- {new}"
-                        raise RuntimeError(text)
-            data["gradients"] = XYZs
+                    if abs(x0 - x1) > 0.001:
+                        same = False
+                if not same:
+                    text = "Warning: gradients from the Punch file differ in\n"
+                    text += "\t" + self.header + "\n"
+                    for xyz0, xyz1 in zip(
+                        batched(data["gradients"], 3), batched(XYZs, 3)
+                    ):
+                        old = ""
+                        new = ""
+                        for x0 in xyz0:
+                            old += f"{x0:9.4f} "
+                        for x1 in xyz1:
+                            new += f"{x1:9.4f} "
+                        text += f"\n\t{old} <-- {new}"
+                    text += "\n\n"
+                    printer.important(text)
+                data["gradients"] = XYZs
 
         # Force constants. Triangular matrix, 3 per line.
         ntri = (3 * n_atoms) * (3 * n_atoms + 1) // 2
