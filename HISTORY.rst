@@ -1,7 +1,13 @@
 =======
 History
 =======
-202.12.9: Improvements to thermodynamics step
+2024.12.11: Loosened tolerance on gradients from punch file
+    * The code checks that the gradients in the punch file are similar to those in the
+      output. Apparently the check was too tight, so it has been loosened. A warning is
+      printed if the gradients differ too much so that we can understand if it is an
+      issue.
+      
+2024.12.9: Improvements to thermodynamics step
     * Added B3LYP atom energies to the thermodynamics step.
     * Expanded the properties to include essentially everything calculated by Gaussian.
     * Added the ability to get the initial Hessian for an optimization from propertiesm
