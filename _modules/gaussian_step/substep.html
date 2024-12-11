@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.12.9 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.12.11 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../../_static/documentation_options.js?v=4002252a"></script>
+    <script src="../../_static/documentation_options.js?v=94218915"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.9" />
+  <meta name="docsearch:version" content="2024.12.11" />
   </head>
   
   
@@ -487,6 +487,22 @@
 <span class="kn">import</span> <span class="nn">seamm.data</span>
 <span class="kn">from</span> <span class="nn">seamm_util</span> <span class="kn">import</span> <span class="n">CompactJSONEncoder</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">Q_</span>
 <span class="kn">import</span> <span class="nn">seamm_util.printing</span> <span class="k">as</span> <span class="nn">printing</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">batched</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+
+    <span class="k">def</span> <span class="nf">batched</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="s2">&quot;Batch data into tuples of length n. The last batch may be shorter.&quot;</span>
+        <span class="c1"># batched(&#39;ABCDEFG&#39;, 3) --&gt; ABC DEF G</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be at least one&quot;</span><span class="p">)</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">batch</span> <span class="o">:=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">n</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="n">batch</span>
+
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
@@ -1507,20 +1523,26 @@
 
             <span class="k">if</span> <span class="s2">&quot;gradients&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="c1"># Check that the same values to 4 figures</span>
+                <span class="n">same</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">for</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">],</span> <span class="n">XYZs</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0001</span><span class="p">:</span>
-                        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Error in the gradients from the Punch file:&quot;</span>
-                        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-                        <span class="k">for</span> <span class="n">xyz0</span><span class="p">,</span> <span class="n">xyz1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">],</span> <span class="n">XYZs</span><span class="p">):</span>
-                            <span class="n">old</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                            <span class="n">new</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                            <span class="k">for</span> <span class="n">x0</span> <span class="ow">in</span> <span class="n">xyz0</span><span class="p">:</span>
-                                <span class="n">old</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x0</span><span class="si">:</span><span class="s2">9.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
-                            <span class="k">for</span> <span class="n">x1</span> <span class="ow">in</span> <span class="n">xyz1</span><span class="p">:</span>
-                                <span class="n">new</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x1</span><span class="si">:</span><span class="s2">9.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
-                            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2"> &lt;-- </span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">XYZs</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">:</span>
+                        <span class="n">same</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">same</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Warning: gradients from the Punch file differ in</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="k">for</span> <span class="n">xyz0</span><span class="p">,</span> <span class="n">xyz1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                        <span class="n">batched</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">batched</span><span class="p">(</span><span class="n">XYZs</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="n">old</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">new</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="k">for</span> <span class="n">x0</span> <span class="ow">in</span> <span class="n">xyz0</span><span class="p">:</span>
+                            <span class="n">old</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x0</span><span class="si">:</span><span class="s2">9.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="k">for</span> <span class="n">x1</span> <span class="ow">in</span> <span class="n">xyz1</span><span class="p">:</span>
+                            <span class="n">new</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x1</span><span class="si">:</span><span class="s2">9.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2"> &lt;-- </span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gradients&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">XYZs</span>
 
         <span class="c1"># Force constants. Triangular matrix, 3 per line.</span>
         <span class="n">ntri</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
