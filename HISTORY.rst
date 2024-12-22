@@ -1,6 +1,14 @@
 =======
 History
 =======
+2024.12.22: Added more methods and basis sets for thermo
+    * Added the atom energies for the 6-31G and 6-311G basis sets to the thermodynamics
+      step for HF, B3LYP, all MP, CC, CBS-xx, and Gn composite methods
+    * Added detailed output of the thermochemistry calculations in Thermochemistry.txt
+    * Allowed composite methods to be access through the Thermodynamics Step.
+    * Added ability to print and/or save the basis set to a file.
+    * Added options for the numerical grids used in DFT calculations.
+      
 2024.12.11: Loosened tolerance on gradients from punch file
     * The code checks that the gradients in the punch file are similar to those in the
       output. Apparently the check was too tight, so it has been loosened. A warning is

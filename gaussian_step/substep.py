@@ -19,14 +19,17 @@ import pprint
 import re
 import shutil
 import string
+import textwrap
 import time
 
 import cclib
 from cpuinfo import get_cpu_info
 import numpy as np
 import pandas
+from tabulate import tabulate
 
 import gaussian_step
+from molsystem import elements
 import seamm
 import seamm_exec
 import seamm.data
@@ -107,6 +110,67 @@ def dehumanize(memory, suffix="B"):
             return int(amount * units[prefix])
 
     raise ValueError(f"Don't recognize the units on '{memory}'")
+
+
+_subscript = {
+    "0": "\N{SUBSCRIPT ZERO}",
+    "1": "\N{SUBSCRIPT ONE}",
+    "2": "\N{SUBSCRIPT TWO}",
+    "3": "\N{SUBSCRIPT THREE}",
+    "4": "\N{SUBSCRIPT FOUR}",
+    "5": "\N{SUBSCRIPT FIVE}",
+    "6": "\N{SUBSCRIPT SIX}",
+    "7": "\N{SUBSCRIPT SEVEN}",
+    "8": "\N{SUBSCRIPT EIGHT}",
+    "9": "\N{SUBSCRIPT NINE}",
+}
+
+
+def subscript(n):
+    """Return the number using Unicode subscipt characters."""
+    return "".join([_subscript[c] for c in str(n)])
+
+
+one_half = "\N{VULGAR FRACTION ONE HALF}"
+degree_sign = "\N{DEGREE SIGN}"
+standard_state = {
+    "H": f"{one_half}H{subscript(2)}(g)",
+    "He": "He(g)",
+    "Li": "Li(s)",
+    "Be": "Be(s)",
+    "B": "B(s)",
+    "C": "C(s,gr)",
+    "N": f"{one_half}N{subscript(2)}(g)",
+    "O": f"{one_half}O{subscript(2)}(g)",
+    "F": f"{one_half}F{subscript(2)}(g)",
+    "Ne": "Ne(g)",
+    "Na": "Na(s)",
+    "Mg": "Mg(s)",
+    "Al": "Al(s)",
+    "Si": "Si(s)",
+    "P": "P(s)",
+    "S": "S(s)",
+    "Cl": f"{one_half}Cl{subscript(2)}(g)",
+    "Ar": "Ar(g)",
+    "K": "K(s)",
+    "Ca": "Ca(s)",
+    "Sc": "Sc(s)",
+    "Ti": "Ti(s)",
+    "V": "V(s)",
+    "Cr": "Cr(s)",
+    "Mn": "Mn(s)",
+    "Fe": "Fe(s)",
+    "Co": "Co(s)",
+    "Ni": "Ni(s)",
+    "Cu": "Cu(s)",
+    "Zn": "Zn(s)",
+    "Ga": "Ga(s)",
+    "Ge": "Ge(s)",
+    "As": "As(s)",
+    "Se": "Se(s)",
+    "Br": f"{one_half}Br{subscript(2)}(l)",
+    "Kr": "(g)",
+}
 
 
 class Substep(seamm.Node):
@@ -222,7 +286,7 @@ class Substep(seamm.Node):
             The results of the calculation.
         """
         if "H" not in data:
-            return
+            return ""
 
         # Read the tabulated values from either user or data directory
         personal_file = Path("~/.seamm.d/data/atom_energies.csv").expanduser()
@@ -236,7 +300,6 @@ class Substep(seamm.Node):
         table = pandas.read_csv(csv_file, index_col=False)
 
         self.logger.debug(f"self.model = {self.model}")
-        self.logger.debug("\n\t".join(table.columns))
 
         # Check if have the data
         atom_energies = None
@@ -246,10 +309,7 @@ class Substep(seamm.Node):
         else:
             column = self.model
 
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"Looking for '{column}' in")
-            for i, col in enumerate(table.columns, start=1):
-                self.logger.debug(f"\t{i:5d}: {col}")
+        self.logger.debug(f"Looking for '{column}'")
 
         column2 = column + " correction"
         if personal_table is not None and column in personal_table.columns:
@@ -261,30 +321,380 @@ class Substep(seamm.Node):
             if column2 in table.columns:
                 correction_energy = table[column2].to_list()
 
+        if atom_energies is None:
+            self.logger.debug("     and didn't find it!")
+
         DfH0gas = None
+        references = None
+        term_symbols = None
         if personal_table is not None and "ΔfH°gas" in personal_table.columns:
             DfH0gas = personal_table["ΔfH°gas"].to_list()
+            if "Reference" in personal_table.columns:
+                references = personal_table["Reference"].to_list()
+            if "Term Symbol" in personal_table.columns:
+                term_symbols = personal_table["Term Symbols"].to_list()
         elif "ΔfH°gas" in table.columns:
             DfH0gas = table["ΔfH°gas"].to_list()
+            if "Reference" in table.columns:
+                references = table["Reference"].to_list()
+            if "Term Symbol" in table.columns:
+                term_symbols = table["Term Symbol"].to_list()
+        if references is not None:
+            len(references)
 
-        if DfH0gas is None or atom_energies is None:
-            return
+        if atom_energies is None:
+            return ""
 
         # Get the atomic numbers and counts
         _, configuration = self.get_system_configuration(None)
         counts = Counter(configuration.atoms.atomic_numbers)
-        Ecorr = 0.0
-        for atno, count in counts.items():
-            if isnan(atom_energies[atno - 1]):
+
+        # Get the Hill formula as a list
+        symbols = sorted(elements.to_symbols(counts.keys()))
+        composition = []
+        if "C" in symbols:
+            composition.append((6, "C", counts[6]))
+            symbols.remove("C")
+            if "H" in symbols:
+                composition.append((1, "H", counts[1]))
+                symbols.remove("H")
+
+        for symbol in symbols:
+            atno = elements.symbol_to_atno[symbol]
+            composition.append((atno, symbol, counts[atno]))
+
+        # And the reactions. First, for atomization energy
+        middot = "\N{MIDDLE DOT}"
+        lDelta = "\N{Greek Capital Letter Delta}"
+        formula = ""
+        tmp = []
+        for atno, symbol, count in composition:
+            if count == 1:
+                formula += symbol
+                tmp.append(f"{symbol}(g)")
+            else:
+                formula += f"{symbol}{subscript(count)}"
+                tmp.append(f"{count}{middot}{symbol}(g)")
+        gas_atoms = " + ".join(tmp)
+        tmp = []
+        for atno, symbol, count in composition:
+            if count == 1:
+                tmp.append(standard_state[symbol])
+            else:
+                tmp.append(f"{count}{middot}{standard_state[symbol]}")
+        standard_elements = " + ".join(tmp)
+
+        # The atomization energy is the electronic energy minus the energy of the atoms
+        try:
+            name = configuration.canonical_smiles
+        except Exception:
+            name = formula
+        try:
+            name = configuration.PC_iupac_name(fallback=name)
+        except Exception:
+            raise
+
+        text = f"Thermochemistry of {name}\n\n"
+        text += "Atomization Energy\n"
+        text += "------------------\n"
+        text += textwrap.fill(
+            f"The atomization energy,  {lDelta}atE{degree_sign}, is the energy to break"
+            " all the bonds in the system, separating the atoms from each other."
+        )
+        text += f"\n\n    {formula} --> {gas_atoms}\n\n"
+        text += textwrap.fill(
+            "The following table shows in detail the calculation. The first line is "
+            "the system and its calculated energy. The next lines are the energies "
+            "of each type of atom in the system. These have been tabulated by running "
+            "calculations on each atom, and are included in the SEAMM release. "
+            "The last two lines give the formation energy from atoms in atomic units "
+            "and as kJ/mol.",
+        )
+        text += "\n\n"
+        table = {
+            "System": [],
+            "Term": [],
+            "Value": [],
+            "Units": [],
+        }
+
+        E = data["energy"]
+
+        Eatoms = 0.0
+        for atno, symbol, count in composition:
+            Eatom = atom_energies[atno - 1]
+            if isnan(Eatom):
                 # Don't have the data for this element
-                return
-            Ecorr += count * (DfH0gas[atno - 1] - atom_energies[atno - 1])
+                return ""
+            Eatoms += count * Eatom
+            tmp = Q_(Eatom, "kJ/mol").m_as("E_h")
+            table["System"].append(f"{symbol}(g)")
+            table["Term"].append(f"{count} * {tmp:.6f}")
+            table["Value"].append(f"{count * tmp:.6f}")
+            table["Units"].append("")
+
+        table["Units"][0] = "E_h"
+
+        table["System"].append("^")
+        table["Term"].append("-")
+        table["Value"].append("-")
+        table["Units"].append("")
+
+        table["System"].append(formula)
+        table["Term"].append(f"{-E:.6f}")
+        table["Value"].append(f"{-E:.6f}")
+        table["Units"].append("E_h")
+
+        data["E atomization"] = Eatoms - Q_(E, "E_h").m_as("kJ/mol")
+
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append("=")
+        table["Units"].append("")
+
+        result = f'{Q_(data["E atomization"], "kJ/mol").m_as("E_h"):.6f}'
+        table["System"].append(f"{lDelta}atE")
+        table["Term"].append("")
+        table["Value"].append(result)
+        table["Units"].append("E_h")
+
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append(f'{data["E atomization"]:.2f}')
+        table["Units"].append("kJ/mol")
+
+        tmp = tabulate(
+            table,
+            headers="keys",
+            tablefmt="rounded_outline",
+            colalign=("center", "center", "decimal", "center"),
+            disable_numparse=True,
+        )
+        length = len(tmp.splitlines()[0])
+        text_lines = []
+        text_lines.append(f"Atomization Energy for {formula}".center(length))
+        text_lines.append(tmp)
+        text += textwrap.indent("\n".join(text_lines), 4 * " ")
+
+        if "H" not in data or DfH0gas is None:
+            return text
+
+        # Atomization enthalpy of the elements, experimental
+        table = {
+            "System": [],
+            "Term": [],
+            "Value": [],
+            "Units": [],
+            "Reference": [],
+        }
+
+        E = data["energy"]
+
+        DfH_at = 0.0
+        refno = 1
+        for atno, symbol, count in composition:
+            DfH_atom = DfH0gas[atno - 1]
+            DfH_at += count * DfH_atom
+            tmp = Q_(DfH_atom, "kJ/mol").m_as("E_h")
+            table["System"].append(f"{symbol}(g)")
+            if count == 1:
+                table["Term"].append(f"{tmp:.6f}")
+            else:
+                table["Term"].append(f"{count} * {tmp:.6f}")
+            table["Value"].append(f"{count * tmp:.6f}")
+            table["Units"].append("")
+            refno += 1
+            table["Reference"].append(refno)
+
+        table["Units"][0] = "E_h"
+
+        table["System"].append("^")
+        table["Term"].append("-")
+        table["Value"].append("-")
+        table["Units"].append("")
+        table["Reference"].append("")
+
+        table["System"].append(standard_elements)
+        table["Term"].append("")
+        table["Value"].append("0.0")
+        table["Units"].append("E_h")
+        table["Reference"].append("")
+
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append("=")
+        table["Units"].append("")
+        table["Reference"].append("")
+
+        result = f'{Q_(DfH_at, "kJ/mol").m_as("E_h"):.6f}'
+        table["System"].append(f"{lDelta}atH{degree_sign}")
+        table["Term"].append("")
+        table["Value"].append(result)
+        table["Units"].append("E_h")
+        table["Reference"].append("")
+
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append(f"{DfH_at:.2f}")
+        table["Units"].append("kJ/mol")
+        table["Reference"].append("")
+
+        tmp = tabulate(
+            table,
+            headers="keys",
+            tablefmt="rounded_outline",
+            colalign=("center", "center", "decimal", "center", "center"),
+            disable_numparse=True,
+        )
+        length = len(tmp.splitlines()[0])
+        text_lines = []
+        text_lines.append(
+            "Atomization enthalpy of the elements (experimental)".center(length)
+        )
+        text_lines.append(tmp)
+
+        text += "\n\n"
+        text += "Enthalpy of Formation\n"
+        text += "---------------------\n"
+        text += textwrap.fill(
+            f"The enthalpy of formation, {lDelta}fHº, is the enthalpy of creating the "
+            "molecule from the elements in their standard state:"
+        )
+        text += f"\n\n   {standard_elements} --> {formula} (1)\n\n"
+        text += textwrap.fill(
+            "The standard state of the element, denoted by the superscript º,"
+            " is its form at 298.15 K and 1 atm pressure, e.g. graphite for carbon, "
+            "H2 gas for hydrogen, etc."
+        )
+        text += "\n\n"
+        text += textwrap.fill(
+            "Since it is not easy to calculate the enthalpy of e.g. graphite we will "
+            "use two sequential reactions that are equivalent. First, we will create "
+            "gas phase atoms from the elements:"
+        )
+        text += f"\n\n    {standard_elements} --> {gas_atoms} (2)\n\n"
+        text += textwrap.fill(
+            "This will use the experimental values of the enthalpy of formation of the "
+            "atoms in the gas phase to calculate the enthalpy of this reaction. "
+            "Then we react the atoms to get the desired system:"
+        )
+        text += f"\n\n    {gas_atoms} --> {formula} (3)\n\n"
+        text += textwrap.fill(
+            "Note that this is reverse of the atomization reaction, so "
+            f"{lDelta}H = -{lDelta}atH."
+        )
+        text += "\n\n"
+        text += textwrap.fill(
+            "First we calculate the enthalpy of the atomization of the elements in "
+            "their standard state, using tabulated experimental values:"
+        )
+        text += "\n\n"
+        text += textwrap.indent("\n".join(text_lines), 4 * " ")
+
+        # And the calculated atomization enthalpy
+        table = {
+            "System": [],
+            "Term": [],
+            "Value": [],
+            "Units": [],
+        }
+
+        Hatoms = 0.0
+        dH = Q_(6.197, "kJ/mol").m_as("E_h")
+        for atno, symbol, count in composition:
+            Eatom = atom_energies[atno - 1]
+            # 6.197 is the H298-H0 for an atom
+            Hatoms += count * (Eatom + 6.197)
             if correction_energy is not None and not isnan(correction_energy[atno - 1]):
-                Ecorr += count * correction_energy[atno - 1]
+                Hatoms += count * correction_energy[atno - 1]
 
-        data["DfH0"] = Q_(data["H"], "E_h").m_as("kJ/mol") + Ecorr
+            tmp = Q_(Eatom, "kJ/mol").m_as("E_h")
+            table["System"].append(f"{symbol}(g)")
+            if count == 1:
+                table["Term"].append(f"{-tmp:.6f} + {dH:.6f}")
+            else:
+                table["Term"].append(f"{count} * ({-tmp:.6f} + {dH:.6f})")
+            table["Value"].append(f"{-count * (tmp + dH):.6f}")
+            table["Units"].append("")
 
-        return
+        table["System"].append("^")
+        table["Term"].append("-")
+        table["Value"].append("-")
+        table["Units"].append("")
+
+        H = data["H"]
+
+        table["System"].append(formula)
+        table["Term"].append(f"{H:.6f}")
+        table["Value"].append("")
+        table["Units"].append("E_h")
+
+        data["H atomization"] = Hatoms - Q_(H, "E_h").m_as("kJ/mol")
+        data["DfH0"] = DfH_at - data["H atomization"]
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append("=")
+        table["Units"].append("")
+
+        result = f'{Q_(data["H atomization"], "kJ/mol").m_as("E_h"):.6f}'
+        table["System"].append(f"{lDelta}atH{degree_sign}")
+        table["Term"].append("")
+        table["Value"].append(result)
+        table["Units"].append("E_h")
+
+        table["System"].append("")
+        table["Term"].append("")
+        table["Value"].append(f'{data["H atomization"]:.2f}')
+        table["Units"].append("kJ/mol")
+
+        tmp = tabulate(
+            table,
+            headers="keys",
+            tablefmt="rounded_outline",
+            colalign=("center", "center", "decimal", "center"),
+            disable_numparse=True,
+        )
+        length = len(tmp.splitlines()[0])
+        text_lines = []
+        text_lines.append("Atomization Enthalpy (calculated)".center(length))
+        text_lines.append(tmp)
+        text += "\n\n"
+
+        text += textwrap.fill(
+            "Next we calculate the atomization enthalpy of the system. We have the "
+            "calculated enthalpy of the system, but need the enthalpy of gas phase "
+            f"atoms at the standard state (25{degree_sign}C, 1 atm). The tabulated "
+            "energies for the atoms, used above, are identical to H0 for an atom. "
+            "We will add H298 - H0 to each atom, which [1] is 5/2RT = 0.002360 E_h"
+        )
+        text += "\n\n"
+        text += textwrap.indent("\n".join(text_lines), 4 * " ")
+        text += "\n\n"
+        text += textwrap.fill(
+            "The enthalpy change for reaction (3) is the negative of this atomization"
+            " enthalpy. Putting the two reactions together with the negative for Rxn 3:"
+        )
+        text += "\n\n"
+        text += f"{lDelta}fH{degree_sign} = {lDelta}H(rxn 2) - {lDelta}H(rxn 3)\n"
+        text += f"     = {DfH_at:.2f} - {data['H atomization']:.2f}\n"
+        text += f"     = {DfH_at - data['H atomization']:.2f} kJ/mol\n"
+
+        text += "\n\n"
+        text += "References\n"
+        text += "----------\n"
+        text += "1. https://en.wikipedia.org/wiki/Monatomic_gas\n"
+        refno = 1
+        for atno, symbol, count in composition:
+            refno += 1
+            text += f"{refno}. {lDelta}fH{degree_sign} = {DfH0gas[atno - 1]} kJ/mol"
+            if term_symbols is not None:
+                text += f" for {term_symbols[atno - 1]} {symbol}"
+            else:
+                text += f" for {symbol}"
+            if references is not None:
+                text += f" from {references[atno-1]}\n"
+
+        return text
 
     def cleanup(self):
         """Perform any requested cleanup at the end of the calculation."""
@@ -719,7 +1129,41 @@ class Substep(seamm.Node):
                                     f"Could not find the Gaussian citation: {e}"
                                 )
                             break
-                break
+            elif "AO basis set in the form of general basis input" in line:
+                _, configuration = self.get_system_configuration(None)
+                symbols = configuration.atoms.symbols
+                atnos = configuration.atoms.atomic_numbers
+                tmp = []
+                first = True
+                found = set()
+                keep = True
+                section = {}
+                for line in it:
+                    if "nuclear repulsion energy" in line:
+                        break
+                    if line.strip() == "":
+                        tmp = [section[k] for k in sorted(section.keys())]
+                        pprint.pp(tmp)
+                        data["basis set"] = "\n".join(tmp) + "\n"
+                        break
+                    if first:
+                        first = False
+                        # n is one-based atom number
+                        n, _ = line.strip().split()
+                        n = int(n)
+                        atno = atnos[n - 1]
+                        symbol = symbols[n - 1]
+                        keep = symbol not in found
+                        if keep:
+                            found.add(symbol)
+                            tmp.append(f"-{symbol}")
+                    elif keep:
+                        tmp.append(line)
+                    if "****" in line:
+                        if keep:
+                            section[atno] = "\n".join(tmp)
+                        tmp = []
+                        first = True
 
         # And the optimization steps, if any.
         #
@@ -790,6 +1234,48 @@ class Substep(seamm.Node):
         data["maximum atom displacement trajectory"] = max_displacement
         data["RMS atom displacement trajectory"] = rms_displacement
 
+        method, method_data = self.get_method(P)
+
+        # Look for thermochemistry output. Composite methods may override some values
+        text = []
+        found = False
+        for line in reversed(lines):
+            if "Sum of electronic and thermal Free Energies=" in line:
+                found = True
+                text.append(line)
+            elif found:
+                text.append(line)
+                if "- Thermochemistry -" in line:
+                    break
+
+        if found:
+            it = iter(reversed(text))
+            for line in it:
+                if "Rotational symmetry number" in line:
+                    tmp = line.split()[3].rstrip(".")
+                    data["symmetry number"] = int(tmp)
+                elif "Thermal correction to Energy=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["E thermal"] = float(tmp)
+                elif "Thermal correction to Enthalpy=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["H thermal"] = float(tmp)
+                elif "Thermal correction to Gibbs Free Energy=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["G thermal"] = float(tmp)
+                elif "Sum of electronic and zero-point Energies=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["H 0"] = float(tmp)
+                elif "Sum of electronic and thermal Energies=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["E T"] = float(tmp)
+                elif "Sum of electronic and thermal Enthalpies=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["U"] = float(tmp)
+                elif "Sum of electronic and thermal Free Energies=" in line:
+                    tmp = line.split("=")[1].strip()
+                    data["G"] = float(tmp)
+
         # CBS calculations
 
         # Complete Basis Set (CBS) Extrapolation:
@@ -806,14 +1292,15 @@ class Substep(seamm.Node):
         # CBS-4 (0 K)=               -78.439921 CBS-4 Energy=                 -78.436908
         # CBS-4 Enthalpy=            -78.435964 CBS-4 Free Energy=            -78.460753
 
-        method, method_data = self.get_method(P)
         self.logger.debug(f"Checking for CBS extrapolation for {method}")
         if method[0:4] == "CBS-":
             # Need last section
             if method == "CBS-4M":
                 match = "CBS-4 Enthalpy="
+                tmp_method = "CBS-4"
             else:
                 match = f"{method} Enthalpy="
+                tmp_method = method
             self.logger.debug(f"Looking for '{match}'")
             text = []
             found = False
@@ -828,6 +1315,7 @@ class Substep(seamm.Node):
 
             self.logger.debug(f"Found CBS extrapolation: {found}")
             if found:
+                translation = self.metadata["translation"]
                 text = text[::-1]
                 it = iter(text)
                 next(it)
@@ -851,15 +1339,14 @@ class Substep(seamm.Node):
                         key, value = p.split("=", 1)
                         key = key.strip()
                         value = float(value.strip())
-                        if "(0 K)" in key:
-                            key = "E 0"
-                        elif "Free Energy" in key:
-                            key = "F"
-                        elif "Energy" in key:
-                            key = "energy"
-                        elif "Enthalpy" in key:
-                            key = "H"
+                        if key.startswith(tmp_method):
+                            key = key.split(" ", 1)[1]
+                        key = "Composite/" + key
+                        if key in translation:
+                            key = translation[key]
                         data[key] = value
+                data["energy"] = data["H 0"] - data["ZPE"]
+                data["U"] = data["energy"] + data["E thermal"]
                 data["model"] = method
                 data["Composite/summary"] = "\n".join(text)
 
@@ -922,18 +1409,19 @@ class Substep(seamm.Node):
                         key = key.strip()
                         value = float(value.strip())
                         if key.startswith(method):
-                            key = key.split(" ", 1)[1]
+                            key = key[len(method) :].strip()
                         elif key == "E(Empiric)":
-                            key = "E(empirical)"
+                            key = "DE(Empirical)"
                         key = "Composite/" + key
                         if key in translation:
                             key = translation[key]
                         data[key] = value
 
+                data["energy"] = data["H 0"] - data["ZPE"]
+                data["U"] = data["energy"] + data["E thermal"]
                 data["model"] = method
                 tmp = " " * 20 + f"{method[0:2]} composite method extrapolation\n\n"
                 data["Composite/summary"] = tmp + "\n".join(text)
-                data["Total Energy"] = data["Composite/Free Energy"]
 
         # The Wiberg bond orders ... which look like this:
 
@@ -1542,6 +2030,10 @@ class Substep(seamm.Node):
                         model = data["method"] + "/" + data["density functional"]
                     else:
                         model = data["method"]
+                    # Remove the initial R or U since it makes reusing structures and
+                    # properties difficult
+                    if model[0] in ("U", "R"):
+                        model = model[1:]
 
                     # Check if the method uses a basis set
                     methods = gaussian_step.methods

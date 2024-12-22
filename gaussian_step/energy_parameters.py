@@ -129,6 +129,25 @@ class EnergyParameters(seamm.Parameters):
                 "maximum change in the density matrix (10^-(N+2))."
             ),
         },
+        "integral grid": {
+            "default": "UltraFine",
+            "kind": "enumeration",
+            "default_units": "",
+            "enumeration": (
+                "96,32,64",
+                "SuperFine",
+                "UltraFine",
+                "Fine",
+                "SG1",
+                "Coarse",
+            ),
+            "format_string": "s",
+            "description": "Numerical grid:",
+            "help_text": (
+                "The grid to use for numerical integrations in e.g. DFT. "
+                "The 'UltraFine' is the normal default for Gaussian."
+            ),
+        },
         "maximum iterations": {
             "default": "default",
             "kind": "integer",
@@ -198,6 +217,33 @@ class EnergyParameters(seamm.Parameters):
             "help_text": (
                 "Whether to use the calculated bond orders to update the structure"
             ),
+        },
+        "print basis set": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "s",
+            "description": "Print basis set:",
+            "help_text": "Whether to print the basis set to the output.",
+        },
+        "save basis set": {
+            "default": "no",
+            "kind": "str",
+            "default_units": "",
+            "enumeration": ("yes", "no", "append to"),
+            "format_string": "s",
+            "description": "Save basis set:",
+            "help_text": "Whether to save the basis set to a file.",
+        },
+        "basis set file": {
+            "default": "basis.gbs",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": tuple(),
+            "format_string": "s",
+            "description": "File for basis set:",
+            "help_text": "The file for the output basis set.",
         },
         "file handling": {
             "default": "remove checkpoint files",

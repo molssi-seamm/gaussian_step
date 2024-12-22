@@ -9,6 +9,8 @@ A SEAMM plug-in for Gaussian
 # the gaussian_step package.
 
 from .metadata import methods  # noqa: F401
+from .metadata import Gn_composite_methods, CBS_composite_methods  # noqa: F401
+from .metadata import composite_methods  # noqa: F401
 from .metadata import dft_functionals  # noqa: F401
 from .metadata import optimization_convergence  # noqa: F401
 from .metadata import metadata  # noqa: F401
