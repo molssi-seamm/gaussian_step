@@ -5,6 +5,7 @@
 import logging
 import pprint
 import tkinter as tk
+import tkinter.messagebox as msg
 import tkinter.ttk as ttk
 
 import gaussian_step
@@ -100,9 +101,29 @@ class TkOptimization(gaussian_step.TkEnergy):
             self[key].bind("<Return>", self.reset_optimization)
             self[key].bind("<FocusOut>", self.reset_optimization)
 
+        for key in ("geometry convergence",):
+            self[key].bind("<<ComboboxSelected>>", self.check_grid)
+            self[key].bind("<Return>", self.check_grid)
+            self[key].bind("<FocusOut>", self.check_grid)
+
         # Top level needs to call reset_dialog
         if self.node.calculation == "optimization":
             self.reset_dialog()
+
+    def check_grid(self, widget=None):
+        """Check the grid for the optimization parameters"""
+        convergence = self["geometry convergence"].get()
+        grid = self["integral grid"].get()
+
+        if "tight" in convergence.lower():
+            if grid != "SuperFine":
+                if msg.askyesno(
+                    "Tighten integral grid?",
+                    f"The integral grid is currently '{grid}'.\n"
+                    "Change to 'SuperFine'? (recommmended)",
+                    parent=self["frame"],
+                ):
+                    self["integral grid"].set("SuperFine")
 
     def reset_dialog(self, widget=None):
         """Layout the widgets, letting our parents go first."""

@@ -70,7 +70,10 @@ class Energy(Substep):
         ):
             functional = self.get_functional(P)
 
-            text = f"{calculation} using {method} using {functional}"
+            text = (
+                f"{calculation} using {method} using {functional} using the "
+                "{integral grid} grid for the numerical integration"
+            )
             if (
                 functional in gaussian_step.dft_functionals
                 and len(gaussian_step.dft_functionals[functional]["dispersion"]) > 1
@@ -180,7 +183,8 @@ class Energy(Substep):
 
         _, starting_configuration = self.get_system_configuration(None)
 
-        max_atno = max(starting_configuration.atoms.atomic_numbers)
+        atnos = set(starting_configuration.atoms.atomic_numbers)
+        max_atno = max(atnos)
 
         P = self.parameters.current_values_to_dict(
             context=seamm.flowchart_variables._data
@@ -247,6 +251,11 @@ class Energy(Substep):
                 keywords.add(f"U{functional_data['name']}{mopts}/{basis}")
             if len(functional_data["dispersion"]) > 1 and P["dispersion"] != "none":
                 keywords.add(f"EmpiricalDispersion={P['dispersion']}")
+            # Set the numerical integration grid
+            grid = P["integral grid"]
+            if grid == "96,32,64":
+                grid = "-96032"
+            keywords.add(f"Integral(Grid={grid})")
         elif method == "HF":
             if restricted:
                 if multiplicity == 1:
@@ -256,6 +265,28 @@ class Energy(Substep):
             else:
                 keywords.add(f"UHF{mopts}/{basis}")
         elif method[0:2] == "MP":
+            if "(" in method:
+                method, option = method.split("(")
+                method_options.append(option.rstrip(")"))
+            if len(method_options) == 0:
+                mopts = ""
+            else:
+                mopts = "=(" + ", ".join(method_options) + ")"
+            if restricted:
+                if multiplicity == 1:
+                    keywords.add(f"R{method}{mopts}/{basis}")
+                else:
+                    keywords.add(f"RO{method}{mopts}/{basis}")
+            else:
+                keywords.add(f"U{method}{mopts}/{basis}")
+        elif method in ("QCISD", "QCISD(T)"):
+            if "(" in method:
+                method, option = method.split("(")
+                method_options.append(option.rstrip(")"))
+            if len(method_options) == 0:
+                mopts = ""
+            else:
+                mopts = "=(" + ", ".join(method_options) + ")"
             if restricted:
                 if multiplicity == 1:
                     keywords.add(f"R{method}{mopts}/{basis}")
@@ -264,6 +295,13 @@ class Energy(Substep):
             else:
                 keywords.add(f"U{method}{mopts}/{basis}")
         elif method in ("CCSD", "CCSD(T)"):
+            if "(" in method:
+                method, option = method.split("(")
+                method_options.append(option.rstrip(")"))
+            if len(method_options) == 0:
+                mopts = ""
+            else:
+                mopts = "=(" + ", ".join(method_options) + ")"
             if restricted:
                 if multiplicity == 1:
                     keywords.add(f"R{method}{mopts}/{basis}")
@@ -350,6 +388,13 @@ class Energy(Substep):
                 raise RuntimeError(
                     f"{method} cannot handle systems with atoms heavier than Kr (36)"
                 )
+            if method[:2] in ("G3", "G4"):
+                for atno in range(21, 31):
+                    if atno in atnos:
+                        raise RuntimeError(
+                            f"{method} can only handle elements 1-20 (H-Ca) and "
+                            "31-36 (Ga-Kr)"
+                        )
         elif method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
             if restricted and multiplicity != 1:
                 keywords.add(f"RO{method}{mopts}")
@@ -373,6 +418,9 @@ class Energy(Substep):
         if P["bond orders"] == "Wiberg":
             keywords.add("Pop=NBORead")
             extra_sections["NBO input"] = "$nbo bndidx $end"
+
+        if P["print basis set"] or P["save basis set"].lower() != "no":
+            keywords.add("GFInput")
 
         if self._timing_data is not None:
             try:
@@ -419,10 +467,18 @@ class Energy(Substep):
                 context=seamm.flowchart_variables._data
             )
 
-        # Calculate the enthalpy of formation, if possible
-        self.calculate_enthalpy_of_formation(data)
+        if "energy" not in data:
+            text = "Gaussian did not produce the energy. Something is wrong!"
+            printer.normal(__(text, indent=self.indent + 4 * " "))
 
         text = ""
+
+        # Calculate the enthalpy of formation, if possible
+        tmp_text = self.calculate_enthalpy_of_formation(data)
+        if tmp_text != "":
+            path = Path(self.directory) / "Thermochemistry.txt"
+            path.write_text(tmp_text)
+
         if table is None:
             table = {
                 "Property": [],
@@ -431,9 +487,6 @@ class Energy(Substep):
             }
 
         metadata = gaussian_step.metadata["results"]
-        if "energy" not in data:
-            text += "Gaussian did not produce the energy. Something is wrong!"
-            printer.normal(__(text, indent=self.indent + 4 * " "))
 
         # The semiempirical energy is the enthalpy, not energy!
         key = "energy"
@@ -460,6 +513,8 @@ class Energy(Substep):
                 tmp = Q_(float(data[key]), "hartree").m_as("kJ/mol")
                 table["Value"].append(f"{tmp:.2f}")
                 table["Units"].append("kJ/mol")
+
+                keys = []
             else:
                 if "DfH0" in data:
                     tmp = data["DfH0"]
@@ -471,37 +526,37 @@ class Energy(Substep):
                     table["Property"].append("")
                     table["Value"].append(f"{tmp:.2f}")
                     table["Units"].append("kJ/mol")
+                keys = [
+                    "H atomization",
+                    "DfE0",
+                    "E atomization",
+                    "energy",
+                ]
 
-                tmp = data[key]
-                mdata = metadata[key]
-                table["Property"].append(key)
-                table["Value"].append(f"{tmp:{mdata['format']}}")
-                if "units" in mdata:
-                    table["Units"].append(mdata["units"])
-                else:
-                    table["Units"].append("")
-
-        for key in (
-            "E_0",
-            "H",
-            "F",
-            "S",
-            "T",
-            "P",
-            "virial ratio",
-            "RMS density difference",
-            "E qcisd_t",
-            "E qcisd",
-            "E ccsd_t",
-            "E cc",
-            "E mp5",
-            "E mp4",
-            "E mp4sdq",
-            "E mp4dq",
-            "E mp3",
-            "E mp2",
-            "E scf",
-        ):
+        keys.extend(
+            [
+                "E_0",
+                "H",
+                "F",
+                "S",
+                "T",
+                "P",
+                "virial ratio",
+                "RMS density difference",
+                "E qcisd_t",
+                "E qcisd",
+                "E ccsd_t",
+                "E cc",
+                "E mp5",
+                "E mp4",
+                "E mp4sdq",
+                "E mp4dq",
+                "E mp3",
+                "E mp2",
+                "E scf",
+            ]
+        )
+        for key in keys:
             if key in data:
                 tmp = data[key]
                 mdata = metadata[key]
@@ -588,6 +643,32 @@ class Energy(Substep):
         if "Composite/summary" in data:
             text += "\n\n\n"
             text += textwrap.indent(data["Composite/summary"], self.indent + 4 * " ")
+
+        # Handle the basis set as requested
+        if P["print basis set"] and "basis set" in data:
+            name = data["basis set name"]
+            text += "\n\n"
+            text += textwrap.indent(
+                f"{name} basis set:\n" + data["basis set"], self.indent + 4 * " "
+            )
+
+        save_basis_set = P["save basis set"].lower()
+        if (
+            "basis set" in data
+            and save_basis_set == "yes"
+            or "append" in save_basis_set
+        ):
+            filename = P["basis set file"].strip()
+            if filename.startswith("/"):
+                path = Path(self.flowchart.root_directory) / filename[1:]
+            else:
+                path = Path(self.directory) / filename
+
+            if "append" in save_basis_set:
+                with path.open("a") as fd:
+                    fd.write(data["basis set"])
+            else:
+                path.write_text(data["basis set"])
 
         # Update the structure. Gaussian may have reoriented.
         system, configuration = self.get_system_configuration(None)

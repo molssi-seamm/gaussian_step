@@ -196,7 +196,12 @@ class Thermodynamics(gaussian_step.Optimization):
         # Get the current system and configuration (ignoring the system...)
         # _, configuration = self.get_system_configuration(None)
 
-        keywords.add("Freq")
+        # Figure out what we are doing!
+        method, method_data = self.get_method(P)
+
+        if method not in gaussian_step.composite_methods:
+            keywords.add("Freq")
+
         if P["optimize first"]:
             gaussian_step.Optimization.run(self, keywords=keywords)
         else:

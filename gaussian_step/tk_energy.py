@@ -88,6 +88,7 @@ class TkEnergy(seamm.TkNode):
             "advanced_method",
             "functional",
             "advanced_functional",
+            "integral grid",
             "dispersion",
             "spin-restricted",
             "freeze-cores",
@@ -95,11 +96,20 @@ class TkEnergy(seamm.TkNode):
             "bond orders",
             "apply bond orders",
             "calculate gradient",
+            "print basis set",
+            "save basis set",
+            "basis set file",
         ):
             self[key] = P[key].widget(self["calculation"])
 
         # bindings...
-        for key in ("level", "method", "advanced_method", "bond orders"):
+        for key in (
+            "level",
+            "method",
+            "advanced_method",
+            "bond orders",
+            "save basis set",
+        ):
             self[key].bind("<<ComboboxSelected>>", self.reset_calculation)
             self[key].bind("<Return>", self.reset_calculation)
             self[key].bind("<FocusOut>", self.reset_calculation)
@@ -200,6 +210,7 @@ class TkEnergy(seamm.TkNode):
             functional = self["advanced_functional"].get()
             widget = self["advanced_method"]
         bond_orders = self["bond orders"].get()
+        save_basis_set = self["save basis set"].get().lower() != "no"
         if self.is_expr(long_method):
             self.node.method = None
             meta = None
@@ -245,6 +256,9 @@ class TkEnergy(seamm.TkNode):
                 self["functional"].grid(row=row, column=1, sticky=tk.EW)
                 widgets2.append(self["functional"])
                 row += 1
+                self["integral grid"].grid(row=row, column=1, sticky=tk.EW)
+                widgets2.append(self["integral grid"])
+                row += 1
             if meta is None or "freeze core?" in meta and meta["freeze core?"]:
                 self["freeze-cores"].grid(row=row, column=1, sticky=tk.EW)
                 widgets2.append(self["freeze-cores"])
@@ -260,6 +274,9 @@ class TkEnergy(seamm.TkNode):
             if self.node.method is None or self.node.method == "DFT":
                 self["advanced_functional"].grid(row=row, column=1, sticky=tk.EW)
                 widgets2.append(self["advanced_functional"])
+                row += 1
+                self["integral grid"].grid(row=row, column=1, sticky=tk.EW)
+                widgets2.append(self["integral grid"])
                 row += 1
             if meta is None or "freeze core?" in meta and meta["freeze core?"]:
                 self["freeze-cores"].grid(row=row, column=1, sticky=tk.EW)
@@ -298,9 +315,20 @@ class TkEnergy(seamm.TkNode):
             widgets.append(self["calculate gradient"])
             row += 1
 
+        for key in ("print basis set", "save basis set"):
+            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            widgets.append(self[key])
+            row += 1
+
+        if save_basis_set:
+            for key in ("basis set file",):
+                self[key].grid(row=row, column=1, sticky=tk.EW)
+                widgets2.append(self[key])
+                row += 1
+
         sw.align_labels(widgets, sticky=tk.E)
         sw.align_labels(widgets2, sticky=tk.E)
-        frame.columnconfigure(0, minsize=30)
+        frame.columnconfigure(0, minsize=50)
 
         return row
 
