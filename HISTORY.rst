@@ -1,6 +1,12 @@
 =======
 History
 =======
+2024.12.23: Bugfix: thermochistry for DFT methods failed
+    * The code was not properly handling the DFT methods in the thermodynamics step.
+      This has been fixed.
+    * Improved the reporting on why the atomization energy or enthalpy of formation could
+      not be calculated.
+
 2024.12.22: Added more methods and basis sets for thermo
     * Added the atom energies for the 6-31G and 6-311G basis sets to the thermodynamics
       step for HF, B3LYP, all MP, CC, CBS-xx, and Gn composite methods
