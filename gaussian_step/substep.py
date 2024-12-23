@@ -285,8 +285,6 @@ class Substep(seamm.Node):
         data : dict
             The results of the calculation.
         """
-        if "H" not in data:
-            return ""
 
         # Read the tabulated values from either user or data directory
         personal_file = Path("~/.seamm.d/data/atom_energies.csv").expanduser()
@@ -343,7 +341,7 @@ class Substep(seamm.Node):
             len(references)
 
         if atom_energies is None:
-            return ""
+            return f"There are no tabulated atom energies for {column}"
 
         # Get the atomic numbers and counts
         _, configuration = self.get_system_configuration(None)
@@ -425,7 +423,7 @@ class Substep(seamm.Node):
             Eatom = atom_energies[atno - 1]
             if isnan(Eatom):
                 # Don't have the data for this element
-                return ""
+                return f"Do not have tabulated atom energies for {symbol} in {column}"
             Eatoms += count * Eatom
             tmp = Q_(Eatom, "kJ/mol").m_as("E_h")
             table["System"].append(f"{symbol}(g)")
@@ -476,7 +474,14 @@ class Substep(seamm.Node):
         text_lines.append(tmp)
         text += textwrap.indent("\n".join(text_lines), 4 * " ")
 
-        if "H" not in data or DfH0gas is None:
+        if "H" not in data:
+            text += "\n\n"
+            text += "Cannot calculate enthalpy of formation without the enthalpy"
+            return text
+        if DfH0gas is None:
+            text += "\n\n"
+            text += "Cannot calculate enthalpy of formation without the tabulated\n"
+            text += "atomization enthalpies of the elements."
             return text
 
         # Atomization enthalpy of the elements, experimental
