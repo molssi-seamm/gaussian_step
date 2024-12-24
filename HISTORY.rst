@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.12.24: Minor enhancement to Thermochemistry.txt report
+    * Added the method and basis set to the header of the Thermochemistry.txt report.
+    * Caught some cases where the system name was reported as None.
+
 2024.12.23: Bugfix: thermochistry for DFT methods failed
     * The code was not properly handling the DFT methods in the thermodynamics step.
       This has been fixed.

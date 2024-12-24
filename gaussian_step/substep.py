@@ -384,15 +384,20 @@ class Substep(seamm.Node):
 
         # The atomization energy is the electronic energy minus the energy of the atoms
         try:
-            name = configuration.canonical_smiles
+            name = "SMILES: " + configuration.canonical_smiles
+            if name is None:
+                name = "Formula: " + formula
         except Exception:
-            name = formula
+            name = "Formula: " + formula
         try:
             name = configuration.PC_iupac_name(fallback=name)
         except Exception:
-            raise
+            pass
 
-        text = f"Thermochemistry of {name}\n\n"
+        if name is None:
+            name = "Formula: " + formula
+
+        text = f"Thermochemistry of {name} with {column}\n\n"
         text += "Atomization Energy\n"
         text += "------------------\n"
         text += textwrap.fill(
