@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2024.12.24.1 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2025.1.5 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=d888c5d8"></script>
+    <script src="../../_static/documentation_options.js?v=3dfe497a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.24.1" />
+  <meta name="docsearch:version" content="2025.1.5" />
   </head>
   
   
@@ -1265,7 +1265,7 @@
                 <span class="n">method_data</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="n">method</span> <span class="o">=</span> <span class="n">method_string</span>
 
-        <span class="k">return</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span></div>
+        <span class="k">return</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span><span class="p">,</span> <span class="n">method_string</span></div>
 
 
 <div class="viewcode-block" id="Substep.make_plots">
@@ -1493,6 +1493,9 @@
 <span class="sd">        path : pathlib.Path</span>
 <span class="sd">            The path to the checkpoint file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span>
+
         <span class="n">lines</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -1668,6 +1671,13 @@
                         <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
                         <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
 
+        <span class="c1"># Electronic state. Hope that the last one is the one we want!</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;The electronic state is&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+
         <span class="c1"># And the optimization steps, if any.</span>
         <span class="c1">#</span>
         <span class="c1"># Need to be careful about end of the first (and presumably only?) optimization.</span>
@@ -1737,7 +1747,7 @@
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;maximum atom displacement trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_displacement</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;RMS atom displacement trajectory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_displacement</span>
 
-        <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span><span class="p">,</span> <span class="n">method_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
         <span class="c1"># Look for thermochemistry output. Composite methods may override some values</span>
         <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2133,7 +2143,7 @@
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> NHOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
-                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> LUMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">syms</span><span class="p">):</span>
                             <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> SLUMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2528,6 +2538,11 @@
                 <span class="c1"># And parse a bit more out of the output</span>
                 <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+                <span class="n">success</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span> <span class="k">if</span> <span class="s2">&quot;success&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Gaussian did not complete successfully&quot;</span><span class="p">)</span>
 
                 <span class="c1"># And the Punch file, if it exists</span>
                 <span class="n">punch</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;fort.7&quot;</span><span class="p">)</span>
