@@ -57,6 +57,7 @@ beta SLUMO symmetry#Gaussian#{model},str,,The symmetry of the beta SLUMO from {m
 dipole derivatives#Gaussian#{model},json,debye/Å,The dipole moment derivatives from {model},
 dipole moment vector#Gaussian#{model},json,D,The {model} electric dipole moment vector.,https://en.wikipedia.org/wiki/Electric_dipole_moment
 dipole moment#Gaussian#{model},float,D,"The {model} electric dipole moment, which is the magnitude of the dipole vector.",https://en.wikipedia.org/wiki/Electric_dipole_moment
+electronic state#Gaussian#{model},str,,The electronic state of the system using {model},
 force constants#Gaussian#{model},json,kcal/mol/Å^2,The {model} force constants,
 gradients#Gaussian#{model},json,E_h/Å,The {model} gradients,
 hexadecapole moment#Gaussian#{model},json,debye*Å^3,The hexadecapole moments from {model},

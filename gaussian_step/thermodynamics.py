@@ -197,7 +197,7 @@ class Thermodynamics(gaussian_step.Optimization):
         # _, configuration = self.get_system_configuration(None)
 
         # Figure out what we are doing!
-        method, method_data = self.get_method(P)
+        method, method_data, method_string = self.get_method(P)
 
         if method not in gaussian_step.composite_methods:
             keywords.add("Freq")
