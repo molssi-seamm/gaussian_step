@@ -10,6 +10,7 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": ((1, "doi:10.1021/ja00299a024"),),
     },
     "PM3: PM3 semiempirical HF": {
         "method": "PM3",
@@ -17,6 +18,10 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/jcc.540100208"),
+            (1, "https://doi.org/10.1002/jcc.540100209"),
+        ),
     },
     "PM3MM: PM3 semiempirical HF with MM corrections": {
         "method": "PM3MM",
@@ -24,6 +29,10 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/jcc.540100208"),
+            (1, "https://doi.org/10.1002/jcc.540100209"),
+        ),
     },
     "PM6: PM6 semiempirical HF": {
         "method": "PM6",
@@ -31,6 +40,7 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": ((1, "Stewart_2007"),),
     },
     "PDDG: PDDG variant of PM6 semiempirical HF": {
         "method": "PDDG",
@@ -38,6 +48,10 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/jcc.10162"),
+            (2, "doi:10.1021/ct0500287"),
+        ),
     },
     "PM7: modified PM7 semiempirical HF": {
         "method": "PM7",
@@ -45,6 +59,7 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": ((1, "Stewart_2012"),),
     },
     "PM7MOPAC: PM7 semiempirical HF as in MOPAC": {
         "method": "PM7MOPAC",
@@ -52,18 +67,28 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "nobasis": True,
+        "citations": ((1, "Stewart_2012"),),
     },
     "DFT: Kohn-Sham density functional theory": {
         "method": "DFT",
         "calculation": ["energy", "gradients"],
         "level": "normal",
         "gradients": "analytic",
+        "citations": (
+            (1, "PhysRev.136.B864"),
+            (1, "PhysRev.140.A1133"),
+        ),
     },
     "HF: Hartree-Fock self consistent field (SCF)": {
         "method": "HF",
         "calculation": ["energy", "gradients"],
         "level": "normal",
         "gradients": "analytic",
+        "citations": (
+            (1, "RevModPhys.23.69"),
+            (1, "berthier1954extension"),
+            (1, "10.1063/1.1740120"),
+        ),
     },
     "MP2: 2nd-order Møller–Plesset perturbation theory": {
         "method": "MP2",
@@ -71,6 +96,10 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "FRISCH1990275"),
+        ),
     },
     "MP3: 3rd-order Møller–Plesset perturbation theory": {
         "method": "MP3",
@@ -78,6 +107,11 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "https://doi.org/10.1002/qua.560100802"),
+            (2, "https://doi.org/10.1002/qua.560120820"),
+        ),
     },
     "MP4(SDTQ): 4th-order Møller–Plesset perturbation theory": {
         "method": "MP4",
@@ -85,6 +119,11 @@ methods = {
         "level": "normal",
         "gradients": "numeric",
         "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "https://doi.org/10.1002/qua.560140109"),
+            (2, "10.1063/1.439657"),
+        ),
     },
     "MP4(SDQ): 4th-order Møller–Plesset perturbation theory": {
         "method": "MP4(SDQ)",
@@ -92,6 +131,21 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "https://doi.org/10.1002/qua.560140109"),
+        ),
+    },
+    "MP4(DQ): 4th-order Møller–Plesset perturbation theory": {
+        "method": "MP4(DQ)",
+        "calculation": ["energy", "gradients"],
+        "level": "advanced",
+        "gradients": "analytic",
+        "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "https://doi.org/10.1002/qua.560140109"),
+        ),
     },
     "MP5: 5th-order Møller–Plesset perturbation theory": {
         "method": "MP5",
@@ -99,6 +153,10 @@ methods = {
         "level": "advanced",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": (
+            (1, "PhysRev.46.618"),
+            (2, "doi:10.1021/j100377a033"),
+        ),
     },
     "QCISD: Quadratic CI": {
         "method": "QCI",
@@ -106,6 +164,7 @@ methods = {
         "level": "advanced",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": ((1, "10.1063/1.453520"),),
     },
     "QCISD(T): Quadratic CI with triples correction": {
         "method": "QCISD(T)",
@@ -113,6 +172,7 @@ methods = {
         "level": "advanced",
         "gradients": "numerical",
         "freeze core?": True,
+        "citations": ((1, "10.1063/1.453520"),),
     },
     "CCD: coupled cluster doubles": {
         "method": "CCD",
@@ -120,6 +180,10 @@ methods = {
         "level": "normal",
         "gradients": "analytic",
         "freeze core?": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/qua.560140504"),
+            (2, "https://doi.org/10.1002/qua.560140503"),
+        ),
     },
     "CCSD: coupled cluster singles & doubles": {
         "method": "CCSD",
@@ -127,6 +191,11 @@ methods = {
         "level": "normal",
         "gradients": "numeric",
         "freeze core?": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/qua.560140504"),
+            (1, "doi:https://doi.org/10.1002/9780470143599.ch2"),
+            (2, "https://doi.org/10.1002/qua.560140503"),
+        ),
     },
     "CCSD(T): coupled cluster singles & doubles plus triples": {
         "method": "CCSD(T)",
@@ -134,6 +203,11 @@ methods = {
         "level": "normal",
         "gradients": "numeric",
         "freeze core?": True,
+        "citations": (
+            (1, "https://doi.org/10.1002/qua.560140504"),
+            (2, "https://doi.org/10.1002/qua.560140503"),
+            (2, "10.1063/1.443164"),
+        ),
     },
     "CBS-4M: Complete Basis Set method of Petersson, et al.": {
         "method": "CBS-4M",
@@ -141,6 +215,10 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": (
+            (1, "10.1063/1.470985"),
+            (1, "10.1063/1.481224"),
+        ),
     },
     "CBS-QB3: Complete Basis Set method of Petersson, et al.": {
         "method": "CBS-QB3",
@@ -148,6 +226,10 @@ methods = {
         "level": "normal",
         "gradients": "none",
         "nobasis": True,
+        "citations": (
+            (1, "10.1063/1.477924"),
+            (1, "10.1063/1.481224"),
+        ),
     },
     "CBS-APNO: Complete Basis Set method of Petersson, et al.": {
         "method": "CBS-APNO",
@@ -155,6 +237,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.470985"),),
     },
     "G1: Gaussian-1 composite method": {
         "method": "G1",
@@ -162,6 +245,10 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": (
+            (1, "10.1063/1.456415"),
+            (1, "10.1063/1.458892"),
+        ),
     },
     "G2: Gaussian-2 composite method": {
         "method": "G2",
@@ -169,6 +256,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.460205"),),
     },
     "G2MP2: Gaussian-2 MP2 composite method": {
         "method": "G2MP2",
@@ -176,6 +264,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.464297"),),
     },
     "G3: Gaussian-3 composite method": {
         "method": "G3",
@@ -183,6 +272,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.477422"),),
     },
     "G3MP2: Gaussian-3 MP2 composite method": {
         "method": "G3MP2",
@@ -190,6 +280,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.478385"),),
     },
     "G3B3: Gaussian-3 B3LYP composite method": {
         "method": "G3B3",
@@ -197,6 +288,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.478676"),),
     },
     "G3MP2B3: Gaussian-3 MP2 B3LYP composite method": {
         "method": "G3MP2B3",
@@ -204,6 +296,10 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": (
+            (1, "10.1063/1.478385"),
+            (1, "10.1063/1.478676"),
+        ),
     },
     "G4: Gaussian-4 composite method": {
         "method": "G4",
@@ -211,6 +307,7 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.2436888"),),
     },
     "G4MP2: Gaussian-4 MP2 composite method": {
         "method": "G4MP2",
@@ -218,34 +315,52 @@ methods = {
         "level": "advanced",
         "gradients": "none",
         "nobasis": True,
+        "citations": ((1, "10.1063/1.2770701"),),
     },
 }
 
 dft_functionals = {
-    "PBE : GGA of Perdew, Burke and Ernzerhof": {
-        "name": "PBEPBE",
+    "PBE : GGA of Perdew, Burke and Ernzerhof (revised)": {
+        "name": "PBEhPBE",
         "dispersion": ["none", "GD3BJ", "GD3", "GD2", "PFD"],
         "level": "normal",
-    },
-    "PBE-98 : GGA of Perdew, Burke and Ernzerhof, revised": {
-        "name": "PBEhPBE",
-        "dispersion": ["none", "PFD"],
-        "level": "normal",
+        "citations": [
+            (1, "10.1063/1.476928"),
+            (1, "PhysRevLett.77.3865"),
+            (1, "PhysRevLett.78.1396"),
+        ],
     },
     "B3LYP : hybrid functional of Becke and Lee, Yang, and Parr": {
         "name": "B3LYP",
         "dispersion": ["none", "GD3BJ", "GD3", "GD2", "PFD"],
         "level": "normal",
+        "citations": [
+            (1, "10.1063/1.464913"),
+            (1, "doi:10.1021/j100096a001"),
+        ],
     },
     "HSE06 : hybrid functional of Heyd, Scuseria and Ernzerhof": {
         "name": "HSEH1PBE",
         "dispersion": ["none", "PFD"],
         "level": "normal",
+        "citations": [
+            (2, "10.1063/1.1760074"),
+            (2, "10.1063/1.1668634"),
+            (2, "10.1063/1.2085170"),
+            (2, "10.1063/1.2204597"),
+            (2, "10.1063/1.3185673"),
+            (2, "10.1063/1.2347713"),
+            (1, "10.1063/1.2404663"),
+        ],
     },
-    "PBE0 : hybrid functional of Perdew, Burke and Ernzerhof, and Adamo": {
-        "name": "PBE1PBE",
+    "PBE0 : hybrid functional of Perdew, Burke and Ernzerhof, and Adamo (revised)": {
+        "name": "PBEh1PBE",
         "dispersion": ["none", "GD3BJ", "GD3", "PFD"],
         "level": "normal",
+        "citations": [
+            (1, "10.1063/1.478522"),
+            (2, "10.1063/1.476928"),
+        ],
     },
 }
 
@@ -718,6 +833,12 @@ metadata["results"] = {
     },
     "symmetry group used": {
         "description": "The symmetry used in the calculation",
+        "dimensionality": "scalar",
+        "type": "string",
+        "format": "",
+    },
+    "state": {
+        "description": "The electronic state of the system",
         "dimensionality": "scalar",
         "type": "string",
         "format": "",

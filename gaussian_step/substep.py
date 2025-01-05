@@ -781,7 +781,7 @@ class Substep(seamm.Node):
                 method_data = {}
                 method = method_string
 
-        return method, method_data
+        return method, method_data, method_string
 
     def make_plots(self, data):
         """Create the density and orbital plots if requested.
@@ -1003,6 +1003,9 @@ class Substep(seamm.Node):
         path : pathlib.Path
             The path to the checkpoint file
         """
+        if not path.exists():
+            return
+
         lines = path.read_text().splitlines()
 
         if len(lines) < 2:
@@ -1175,6 +1178,13 @@ class Substep(seamm.Node):
                         tmp = []
                         first = True
 
+        # Electronic state. Hope that the last one is the one we want!
+        it = iter(reversed(lines))
+        for line in it:
+            if "The electronic state is" in line:
+                data["state"] = line.split()[-1].replace("-", "").strip(".")
+                break
+
         # And the optimization steps, if any.
         #
         # Need to be careful about end of the first (and presumably only?) optimization.
@@ -1244,7 +1254,7 @@ class Substep(seamm.Node):
         data["maximum atom displacement trajectory"] = max_displacement
         data["RMS atom displacement trajectory"] = rms_displacement
 
-        method, method_data = self.get_method(P)
+        method, method_data, method_string = self.get_method(P)
 
         # Look for thermochemistry output. Composite methods may override some values
         text = []
@@ -1634,7 +1644,7 @@ class Substep(seamm.Node):
                         if homo > 0:
                             new[f"{letter} NHOMO symmetry"] = syms[homo - 1]
                         if homo + 1 < len(syms):
-                            new[f"{letter} LUMO symmetry)"] = syms[homo + 1]
+                            new[f"{letter} LUMO symmetry"] = syms[homo + 1]
                         if homo + 2 < len(syms):
                             new[f"{letter} SLUMO symmetry"] = syms[homo + 2]
             else:
@@ -2026,6 +2036,11 @@ class Substep(seamm.Node):
                 # And parse a bit more out of the output
                 if path.exists():
                     data = self.parse_output(path, data)
+
+                success = "success" if "success" in data else False
+
+                if not success:
+                    raise RuntimeError("Gaussian did not complete successfully")
 
                 # And the Punch file, if it exists
                 punch = Path(directory / "fort.7")

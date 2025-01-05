@@ -23,6 +23,18 @@ logger = logging.getLogger("Gaussian")
 job = printing.getPrinter()
 printer = printing.getPrinter("gaussian")
 
+superscript = {
+    "1": "\N{SUPERSCRIPT ONE}",
+    "2": "\N{SUPERSCRIPT TWO}",
+    "3": "\N{SUPERSCRIPT THREE}",
+    "4": "\N{SUPERSCRIPT FOUR}",
+    "5": "\N{SUPERSCRIPT FIVE}",
+    "6": "\N{SUPERSCRIPT SIX}",
+    "7": "\N{SUPERSCRIPT SEVEN}",
+    "8": "\N{SUPERSCRIPT EIGHT}",
+    "9": "\N{SUPERSCRIPT NINE}",
+}
+
 
 class Energy(Substep):
     def __init__(
@@ -60,19 +72,26 @@ class Energy(Substep):
         if not P:
             P = self.parameters.values_to_dict()
 
-        method, method_data = self.get_method(P)
+        method, method_data, method_string = self.get_method(P)
+
+        tmp = method_string.split(":", 1)
+        if len(tmp) > 1:
+            method_string = f"{tmp[0].strip()} ({tmp[1].strip()})"
 
         if self.is_expr(method):
             text = f"{calculation} using method given by {method}"
-        elif (
-            method in gaussian_step.methods
-            and gaussian_step.methods[method]["method"] == "DFT"
-        ):
+        elif method == "DFT":
             functional = self.get_functional(P)
 
+            tmp = functional.split(":", 1)
+            if len(tmp) > 1:
+                functional_string = f"{tmp[0].strip()} ({tmp[1].strip()})"
+            else:
+                functional_string = functional
+
             text = (
-                f"{calculation} using {method} using {functional} using the "
-                "{integral grid} grid for the numerical integration"
+                f"{calculation} using {method_string} using {functional_string} with "
+                "the {integral grid} grid for the numerical integration"
             )
             if (
                 functional in gaussian_step.dft_functionals
@@ -81,11 +100,11 @@ class Energy(Substep):
             ):
                 text += f" with the {P['dispersion']} dispersion correction"
         else:
-            text = f"{calculation} using {method}"
+            text = f"{calculation} using {method_string}"
 
         if method_data != {}:
             if "nobasis" not in method_data or not method_data["nobasis"]:
-                text += f" with the {P['basis']} basis set"
+                text += f" and the {P['basis']} basis set"
             if "freeze core?" in method_data and method_data["freeze core?"]:
                 if P["freeze-cores"] == "no":
                     text += " with no core orbitals frozen."
@@ -209,7 +228,18 @@ class Energy(Substep):
                 keywords.add("SP")
 
         # Figure out what we are doing!
-        method, method_data = self.get_method(P)
+        method, method_data, method_string = self.get_method(P)
+
+        # Citations
+        if "citations" in method_data:
+            for level, citation in method_data["citations"]:
+                self.references.cite(
+                    raw=self._bibliography[citation],
+                    alias=citation,
+                    module="gaussian_step",
+                    level=level,
+                    note=method_string,
+                )
 
         # How to handle spin restricted.
         multiplicity = starting_configuration.spin_multiplicity
@@ -256,6 +286,17 @@ class Energy(Substep):
             if grid == "96,32,64":
                 grid = "-96032"
             keywords.add(f"Integral(Grid={grid})")
+
+            # Citations
+            if "citations" in functional_data:
+                for level, citation in functional_data["citations"]:
+                    self.references.cite(
+                        raw=self._bibliography[citation],
+                        alias=citation,
+                        module="gaussian_step",
+                        level=level,
+                        note=functional,
+                    )
         elif method == "HF":
             if restricted:
                 if multiplicity == 1:
@@ -492,7 +533,7 @@ class Energy(Substep):
         key = "energy"
         if key in data:
             # # Figure out the method.
-            method, method_data = self.get_method(P)
+            method, method_data, method_string = self.get_method(P)
 
             if method in ("AM1", "PM3", "PM3MM", "PM6", "PDDG", "PM7", "PM7MOPAC"):
                 tmp = data[key]
@@ -570,8 +611,9 @@ class Energy(Substep):
         keys = [
             ("symmetry group", "Symmetry"),
             ("symmetry group used", "Symmetry used"),
+            ("state", "Electronic state"),
         ]
-        if self.model[0] == "U":
+        if data["method"][0] == "U":
             for letter, symbol in (("alpha", "α"), ("beta", "β")):
                 keys.extend(
                     [
@@ -600,6 +642,8 @@ class Energy(Substep):
         for key, name in keys:
             if key in data:
                 tmp = data[key]
+                if key == "state":
+                    tmp = superscript[tmp[0]] + tmp[1:]
                 mdata = metadata[key]
                 table["Property"].append(name)
                 table["Value"].append(f"{tmp:{mdata['format']}}")
@@ -632,7 +676,20 @@ class Energy(Substep):
         )
         length = len(tmp.splitlines()[0])
         text_lines = []
-        text_lines.append(f"Results for {self.model}".center(length))
+        if "method" in data:
+            if data["method"].startswith("U"):
+                spin_text = "U-"
+            elif data["method"].startswith("RO"):
+                spin_text = "RO-"
+            else:
+                spin_text = "R-"
+        else:
+            spin_text = ""
+        text_lines.append(f"Results for {spin_text}{self.model}".center(length))
+        text_lines.append(method_string.center(length))
+        if method == "DFT":
+            functional = self.get_functional(P)
+            text_lines.append(functional.center(length))
         text_lines.append(tmp)
 
         if text != "":

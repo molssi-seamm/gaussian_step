@@ -1,6 +1,14 @@
 =======
 History
 =======
+2025.1.5: Added PBErev, HSE06, PBE0 and PBE0rev energies for thermochemistry
+    * Added the atom energies for the 6-31G and 6-311G basis set families for the
+      PBErev (PBEhPBE), HSE06 (HSEH1PBE), PBE0 (PBE1PBE), and PBE0rev (PBEH1PBE) density
+      functionals for the thermodynamics step.
+    * Added the electronic state to the output and properties
+    * Added refereneces for all the methods and DFT functional in the GUI.
+    * Improved the output to include the full name of the method and DFT functional
+      
 2024.12.24: Minor enhancement to Thermochemistry.txt report
     * Added the method and basis set to the header of the Thermochemistry.txt report.
     * Caught some cases where the system name was reported as None.
