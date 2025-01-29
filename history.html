@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM Gaussian Plug-in 2025.1.5 documentation</title>
+    <title>History &#8212; SEAMM Gaussian Plug-in 2025.1.29 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
   <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=c224919a" />
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=3dfe497a"></script>
+    <script src="_static/documentation_options.js?v=a926aebd"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <link rel="prev" title="Development Team" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.1.5" />
+  <meta name="docsearch:version" content="2025.1.29" />
   </head>
   
   
@@ -472,6 +472,16 @@
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2025.1.29: Added an option to save the structure in the standard orientation.</dt><dd><ul class="simple">
+<li><p>Added an option to save the structure in the standard orientation, which is
+the orientation used by Gaussian for the calculations. This is useful for
+visualizing the structure, and is also the orientation for e.g. the calculated
+orbitals.</p></li>
+<li><p>Fixed a bug in displaying the structure with the orbitals or density. The sructure
+is now always in the standard orientation, regardless of the option above, as it
+must be since the orbitals and density are calculated in the standard orientation.</p></li>
+</ul>
+</dd>
 <dt>2025.1.5: Added PBErev, HSE06, PBE0 and PBE0rev energies for thermochemistry</dt><dd><ul class="simple">
 <li><p>Added the atom energies for the 6-31G and 6-311G basis set families for the
 PBErev (PBEhPBE), HSE06 (HSEH1PBE), PBE0 (PBE1PBE), and PBE0rev (PBEH1PBE) density
