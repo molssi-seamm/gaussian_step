@@ -871,7 +871,7 @@ class Substep(seamm.Node):
 
         # Any requested orbitals
         if P["orbitals"]:
-            n_orbitals = data["nmo"]
+            n_orbitals = data["NMO"]
             # and work out the orbitals
             txt = P["selected orbitals"]
             for spin, homo in enumerate(data["homos"]):

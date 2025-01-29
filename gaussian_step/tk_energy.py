@@ -126,7 +126,12 @@ class TkEnergy(seamm.TkNode):
         )
         row = 0
         widgets = []
-        for key in ("structure handling", "system name", "configuration name"):
+        for key in (
+            "save standard orientation",
+            "structure handling",
+            "system name",
+            "configuration name",
+        ):
             self[key] = P[key].widget(sframe)
             self[key].grid(row=row, column=0, sticky=tk.EW)
             widgets.append(self[key])

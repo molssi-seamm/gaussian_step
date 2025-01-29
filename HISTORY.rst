@@ -1,6 +1,15 @@
 =======
 History
 =======
+2025.1.29: Added an option to save the structure in the standard orientation.
+    * Added an option to save the structure in the standard orientation, which is
+      the orientation used by Gaussian for the calculations. This is useful for
+      visualizing the structure, and is also the orientation for e.g. the calculated
+      orbitals.
+    * Fixed a bug in displaying the structure with the orbitals or density. The sructure
+      is now always in the standard orientation, regardless of the option above, as it
+      must be since the orbitals and density are calculated in the standard orientation.
+    
 2025.1.5: Added PBErev, HSE06, PBE0 and PBE0rev energies for thermochemistry
     * Added the atom energies for the 6-31G and 6-311G basis set families for the
       PBErev (PBEhPBE), HSE06 (HSEH1PBE), PBE0 (PBE1PBE), and PBE0rev (PBEH1PBE) density
