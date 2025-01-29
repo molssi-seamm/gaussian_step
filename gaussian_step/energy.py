@@ -445,7 +445,7 @@ class Energy(Substep):
             keywords.add(f"{method}{mopts}/{basis}")
 
         if P["use symmetry"] == "loose":
-            keywords.add("Symmetry=Loose")
+            keywords.add("Symmetry=(Loose)")
         elif P["use symmetry"] == "identify only":
             keywords.add("NoSymmetry")
         elif P["use symmetry"] == "no":
@@ -730,7 +730,15 @@ class Energy(Substep):
         # Update the structure. Gaussian may have reoriented.
         system, configuration = self.get_system_configuration(None)
         directory = Path(self.directory)
-        if "Current cartesian coordinates" in data:
+        if "atomcoords" in data and P["save standard orientation"]:
+            coords = data["atomcoords"][-1]
+            xs = [xyz[0] for xyz in coords]
+            ys = [xyz[1] for xyz in coords]
+            zs = [xyz[2] for xyz in coords]
+            configuration.atoms["x"][0:] = xs
+            configuration.atoms["y"][0:] = ys
+            configuration.atoms["z"][0:] = zs
+        elif "Current cartesian coordinates" in data:
             factor = Q_(1, "a0").to("Å").magnitude
             xs = []
             ys = []
@@ -863,6 +871,11 @@ class Energy(Substep):
         obMol = configuration.to_OBMol(properties="*")
         title = f"SEAMM={system.name}/{configuration.name}"
         obMol.SetTitle(title)
+        # Try to get the rotated coordinates
+        if "atomcoords" in data:
+            coords = data["atomcoords"][-1]
+            for i, atom in enumerate(openbabel.OBMolAtomIter(obMol)):
+                atom.SetVector(coords[i][0], coords[i][1], coords[i][2])
         sdf = obConversion.WriteString(obMol)
         path = directory / "structure.sdf"
         path.write_text(sdf)

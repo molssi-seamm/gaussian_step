@@ -218,6 +218,15 @@ class EnergyParameters(seamm.Parameters):
                 "Whether to use the calculated bond orders to update the structure"
             ),
         },
+        "save standard orientation": {
+            "default": "yes",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "s",
+            "description": "Save standard orientation:",
+            "help_text": "Keep the standard orientation rather than input orientation.",
+        },
         "print basis set": {
             "default": "no",
             "kind": "boolean",
