@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.1.31: Bugfix: shape of gradients array
+    * Fixed a bug in the shape of the gradients array when reading from the punch
+      file. They are now correctly output as a [natoms][3] array.
+      
 2025.1.29: Added an option to save the structure in the standard orientation.
     * Added an option to save the structure in the standard orientation, which is
       the orientation used by Gaussian for the calculations. This is useful for
