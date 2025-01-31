@@ -1527,6 +1527,9 @@ class Substep(seamm.Node):
             # so replace with this, which is in the input orientation
             data["Current cartesian coordinates"] = XYZs
 
+        # Gradients are a 3*N list ... make into N lists of 3
+        data["gradients"] = [xyz for xyz in batched(data["gradients"], 3)]
+
         # Gradients next if they are here
         start = stop
         stop = start + n_atoms
@@ -1536,25 +1539,22 @@ class Substep(seamm.Node):
             XYZs = []
             for line in lines[start:stop]:
                 x, y, z = line.replace("D", "E").split()
-                XYZs.append(float(x))
-                XYZs.append(float(y))
-                XYZs.append(float(z))
+                XYZs.append([float(x), float(y), float(z)])
 
-            if len(XYZs) != 3 * n_atoms:
+            if len(XYZs) != n_atoms:
                 raise RuntimeError("Error in the number of gradients in the Punch file")
 
             if "gradients" in data:
                 # Check that the same values to 4 figures
                 same = True
-                for x0, x1 in zip(data["gradients"], XYZs):
-                    if abs(x0 - x1) > 0.001:
-                        same = False
+                for xyz0, xyz1 in zip(data["gradients"], XYZs):
+                    for x0, x1 in zip(xyz0, xyz1):
+                        if abs(x0 - x1) > 0.001:
+                            same = False
                 if not same:
                     text = "Warning: gradients from the Punch file differ in\n"
                     text += "\t" + self.header + "\n"
-                    for xyz0, xyz1 in zip(
-                        batched(data["gradients"], 3), batched(XYZs, 3)
-                    ):
+                    for xyz0, xyz1 in zip(data["gradients"], XYZs):
                         old = ""
                         new = ""
                         for x0 in xyz0:
