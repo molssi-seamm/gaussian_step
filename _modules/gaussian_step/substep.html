@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2025.1.31 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2025.8.12 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=ee7a4df6"></script>
+    <script src="../../_static/documentation_options.js?v=94eabbde"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.1.31" />
+  <meta name="docsearch:version" content="2025.8.12" />
   </head>
   
   
@@ -483,6 +483,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">cclib</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cpuinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cpu_info</span>
@@ -597,7 +598,7 @@
 <div class="viewcode-block" id="subscript">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.subscript">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">subscript</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number using Unicode subscipt characters.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number using Unicode subscript characters.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_subscript</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span></div>
 
 
@@ -663,6 +664,7 @@
             <span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chkpt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_only</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/.seamm.d/timing/gaussian.csv&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
@@ -701,7 +703,7 @@
             <span class="k">if</span> <span class="s2">&quot;count&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="s2">&quot;hz_advertized_friendly&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;hz_advertized_friendly&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;hz_advertized_friendly&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
@@ -727,6 +729,15 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">gversion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">gversion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">chkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The path to the current checkpoint file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chkpt</span>
+
+    <span class="nd">@chkpt</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">chkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chkpt</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">input_only</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -838,7 +849,7 @@
 
         <span class="c1"># And the reactions. First, for atomization energy</span>
         <span class="n">middot</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\N{MIDDLE DOT}</span><span class="s2">&quot;</span>
-        <span class="n">lDelta</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\N{Greek Capital Letter Delta}</span><span class="s2">&quot;</span>
+        <span class="n">lDelta</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\N{GREEK CAPITAL LETTER DELTA}</span><span class="s2">&quot;</span>
         <span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">atno</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">composition</span><span class="p">:</span>
@@ -1193,13 +1204,14 @@
         <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;keep all&quot;</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;remove checkpoint files&quot;</span><span class="p">:</span>
-            <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
-            <span class="n">step_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">chkpoint</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_no</span><span class="si">}</span><span class="s2">.chk&quot;</span>
-            <span class="n">chkpoint</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wd</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;remove all&quot;</span><span class="p">:</span>
             <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wd</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Substep.get_functional">
@@ -1983,6 +1995,61 @@
 
                 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Wiberg bond order matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bond_orders</span>
 
+        <span class="c1"># Wavefunction stability analysis</span>
+
+        <span class="c1"># Sections introduced by line like this:</span>
+        <span class="c1">#</span>
+        <span class="c1">#  Stability analysis using &lt;AA,BB:AA,BB&gt; singles matrix:</span>
+        <span class="c1">#</span>
+        <span class="c1"># Possible next lines:</span>
+        <span class="c1">#</span>
+        <span class="c1"># The wavefunction has an RHF -&gt; UHF instability.</span>
+        <span class="c1"># The wavefunction is stable under the perturbations considered.</span>
+        <span class="c1"># The wavefunction has an internal instability.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Each section looks like this:</span>
+        <span class="c1"># ***********************************************************************</span>
+        <span class="c1"># Stability analysis using &lt;AA,BB:AA,BB&gt; singles matrix:</span>
+        <span class="c1"># ***********************************************************************</span>
+
+        <span class="c1"># Eigenvectors of the stability matrix:</span>
+
+        <span class="c1"># Eigenvector   1:  1.046-A    Eigenvalue= 0.1445303  &lt;S**2&gt;=0.024</span>
+        <span class="c1">#      9A -&gt; 10A        0.70700</span>
+        <span class="c1">#      9B -&gt; 10B        0.70695</span>
+        <span class="c1"># SavETr:  write IOETrn=   770 NScale= 10 NData=  16 NLR=1 NState=    1 LETr ...</span>
+        <span class="c1"># The wavefunction is stable under the perturbations considered.</span>
+        <span class="c1"># The wavefunction is already stable.</span>
+
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; Stability analysis using&quot;</span><span class="p">):</span>
+                <span class="c1"># Capture the eigenvector analysis</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; SavETr&quot;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="s2">&quot;wavefunction stability text&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># Lines start with a blank</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; The wavefunction has an RHF -&gt; UHF instability.&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;RHF -&gt; UHF&quot;</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction is stable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="s2">&quot; The wavefunction is stable under the perturbations considered.&quot;</span>
+            <span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;stable&quot;</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction is stable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; The wavefunction has an internal instability.&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction stability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;internal&quot;</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;wavefunction is stable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -2137,7 +2204,7 @@
                         <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> gap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Es</span><span class="p">):</span>
                         <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E </span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> slumo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Es</span><span class="p">[</span><span class="n">homo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="s2">&quot;mosyms&quot;</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;mosyms&quot;</span> <span class="ow">in</span> <span class="n">new</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;mosyms&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
                         <span class="n">syms</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;mosyms&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
                         <span class="n">new</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="s2"> HOMO symmetry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syms</span><span class="p">[</span><span class="n">homo</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">homo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -2201,12 +2268,31 @@
 
 <div class="viewcode-block" id="Substep.run_gaussian">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.run_gaussian">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_gaussian</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">keywords</span><span class="p">,</span>
+        <span class="n">extra_sections</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">spin_multiplicity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">charge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">old_chkpt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">chkpt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run Gaussian.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        None</span>
+<span class="sd">        keywords : set(str)</span>
+<span class="sd">            The keywords for Gaussian</span>
+<span class="sd">        extra_sections : {str: str}</span>
+<span class="sd">            Any extra sections needed in the input</span>
+<span class="sd">        spin_multiplicity: int</span>
+<span class="sd">            Specify the spin multiplicity (default: None -- given by configuration)</span>
+<span class="sd">        charge : int</span>
+<span class="sd">            Specify the charge (default: None -- given by configuration)</span>
+<span class="sd">        old_chkpt : str or pathlib.Path</span>
+<span class="sd">            A previous checkpoint file to use. Default is None</span>
+<span class="sd">        chkpt : str or pathlib.Path</span>
+<span class="sd">            The checkpoint file for this run. Default is {step_no}_1</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2214,7 +2300,7 @@
 <span class="sd">            The next node object in the flowchart.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the directory</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wd</span>
         <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Check for successful run, don&#39;t rerun</span>
@@ -2281,30 +2367,53 @@
             <span class="n">memory</span> <span class="o">=</span> <span class="n">humanize</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">kilo</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">step_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">step_no</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">last_chkpoint</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_no</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">.chk&quot;</span>
-                <span class="k">if</span> <span class="n">last_chkpoint</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%OldChk=</span><span class="si">{</span><span class="n">last_chkpoint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">chkpoint</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_no</span><span class="si">}</span><span class="s2">.chk&quot;</span>
+            <span class="k">if</span> <span class="n">old_chkpt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">step_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">step_no</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">last_chkpt</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_no</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">.chk&quot;</span>
+                    <span class="k">if</span> <span class="n">last_chkpt</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                        <span class="n">old_chkpt</span> <span class="o">=</span> <span class="n">last_chkpt</span>
+            <span class="k">if</span> <span class="n">chkpt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">step_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">new_chkpt</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_no</span><span class="si">}</span><span class="s2">.chk&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_chkpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">(</span><span class="n">chkpt</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span> <span class="o">=</span> <span class="n">new_chkpt</span>
+
+            <span class="k">if</span> <span class="n">old_chkpt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%OldChk=</span><span class="si">{</span><span class="n">old_chkpt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;%Chk=gaussian.chk&quot;</span><span class="p">)</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%Mem=</span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%NProcShared=</span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">spin_multiplicity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">charge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">spin_multiplicity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">spin_multiplicity</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">spin_multiplicity</span>
+                <span class="k">if</span> <span class="n">charge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">charge</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">charge</span>
+                <span class="k">if</span> <span class="s2">&quot;Geom=AllCheck&quot;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;Geom=AllCheck&quot;</span><span class="p">)</span>
+                    <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Geom=Check&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spin_multiplicity</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">spin_multiplicity</span>
+                <span class="n">charge</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">charge</span>
+
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;# &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keywords</span><span class="p">))</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;# Punch=(Coord,Derivatives)&quot;</span><span class="p">)</span>
 
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">charge</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">spin_multiplicity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Geom=AllCheck&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">charge</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">spin_multiplicity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Atoms with coordinates</span>
-            <span class="n">symbols</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">symbols</span>
-            <span class="n">XYZs</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span>
-            <span class="k">for</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">symbols</span><span class="p">,</span> <span class="n">XYZs</span><span class="p">):</span>
-                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Geom=AllCheck&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keywords</span> <span class="ow">and</span> <span class="s2">&quot;Geom=Check&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+                <span class="n">symbols</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">symbols</span>
+                <span class="n">XYZs</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span>
+                <span class="k">for</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">symbols</span><span class="p">,</span> <span class="n">XYZs</span><span class="p">):</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="p">(</span>
@@ -2312,7 +2421,7 @@
                 <span class="s2">&quot;NBO input&quot;</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">extra_sections</span><span class="p">:</span>
-                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_sections</span><span class="p">[</span><span class="n">section</span><span class="p">])</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extra_sections</span><span class="p">[</span><span class="n">section</span><span class="p">])</span>
 
             <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;input.dat:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;input.dat&quot;</span><span class="p">])</span>
@@ -2425,7 +2534,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">env</span><span class="p">[</span><span class="s2">&quot;GAUSS_SCRDIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scratch-dir&quot;</span><span class="p">]</span>
 
-                <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat &gt; output.txt &amp;&amp; formchk gaussian.chk&quot;</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot; &lt; input.dat &gt; output.txt &amp;&amp; formchk gaussian&quot;</span>
 
                 <span class="n">return_files</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="s2">&quot;output.txt&quot;</span><span class="p">,</span>
@@ -2437,8 +2546,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">env</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_timing_data</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
                 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()</span>
 
                 <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
@@ -2472,7 +2582,7 @@
                     <span class="k">return</span> <span class="kc">None</span>
 
                 <span class="k">if</span> <span class="n">chkpoint_ok</span><span class="p">:</span>
-                    <span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.chk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">chkpoint</span><span class="p">)</span>
+                    <span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.chk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chkpt</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;gaussian.chk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -2491,8 +2601,11 @@
                         <span class="n">data</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cclib</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ccread</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;cclib_error.out&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">cclib raised exception </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">Please report!&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">cclib raised an exception </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">Please report!</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;More detail is in </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">directory</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;cclib_error.out&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
                         <span class="p">)</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2523,6 +2636,8 @@
                 <span class="n">success</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span> <span class="k">if</span> <span class="s2">&quot;success&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">False</span>
 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Could not find &#39;success&#39; in data:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Gaussian did not complete successfully&quot;</span><span class="p">)</span>
 
                 <span class="c1"># Get the data from the formatted checkpoint file</span>
@@ -2538,6 +2653,18 @@
                 <span class="c1"># And parse a bit more out of the output</span>
                 <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+                <span class="c1"># Add the requested spin state and charge</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;requested spin multiplicity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spin_multiplicity</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;requested spin state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_state</span><span class="p">(</span><span class="n">spin_multiplicity</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">charge</span>
+
+                <span class="c1"># The ideal value of S^2</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">spin_multiplicity</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">S2</span> <span class="o">=</span> <span class="n">S</span> <span class="o">*</span> <span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ideal S**2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">S2</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;S**2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">S2</span>
 
                 <span class="n">success</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span> <span class="k">if</span> <span class="s2">&quot;success&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">False</span>
 
