@@ -4,7 +4,6 @@
 
 import csv
 import logging
-from pathlib import Path
 import textwrap
 
 import numpy as np
@@ -137,7 +136,7 @@ class Energy(Substep):
             text += " The spin will be restricted to a pure eigenstate."
         elif self.is_expr(P["spin-restricted"]):
             text += " Whether the spin will be restricted to a pure "
-            text += "eigenstate will be determined by {P['spin-restricted']}"
+            text += f"eigenstate will be determined by {P['spin-restricted']}"
         else:
             text += (
                 " The spin will not be restricted and the result may not be a "
@@ -227,6 +226,45 @@ class Energy(Substep):
             else:
                 keywords.add("SP")
 
+        # Sort out the checkpoint files
+        initial_chkpt = P["initial checkpoint"]
+        if initial_chkpt == "default":
+            step_no = int(self._id[-1])
+            if step_no == 1:
+                initial_chkpt = None
+            else:
+                initial_chkpt = self.file_path(
+                    f"{step_no - 1}.chk", relative_to=self.wd.parent
+                )
+                if not initial_chkpt.exists():
+                    initial_chkpt = None
+        else:
+            initial_chkpt = self.file_path(initial_chkpt, relative_to=self.wd.parent)
+            if not initial_chkpt.exists():
+                tmp = P["initial checkpoint"]
+                raise ValueError(
+                    f"The requested initial checkpoint file '{tmp}' ({initial_chkpt}) "
+                    "does not exist, so stopping."
+                )
+
+        chkpt = P["checkpoint"]
+        if chkpt == "default":
+            step_no = self._id[-1]
+            chkpt = self.file_path(f"{step_no}.chk", relative_to=self.wd.parent)
+        else:
+            chkpt = self.file_path(chkpt, relative_to=self.wd.parent)
+
+        wavefunction = P["initial wavefunction"].strip().title()
+        if wavefunction == "Default":
+            if initial_chkpt is not None:
+                keywords.add("Guess=Read")
+        else:
+            keywords.add(f"Guess={wavefunction}")
+
+        geometry = P["geometry"].strip().lower()
+        if "check" in geometry or ("current" in geometry and initial_chkpt is not None):
+            keywords.add("Geom=AllCheck")
+
         # Figure out what we are doing!
         method, method_data, method_string = self.get_method(P)
 
@@ -274,7 +312,7 @@ class Energy(Substep):
             functional_data = gaussian_step.dft_functionals[functional]
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"R{functional_data['name']}{mopts}/{basis}")
+                    keywords.add(f"{functional_data['name']}{mopts}/{basis}")
                 else:
                     keywords.add(f"RO{functional_data['name']}{mopts}/{basis}")
             else:
@@ -454,11 +492,17 @@ class Energy(Substep):
         if P["maximum iterations"] != "default":
             keywords.add(f"MaxCycle={P['maximum iterations']}")
         if P["convergence"] != "default":
-            keywords.add("Conver={P['convergence']}")
+            keywords.add(f"Conver={P['convergence']}")
+
+        if self.__class__.__name__ == "Energy":
+            if P["calculate gradient"]:
+                keywords.add("FORCE")
+            else:
+                keywords.add("SP")
 
         if P["bond orders"] == "Wiberg":
             keywords.add("Pop=NBORead")
-            extra_sections["NBO input"] = "$nbo bndidx $end"
+            extra_sections["NBO input"] = "$nbo bndidx $end\n"
 
         if P["print basis set"] or P["save basis set"].lower() != "no":
             keywords.add("GFInput")
@@ -489,7 +533,12 @@ class Energy(Substep):
             except Exception:
                 self._timing_data[10] = ""
 
-        data = self.run_gaussian(keywords, extra_sections=extra_sections)
+        data = self.run_gaussian(
+            keywords,
+            extra_sections=extra_sections,
+            old_chkpt=initial_chkpt,
+            chkpt=chkpt,
+        )
 
         if not self.input_only:
             # Follow instructions for where to put the coordinates,
@@ -517,7 +566,7 @@ class Energy(Substep):
         # Calculate the enthalpy of formation, if possible
         tmp_text = self.calculate_enthalpy_of_formation(data)
         if tmp_text != "":
-            path = Path(self.directory) / "Thermochemistry.txt"
+            path = self.wd / "Thermochemistry.txt"
             path.write_text(tmp_text)
 
         if table is None:
@@ -609,6 +658,9 @@ class Energy(Substep):
                     table["Units"].append("")
 
         keys = [
+            ("S**2", "S\N{SUPERSCRIPT TWO}"),
+            ("S**2 after annihilation", "S\N{SUPERSCRIPT TWO} after annihilation"),
+            ("ideal S**2", "ideal S\N{SUPERSCRIPT TWO}"),
             ("symmetry group", "Symmetry"),
             ("symmetry group used", "Symmetry used"),
             ("state", "Electronic state"),
@@ -685,7 +737,16 @@ class Energy(Substep):
                 spin_text = "R-"
         else:
             spin_text = ""
-        text_lines.append(f"Results for {spin_text}{self.model}".center(length))
+        spin_state = data["requested spin state"]
+        chg = data["charge"]
+        if chg == 0:
+            header = f"Results for {spin_text}{self.model} for the {spin_state} state"
+        else:
+            header = (
+                f"Results for {spin_text}{self.model} for the {spin_state} state, "
+                f"charge {chg}"
+            )
+        text_lines.append(header.center(length))
         text_lines.append(method_string.center(length))
         if method == "DFT":
             functional = self.get_functional(P)
@@ -716,10 +777,7 @@ class Energy(Substep):
             or "append" in save_basis_set
         ):
             filename = P["basis set file"].strip()
-            if filename.startswith("/"):
-                path = Path(self.flowchart.root_directory) / filename[1:]
-            else:
-                path = Path(self.directory) / filename
+            path = self.file_path(filename)
 
             if "append" in save_basis_set:
                 with path.open("a") as fd:
@@ -728,8 +786,8 @@ class Energy(Substep):
                 path.write_text(data["basis set"])
 
         # Update the structure. Gaussian may have reoriented.
-        system, configuration = self.get_system_configuration(None)
-        directory = Path(self.directory)
+        system, configuration = self.get_system_configuration()
+
         if "atomcoords" in data and P["save standard orientation"]:
             coords = data["atomcoords"][-1]
             xs = [xyz[0] for xyz in coords]
@@ -781,7 +839,7 @@ class Energy(Substep):
                 "Element": symbols,
                 "Charge": [],
             }
-            with open(directory / "atom_properties.csv", "w", newline="") as fd:
+            with open(self.wd / "atom_properties.csv", "w", newline="") as fd:
                 writer = csv.writer(fd)
                 if "atomspins/mulliken" in data:
                     # Sum to atom spins...
@@ -877,17 +935,15 @@ class Energy(Substep):
             for i, atom in enumerate(openbabel.OBMolAtomIter(obMol)):
                 atom.SetVector(coords[i][0], coords[i][1], coords[i][2])
         sdf = obConversion.WriteString(obMol)
-        path = directory / "structure.sdf"
+        path = self.wd / "structure.sdf"
         path.write_text(sdf)
 
         text = self.make_plots(data)
         if text != "":
             printer.normal(__(text, indent=self.indent + 4 * " "))
 
-        text = (
-            "The structure and charges, etc. were placed in configuration "
-            f"'{system.name}/{configuration.name}'."
-        )
+        text = seamm.standard_parameters.set_names(system, configuration, P, **data)
+
         printer.normal("")
         printer.normal(__(text, indent=self.indent + 4 * " "))
         printer.normal("")

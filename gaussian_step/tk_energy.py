@@ -3,7 +3,6 @@
 """The graphical part of a Gaussian Energy node"""
 
 import logging
-import tkinter as tk
 import tkinter.ttk as ttk
 
 import gaussian_step
@@ -85,6 +84,10 @@ class TkEnergy(seamm.TkNode):
             "level",
             "method",
             "basis",
+            "geometry",
+            "initial checkpoint",
+            "checkpoint",
+            "initial wavefunction",
             "advanced_method",
             "functional",
             "advanced_functional",
@@ -122,7 +125,7 @@ class TkEnergy(seamm.TkNode):
 
         # Create the structure-handling widgets
         sframe = self["structure frame"] = ttk.LabelFrame(
-            frame, text="Configuration Handling", labelanchor=tk.N
+            frame, text="Configuration Handling", labelanchor="n"
         )
         row = 0
         widgets = []
@@ -133,10 +136,10 @@ class TkEnergy(seamm.TkNode):
             "configuration name",
         ):
             self[key] = P[key].widget(sframe)
-            self[key].grid(row=row, column=0, sticky=tk.EW)
+            self[key].grid(row=row, column=0, sticky="ew")
             widgets.append(self[key])
             row += 1
-        sw.align_labels(widgets, sticky=tk.E)
+        sw.align_labels(widgets, sticky="e")
 
         # A tab for output of orbitals, etc.
         notebook = self["notebook"]
@@ -174,7 +177,7 @@ class TkEnergy(seamm.TkNode):
 
         self.logger.debug("Finished creating the dialog")
 
-    def reset_dialog(self, widget=None):
+    def reset_dialog(self, widget=None, row=0):
         """Layout the widgets as needed for the current state"""
 
         frame = self["frame"]
@@ -182,25 +185,28 @@ class TkEnergy(seamm.TkNode):
             slave.grid_forget()
 
         input_only = self["input only"].get().lower() == "yes"
-        row = 0
         # Whether to just write input
-        self["input only"].grid(row=row, column=0, sticky=tk.W)
+        self["input only"].grid(row=row, column=0, columnspan=2, sticky="w")
         row += 1
         # And how to handle files
         if not input_only:
-            self["file handling"].grid(row=row, column=0, sticky=tk.W)
+            self["file handling"].grid(row=row, column=0, sticky="w")
             row += 1
 
-        self["calculation"].grid(row=row, column=0)
+        self["calculation"].grid(row=row, column=0, columnspan=2)
         row += 1
         self.reset_calculation()
-        self["convergence frame"].grid(row=row, column=0)
-        row += 1
+
+        self["convergence frame"].grid(row=row, column=0, sticky="new")
         self.reset_convergence()
         self["structure frame"].grid(
-            row=row, column=0, columnspan=2, sticky=tk.N, pady=5
+            row=row, column=1, columnspan=1, sticky="new", pady=5
         )
         row += 1
+
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=1)
+
         return row
 
     def reset_calculation(self, widget=None):
@@ -247,46 +253,44 @@ class TkEnergy(seamm.TkNode):
         widgets = []
         widgets2 = []
         row = 0
-        self["level"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+        self["level"].grid(row=row, column=0, columnspan=2, sticky="ew")
         row += 1
-        if level == "recommended":
-            self["method"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-            widgets.append(self["method"])
+
+        for key in (
+            "initial checkpoint",
+            "checkpoint",
+            "geometry",
+            "initial wavefunction",
+        ):
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
+            widgets.append(self[key])
             row += 1
-            if meta is None or "nobasis" not in meta or not meta["nobasis"]:
-                self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-                widgets.append(self["basis"])
-                row += 1
+
+        if level == "recommended":
+            self["method"].grid(row=row, column=0, columnspan=2, sticky="ew")
+            widgets.append(self["method"])
+        else:
+            self["advanced_method"].grid(row=row, column=0, columnspan=2, sticky="ew")
+            widgets.append(self["advanced_method"])
+        row += 1
+
+        if level == "recommended":
             if self.node.method is None or self.node.method == "DFT":
-                self["functional"].grid(row=row, column=1, sticky=tk.EW)
+                self["functional"].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self["functional"])
                 row += 1
-                self["integral grid"].grid(row=row, column=1, sticky=tk.EW)
+                self["integral grid"].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self["integral grid"])
-                row += 1
-            if meta is None or "freeze core?" in meta and meta["freeze core?"]:
-                self["freeze-cores"].grid(row=row, column=1, sticky=tk.EW)
-                widgets2.append(self["freeze-cores"])
                 row += 1
         else:
-            self["advanced_method"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-            widgets.append(self["advanced_method"])
-            row += 1
-            if meta is None or "nobasis" not in meta or not meta["nobasis"]:
-                self["basis"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-                widgets.append(self["basis"])
-                row += 1
             if self.node.method is None or self.node.method == "DFT":
-                self["advanced_functional"].grid(row=row, column=1, sticky=tk.EW)
+                self["advanced_functional"].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self["advanced_functional"])
                 row += 1
-                self["integral grid"].grid(row=row, column=1, sticky=tk.EW)
+                self["integral grid"].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self["integral grid"])
                 row += 1
-            if meta is None or "freeze core?" in meta and meta["freeze core?"]:
-                self["freeze-cores"].grid(row=row, column=1, sticky=tk.EW)
-                widgets2.append(self["freeze-cores"])
-                row += 1
+
         if self.node.method is None or self.node.method == "DFT":
             if functional in gaussian_step.dft_functionals:
                 dispersions = gaussian_step.dft_functionals[functional]["dispersion"]
@@ -295,45 +299,58 @@ class TkEnergy(seamm.TkNode):
                     w.config(values=dispersions)
                     if w.get() not in dispersions:
                         w.value(dispersions[1])
-                    w.grid(row=row, column=1, sticky=tk.W)
+                    w.grid(row=row, column=1, sticky="w")
                     widgets2.append(self["dispersion"])
                     row += 1
-        for key in ("spin-restricted", "use symmetry", "bond orders"):
-            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+
+        if meta is None or "freeze core?" in meta and meta["freeze core?"]:
+            self["freeze-cores"].grid(row=row, column=1, sticky="ew")
+            widgets2.append(self["freeze-cores"])
+            row += 1
+
+        if meta is None or "nobasis" not in meta or not meta["nobasis"]:
+            self["basis"].grid(row=row, column=0, columnspan=2, sticky="ew")
+            widgets.append(self["basis"])
+            row += 1
+
+        for key in (
+            "spin-restricted",
+            "use symmetry",
+        ):
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
+            widgets.append(self[key])
+            row += 1
+
+        for key in ("bond orders",):
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
             widgets.append(self[key])
             row += 1
 
         if bond_orders != "none":
             for key in ("apply bond orders",):
-                self[key].grid(row=row, column=1, sticky=tk.EW)
+                self[key].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self[key])
                 row += 1
 
-        self["use symmetry"].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
-        widgets.append(self["use symmetry"])
-        row += 1
-
         if self.__class__.__name__ == "TkEnergy":
-            self["calculate gradient"].grid(
-                row=row, column=0, columnspan=2, sticky=tk.W
-            )
+            self["calculate gradient"].grid(row=row, column=0, columnspan=2, sticky="w")
             widgets.append(self["calculate gradient"])
             row += 1
 
         for key in ("print basis set", "save basis set"):
-            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
             widgets.append(self[key])
             row += 1
 
         if save_basis_set:
             for key in ("basis set file",):
-                self[key].grid(row=row, column=1, sticky=tk.EW)
+                self[key].grid(row=row, column=1, sticky="ew")
                 widgets2.append(self[key])
                 row += 1
 
-        sw.align_labels(widgets, sticky=tk.E)
-        sw.align_labels(widgets2, sticky=tk.E)
-        frame.columnconfigure(0, minsize=50)
+        width0 = sw.align_labels(widgets, sticky="e")
+        width1 = sw.align_labels(widgets2, sticky="e")
+        frame.columnconfigure(0, minsize=width0 - width1 + 50)
 
         return row
 
@@ -351,12 +368,12 @@ class TkEnergy(seamm.TkNode):
             "maximum iterations",
             "convergence",
         ):
-            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
             widgets.append(self[key])
             row += 1
 
         frame.columnconfigure(0, minsize=150)
-        sw.align_labels(widgets, sticky=tk.E)
+        sw.align_labels(widgets, sticky="e")
 
     def reset_plotting(self, widget=None):
         frame = self["plot frame"]
@@ -375,28 +392,28 @@ class TkEnergy(seamm.TkNode):
             "orbitals",
         ):
             # "difference density",
-            self[key].grid(row=row, column=0, columnspan=4, sticky=tk.EW)
+            self[key].grid(row=row, column=0, columnspan=4, sticky="ew")
             widgets.append(self[key])
             row += 1
 
         if plot_orbitals:
             key = "selected orbitals"
-            self[key].grid(row=row, column=1, columnspan=4, sticky=tk.EW)
+            self[key].grid(row=row, column=1, columnspan=4, sticky="ew")
             row += 1
 
         key = "region"
-        self[key].grid(row=row, column=0, columnspan=4, sticky=tk.EW)
+        self[key].grid(row=row, column=0, columnspan=4, sticky="ew")
         widgets.append(self[key])
         row += 1
 
         if region == "explicit":
             key = "nx"
-            self[key].grid(row=row, column=0, columnspan=2, sticky=tk.EW)
+            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
             widgets.append(self[key])
-            self["ny"].grid(row=row, column=2, sticky=tk.EW)
-            self["nz"].grid(row=row, column=3, sticky=tk.EW)
+            self["ny"].grid(row=row, column=2, sticky="ew")
+            self["nz"].grid(row=row, column=3, sticky="ew")
 
-        sw.align_labels(widgets, sticky=tk.E)
+        sw.align_labels(widgets, sticky="e")
         frame.columnconfigure(0, minsize=10)
         frame.columnconfigure(4, weight=1)
 

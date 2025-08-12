@@ -1,5 +1,4 @@
-"""This file contains metadata describing the results from Gaussian
-"""
+"""This file contains metadata describing the results from Gaussian"""
 
 metadata = {}
 
@@ -360,6 +359,22 @@ dft_functionals = {
         "citations": [
             (1, "10.1063/1.478522"),
             (2, "10.1063/1.476928"),
+        ],
+    },
+    "wB97XD : hybrid functional of Chai and Head-Gordon, with dispersion": {
+        "name": "wB97XD",
+        "dispersion": ["none"],
+        "level": "normal",
+        "citations": [
+            (1, "10.1039/B810189B"),
+        ],
+    },
+    "M062X : hybrid functional of Zhao and Truhlar, for nonmetals": {
+        "name": "M062x",
+        "dispersion": ["none"],
+        "level": "normal",
+        "citations": [
+            (1, "10.1007/s00214-007-0310-x"),
         ],
     },
 }
@@ -823,6 +838,26 @@ metadata["results"] = {
         "type": "float",
         "units": "E_h",
         "format": ".6f",
+    },
+    "S**2": {
+        "description": "<S\N{SUPERSCRIPT TWO}>",
+        "dimensionality": "scalar",
+        "property": "S**2#Gaussian#{model}",
+        "type": "string",
+        "format": ".4f",
+    },
+    "S**2 after annihilation": {
+        "description": "<S\N{SUPERSCRIPT TWO}> after annihilation",
+        "dimensionality": "scalar",
+        "property": "S**2 after annihilation#Gaussian#{model}",
+        "type": "string",
+        "format": ".4f",
+    },
+    "ideal S**2": {
+        "description": "ideal <S\N{SUPERSCRIPT TWO}>",
+        "dimensionality": "scalar",
+        "type": "string",
+        "format": ".4f",
     },
     "symmetry group": {
         "description": "The symmetry of the system",

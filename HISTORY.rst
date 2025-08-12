@@ -1,6 +1,13 @@
 =======
 History
 =======
+2025.8.12: Added Wavefunction Stability step
+    * Added the Wavefunction Stability step, which analyzes the stability of HF and DFT
+      wavefunctions and optimially lowers the symmetry to find the stable
+      wavefunction. This step can also explore other spin states to find the lowest
+      energy state.
+    * Added M062X and wB97XD hybrid functionals to the available list.
+      
 2025.1.31: Bugfix: shape of gradients array
     * Fixed a bug in the shape of the gradients array when reading from the punch
       file. They are now correctly output as a [natoms][3] array.

@@ -21,6 +21,7 @@ import shutil
 import string
 import textwrap
 import time
+import traceback
 
 import cclib
 from cpuinfo import get_cpu_info
@@ -127,7 +128,7 @@ _subscript = {
 
 
 def subscript(n):
-    """Return the number using Unicode subscipt characters."""
+    """Return the number using Unicode subscript characters."""
     return "".join([_subscript[c] for c in str(n)])
 
 
@@ -190,6 +191,7 @@ class Substep(seamm.Node):
             flowchart=flowchart, title=title, extension=extension, logger=logger
         )
 
+        self._chkpt = None
         self._input_only = False
         self._timing_data = []
         self._timing_path = Path("~/.seamm.d/timing/gaussian.csv").expanduser()
@@ -228,7 +230,7 @@ class Substep(seamm.Node):
             if "count" in tmp:
                 self._timing_data[3] = str(tmp["count"])
             if "hz_advertized_friendly" in tmp:
-                self._timing_data[3] = tmp["hz_advertized_friendly"]
+                self._timing_data[4] = tmp["hz_advertized_friendly"]
 
             if not self._timing_path.exists():
                 with self._timing_path.open("w", newline="") as fd:
@@ -254,6 +256,15 @@ class Substep(seamm.Node):
     @property
     def gversion(self):
         return self.parent.gversion
+
+    @property
+    def chkpt(self):
+        """The path to the current checkpoint file."""
+        return self._chkpt
+
+    @chkpt.setter
+    def chkpt(self, value):
+        self._chkpt = value
 
     @property
     def input_only(self):
@@ -363,7 +374,7 @@ class Substep(seamm.Node):
 
         # And the reactions. First, for atomization energy
         middot = "\N{MIDDLE DOT}"
-        lDelta = "\N{Greek Capital Letter Delta}"
+        lDelta = "\N{GREEK CAPITAL LETTER DELTA}"
         formula = ""
         tmp = []
         for atno, symbol, count in composition:
@@ -715,13 +726,14 @@ class Substep(seamm.Node):
         if handling == "keep all":
             pass
         elif handling == "remove checkpoint files":
-            directory = Path(self.directory)
-            step_no = int(self._id[-1])
-            chkpoint = directory.parent / f"{step_no}.chk"
-            chkpoint.unlink(missing_ok=True)
+            if self.chkpt.is_relative_to(self.wd):
+                self.chkpt.unlink(missing_ok=True)
+                self.chkpt = None
         elif handling == "remove all":
             directory = Path(self.directory)
             shutil.rmtree(directory)
+            if self.chkpt.is_relative_to(self.wd):
+                self.chkpt = None
 
     def get_functional(self, P=None):
         """Work out the DFT functional"""
@@ -1490,6 +1502,61 @@ class Substep(seamm.Node):
 
                 data["Wiberg bond order matrix"] = bond_orders
 
+        # Wavefunction stability analysis
+
+        # Sections introduced by line like this:
+        #
+        #  Stability analysis using <AA,BB:AA,BB> singles matrix:
+        #
+        # Possible next lines:
+        #
+        # The wavefunction has an RHF -> UHF instability.
+        # The wavefunction is stable under the perturbations considered.
+        # The wavefunction has an internal instability.
+        #
+        # Each section looks like this:
+        # ***********************************************************************
+        # Stability analysis using <AA,BB:AA,BB> singles matrix:
+        # ***********************************************************************
+
+        # Eigenvectors of the stability matrix:
+
+        # Eigenvector   1:  1.046-A    Eigenvalue= 0.1445303  <S**2>=0.024
+        #      9A -> 10A        0.70700
+        #      9B -> 10B        0.70695
+        # SavETr:  write IOETrn=   770 NScale= 10 NData=  16 NLR=1 NState=    1 LETr ...
+        # The wavefunction is stable under the perturbations considered.
+        # The wavefunction is already stable.
+
+        it = iter(lines)
+        for line in it:
+            if line.startswith(" Stability analysis using"):
+                # Capture the eigenvector analysis
+                next(it)
+                next(it)
+                text = []
+                for line in it:
+                    if line.startswith(" SavETr"):
+                        if "wavefunction stability text" not in data:
+                            data["wavefunction stability text"] = []
+                            data["wavefunction stability"] = []
+                        data["wavefunction stability text"].append("\n".join(text))
+                        text = []
+                        break
+                    else:
+                        text.append(line[1:])  # Lines start with a blank
+            elif line.startswith(" The wavefunction has an RHF -> UHF instability."):
+                data["wavefunction stability"].append("RHF -> UHF")
+                data["wavefunction is stable"] = False
+            elif line.startswith(
+                " The wavefunction is stable under the perturbations considered."
+            ):
+                data["wavefunction stability"].append("stable")
+                data["wavefunction is stable"] = True
+            elif line.startswith(" The wavefunction has an internal instability."):
+                data["wavefunction stability"].append("internal")
+                data["wavefunction is stable"] = False
+
         return data
 
     def parse_punch(self, path, n_atoms, data):
@@ -1638,7 +1705,7 @@ class Substep(seamm.Node):
                         new[f"E {letter} gap"] = Es[homo + 1] - Es[homo]
                     if homo + 2 < len(Es):
                         new[f"E {letter} slumo"] = Es[homo + 2]
-                    if "mosyms" in new:
+                    if "mosyms" in new and len(new["mosyms"]) > i:
                         syms = new["mosyms"][i]
                         new[f"{letter} HOMO symmetry"] = syms[homo]
                         if homo > 0:
@@ -1699,12 +1766,31 @@ class Substep(seamm.Node):
 
         return new
 
-    def run_gaussian(self, keywords, extra_sections={}):
+    def run_gaussian(
+        self,
+        keywords,
+        extra_sections={},
+        spin_multiplicity=None,
+        charge=None,
+        old_chkpt=None,
+        chkpt=None,
+    ):
         """Run Gaussian.
 
         Parameters
         ----------
-        None
+        keywords : set(str)
+            The keywords for Gaussian
+        extra_sections : {str: str}
+            Any extra sections needed in the input
+        spin_multiplicity: int
+            Specify the spin multiplicity (default: None -- given by configuration)
+        charge : int
+            Specify the charge (default: None -- given by configuration)
+        old_chkpt : str or pathlib.Path
+            A previous checkpoint file to use. Default is None
+        chkpt : str or pathlib.Path
+            The checkpoint file for this run. Default is {step_no}_1
 
         Returns
         -------
@@ -1712,7 +1798,7 @@ class Substep(seamm.Node):
             The next node object in the flowchart.
         """
         # Create the directory
-        directory = Path(self.directory)
+        directory = self.wd
         directory.mkdir(parents=True, exist_ok=True)
 
         # Check for successful run, don't rerun
@@ -1779,30 +1865,53 @@ class Substep(seamm.Node):
             memory = humanize(memory, kilo=1000)
 
             lines = []
-            step_no = int(self._id[-1])
-            if step_no > 1:
-                last_chkpoint = directory.parent / f"{step_no - 1}.chk"
-                if last_chkpoint.exists():
-                    lines.append(f"%OldChk={last_chkpoint}")
-            chkpoint = directory.parent / f"{step_no}.chk"
+            if old_chkpt is None:
+                step_no = int(self._id[-1])
+                if step_no > 1:
+                    last_chkpt = directory.parent / f"{step_no - 1}.chk"
+                    if last_chkpt.exists():
+                        old_chkpt = last_chkpt
+            if chkpt is None:
+                step_no = int(self._id[-1])
+                new_chkpt = directory.parent / f"{step_no}.chk"
+            else:
+                new_chkpt = self.file_path(chkpt)
+            self.chkpt = new_chkpt
+
+            if old_chkpt is not None:
+                lines.append(f"%OldChk={old_chkpt}")
             lines.append("%Chk=gaussian.chk")
             lines.append(f"%Mem={memory}")
             lines.append(f"%NProcShared={n_threads}")
 
+            if spin_multiplicity is not None or charge is not None:
+                if spin_multiplicity is None:
+                    spin_multiplicity = configuration.spin_multiplicity
+                if charge is None:
+                    charge = configuration.charge
+                if "Geom=AllCheck" in keywords:
+                    keywords.remove("Geom=AllCheck")
+                    keywords.add("Geom=Check")
+            else:
+                spin_multiplicity = configuration.spin_multiplicity
+                charge = configuration.charge
+
             lines.append("# " + " ".join(keywords))
             lines.append("# Punch=(Coord,Derivatives)")
 
-            lines.append(" ")
-            lines.append(f"{self.title} of {system.name}/{configuration.name}")
-            lines.append(" ")
-            lines.append(f"{configuration.charge}    {configuration.spin_multiplicity}")
+            if "Geom=AllCheck" not in keywords:
+                lines.append(" ")
+                lines.append(f"{self.title} of {system.name}/{configuration.name}")
+                lines.append(" ")
+                lines.append(f"{charge}    {spin_multiplicity}")
 
             # Atoms with coordinates
-            symbols = configuration.atoms.symbols
-            XYZs = configuration.atoms.coordinates
-            for symbol, xyz in zip(symbols, XYZs):
-                x, y, z = xyz
-                lines.append(f"{symbol:2}   {x:10.6f} {y:10.6f} {z:10.6f}")
+            if "Geom=AllCheck" not in keywords and "Geom=Check" not in keywords:
+                symbols = configuration.atoms.symbols
+                XYZs = configuration.atoms.coordinates
+                for symbol, xyz in zip(symbols, XYZs):
+                    x, y, z = xyz
+                    lines.append(f"{symbol:2}   {x:10.6f} {y:10.6f} {z:10.6f}")
             lines.append(" ")
 
             for section in (
@@ -1810,7 +1919,7 @@ class Substep(seamm.Node):
                 "NBO input",
             ):
                 if section in extra_sections:
-                    lines.extend(extra_sections[section])
+                    lines.append(extra_sections[section])
 
             files = {"input.dat": "\n".join(lines)}
             self.logger.debug("input.dat:\n" + files["input.dat"])
@@ -1923,7 +2032,7 @@ class Substep(seamm.Node):
                     else:
                         env["GAUSS_SCRDIR"] = config["scratch-dir"]
 
-                cmd += " < input.dat > output.txt && formchk gaussian.chk"
+                cmd += " < input.dat > output.txt && formchk gaussian"
 
                 return_files = [
                     "output.txt",
@@ -1935,8 +2044,9 @@ class Substep(seamm.Node):
                 self.logger.debug(f"{cmd=}")
                 self.logger.debug(f"{env=}")
 
-                self._timing_data[12] = " ".join(keywords)
-                self._timing_data[5] = datetime.now(timezone.utc).isoformat()
+                if self._timing_data is not None:
+                    self._timing_data[12] = " ".join(keywords)
+                    self._timing_data[5] = datetime.now(timezone.utc).isoformat()
                 t0 = time.time_ns()
 
                 result = executor.run(
@@ -1970,7 +2080,7 @@ class Substep(seamm.Node):
                     return None
 
                 if chkpoint_ok:
-                    (directory / "gaussian.chk").rename(chkpoint)
+                    (directory / "gaussian.chk").rename(self.chkpt)
                 else:
                     (directory / "gaussian.chk").unlink(missing_ok=True)
 
@@ -1989,8 +2099,11 @@ class Substep(seamm.Node):
                         data = vars(cclib.io.ccread(path))
                         data = self.process_data(data)
                     except Exception as e:
+                        with open(directory / "cclib_error.out", "a") as fd:
+                            traceback.print_exc(file=fd)
                         self.logger.warning(
-                            f"\ncclib raised exception {e}\nPlease report!"
+                            f"\ncclib raised an exception {e}\nPlease report!\n"
+                            f"More detail is in {str(directory / 'cclib_error.out')}."
                         )
                         data = {}
                 else:
@@ -2021,6 +2134,8 @@ class Substep(seamm.Node):
                 success = "success" if "success" in data else False
 
                 if not success:
+                    print("\n\nCould not find 'success' in data:\n")
+                    pprint.pprint(data)
                     raise RuntimeError("Gaussian did not complete successfully")
 
                 # Get the data from the formatted checkpoint file
@@ -2036,6 +2151,18 @@ class Substep(seamm.Node):
                 # And parse a bit more out of the output
                 if path.exists():
                     data = self.parse_output(path, data)
+
+                # Add the requested spin state and charge
+                data["requested spin multiplicity"] = spin_multiplicity
+                data["requested spin state"] = self.spin_state(spin_multiplicity)
+                data["charge"] = charge
+
+                # The ideal value of S^2
+                S = (spin_multiplicity - 1) / 2
+                S2 = S * (S + 1)
+                data["ideal S**2"] = S2
+                if data["method"].startswith("R"):
+                    data["S**2"] = S2
 
                 success = "success" if "success" in data else False
 

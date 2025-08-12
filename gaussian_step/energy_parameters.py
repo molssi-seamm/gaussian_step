@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Global control parameters for Gaussian
-"""
+"""Global control parameters for Gaussian"""
 
 import logging
 
@@ -45,6 +44,9 @@ class EnergyParameters(seamm.Parameters):
                 "6-31G",
                 "6-31G*",
                 "6-31G**",
+                "6-311G",
+                "6-311G*",
+                "6-311G**",
                 "cc-pVDZ",
                 "cc-pVTZ",
                 "cc-pVQZ",
@@ -56,6 +58,42 @@ class EnergyParameters(seamm.Parameters):
             "format_string": "s",
             "description": "Basis:",
             "help_text": ("The basis set to use."),
+        },
+        "checkpoint": {
+            "default": "default",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("default", "job:gaussian.chk"),
+            "format_string": "s",
+            "description": "Checkpoint file:",
+            "help_text": "The checkpoint file to use.",
+        },
+        "initial checkpoint": {
+            "default": "default",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("default", "job:gaussian.chk"),
+            "format_string": "s",
+            "description": "Initial checkpoint file:",
+            "help_text": "The initial checkpoint file to start with.",
+        },
+        "geometry": {
+            "default": "current",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("current", "from configuration", "from checkpoint file"),
+            "format_string": "s",
+            "description": "Geometry:",
+            "help_text": "Where to get the geometry.",
+        },
+        "initial wavefunction": {
+            "default": "default",
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("default", "Read", "Harris", "Core"),
+            "format_string": "s",
+            "description": "Initial wavefunction:",
+            "help_text": "The starting wavefunction for the calculation.",
         },
         "method": {
             "default": "DFT: Kohn-Sham density functional theory",
@@ -96,7 +134,7 @@ class EnergyParameters(seamm.Parameters):
             "help_text": ("The exchange-correlation functional to use."),
         },
         "dispersion": {
-            "default": "GD3BJ",
+            "default": "none",
             "kind": "enumeration",
             "default_units": "",
             "enumeration": ["none", "GD3BJ", "GD3", "DG2"],

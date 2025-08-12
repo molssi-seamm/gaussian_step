@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Non-graphical part of the Thermodynamics step in a Gaussian flowchart
-"""
+"""Non-graphical part of the Thermodynamics step in a Gaussian flowchart"""
 
 import logging
 from pathlib import Path
