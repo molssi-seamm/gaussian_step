@@ -86,13 +86,15 @@ setup(
         'org.molssi.seamm.gaussian': [
             'Thermodynamics = gaussian_step:ThermodynamicsStep',
             'Energy = gaussian_step:EnergyStep',
-            'Optimization = gaussian_step:OptimizationStep'
+            'Optimization = gaussian_step:OptimizationStep',
+            'Wavefunction Stability = gaussian_step:WavefunctionStabilityStep'
         ],
 
         'org.molssi.seamm.gaussian.tk': [
             'Thermodynamics = gaussian_step:ThermodynamicsStep',
             'Energy = gaussian_step:EnergyStep',
-            'Optimization = gaussian_step:OptimizationStep'
+            'Optimization = gaussian_step:OptimizationStep',
+            'Wavefunction Stability = gaussian_step:WavefunctionStabilityStep'
         ],
     }
 )

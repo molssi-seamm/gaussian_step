@@ -233,7 +233,7 @@ class Optimization(gaussian_step.Energy):
         # Section ends in blank line
         lines.append("")
 
-        return lines
+        return "\n".join(lines)
 
     def run(self, keywords=None, extra_sections={}):
         """Run an optimization calculation with Gaussian"""

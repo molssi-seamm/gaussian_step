@@ -2,7 +2,7 @@
 
 """
 gaussian_step
-A SEAMM plug-in for Gaussian
+A SEAMM plug-in for the Gaussian quantum chemistry code
 """
 
 # Bring up the classes so that they appear to be directly in
@@ -24,6 +24,13 @@ from .energy import Energy  # noqa: F401
 from .energy_parameters import EnergyParameters  # noqa: F401
 from .energy_step import EnergyStep  # noqa: F401
 from .tk_energy import TkEnergy  # noqa: F401
+
+from .wavefunction_stability import WavefunctionStability  # noqa: F401
+from .wavefunction_stability_parameters import (  # noqa: F401
+    WavefunctionStabilityParameters,
+)
+from .wavefunction_stability_step import WavefunctionStabilityStep  # noqa: F401
+from .tk_wavefunction_stability import TkWavefunctionStability  # noqa: F401
 
 from .optimization import Optimization  # noqa: F401
 from .optimization_parameters import OptimizationParameters  # noqa: F401

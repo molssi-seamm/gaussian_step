@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Global control parameters for Gaussian
-"""
+"""Global control parameters for Gaussian"""
 
 import logging
 
