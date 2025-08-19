@@ -4,6 +4,7 @@
 
 import csv
 import logging
+import pprint  # noqa: F401
 import textwrap
 
 import numpy as np
