@@ -745,23 +745,24 @@ class Substep(seamm.Node):
             functional = P["functional"]
         else:
             functional = P["advanced_functional"]
-        found = functional in gaussian_step.dft_functionals
-        if not found:
-            # Might be first part of name, or Gaussian-encoded name
-            for _key, _data in gaussian_step.dft_functionals.items():
-                if functional == _key.split(":")[0].strip():
-                    functional = _key
-                    found = True
-                    break
-        if not found:
-            # Might be the internal Gaussian name
-            for _key, _data in gaussian_step.dft_functionals.items():
-                if functional == _data["name"]:
-                    functional = _key
-                    found = True
-                    break
-        if not found:
-            raise ValueError(f"Don't recognize functional '{functional}'")
+        if not self.is_expr(functional):
+            found = functional in gaussian_step.dft_functionals
+            if not found:
+                # Might be first part of name, or Gaussian-encoded name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _key.split(":")[0].strip():
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                # Might be the internal Gaussian name
+                for _key, _data in gaussian_step.dft_functionals.items():
+                    if functional == _data["name"]:
+                        functional = _key
+                        found = True
+                        break
+            if not found:
+                raise ValueError(f"Don't recognize functional '{functional}'")
 
         return functional
 
