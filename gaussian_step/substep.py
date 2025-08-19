@@ -1016,7 +1016,7 @@ class Substep(seamm.Node):
             The path to the checkpoint file
         """
         if not path.exists():
-            return
+            return data
 
         lines = path.read_text().splitlines()
 
@@ -2139,6 +2139,10 @@ class Substep(seamm.Node):
                     raise RuntimeError("Gaussian did not complete successfully")
 
                 # Get the data from the formatted checkpoint file
+                if not (directory / "gaussian.fchk").exists():
+                    raise RuntimeError(
+                        "Gaussian did not complete successfully. There is no fchk file"
+                    )
                 data = self.parse_fchk(directory / "gaussian.fchk", data)
 
                 # Debug output
@@ -2152,6 +2156,11 @@ class Substep(seamm.Node):
                 if path.exists():
                     data = self.parse_output(path, data)
 
+                # Check whether Gaussian ran ok.
+                success = "success" if "success" in data else False
+                if not success:
+                    raise RuntimeError("Gaussian did not complete successfully")
+
                 # Add the requested spin state and charge
                 data["requested spin multiplicity"] = spin_multiplicity
                 data["requested spin state"] = self.spin_state(spin_multiplicity)
@@ -2163,11 +2172,6 @@ class Substep(seamm.Node):
                 data["ideal S**2"] = S2
                 if data["method"].startswith("R"):
                     data["S**2"] = S2
-
-                success = "success" if "success" in data else False
-
-                if not success:
-                    raise RuntimeError("Gaussian did not complete successfully")
 
                 # And the Punch file, if it exists
                 punch = Path(directory / "fort.7")
