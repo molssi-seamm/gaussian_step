@@ -1,6 +1,13 @@
 =======
 History
 =======
+2025.8.20: Added the atomic referenece energies for wB97XD and M062X functionals
+    * Added the atomic referenece energies for wB97XD and M062X functionals for the
+      6-31G, 6-311G, and CBSB7 basis set families.
+    * Fixed a bug with the decription of the model if the DFT functional was given as a
+      variable.
+    * Improved error handling when Gaussian fails.
+
 2025.8.12: Added Wavefunction Stability step
     * Added the Wavefunction Stability step, which analyzes the stability of HF and DFT
       wavefunctions and optimially lowers the symmetry to find the stable
