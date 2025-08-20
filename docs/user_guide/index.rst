@@ -3,7 +3,7 @@
 **********
 User Guide
 **********
-The XXXX plug-in ...
+The Gaussian plug-in provides an interface to the Gaussian quantum chemistry code. 
 
 ..
    The following sections cover accessing and controlling this functionality.

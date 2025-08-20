@@ -305,6 +305,7 @@ class WavefunctionStability(gaussian_step.Energy):
 
             self.analyze(data=data, P=P)
 
+            S2 = f"{data['S**2']:.4f}" if "S**2" in data else ""
             S2_annihilated = (
                 f"{data['S**2 after annihilation']:.4f}"
                 if "S**2 after annihilation" in data
@@ -317,7 +318,7 @@ class WavefunctionStability(gaussian_step.Energy):
                     multiplicity,
                     data["energy"],
                     self.chkpt,
-                    data["S**2"],
+                    S2,
                     data["ideal S**2"],
                     S2_annihilated,
                     configuration.properties.get(),
@@ -327,10 +328,10 @@ class WavefunctionStability(gaussian_step.Energy):
         if P["test spin multiplicity"]:
             text = "Testing whether the "
             if multiplicity > 2:
-                multiplicities = (multiplicity - 2, multiplicity + 2)
+                multiplicities = (multiplicity + 2, multiplicity - 2)
                 text += (
-                    f"{self.spin_state(multiplicity - 2)} or "
-                    f"{self.spin_state(multiplicity + 2)} have a lower energy."
+                    f"{self.spin_state(multiplicity + 2)} or "
+                    f"{self.spin_state(multiplicity - 2)} have a lower energy."
                 )
             else:
                 multiplicities = (multiplicity + 2,)
@@ -430,33 +431,37 @@ class WavefunctionStability(gaussian_step.Energy):
                     except Exception:
                         self._timing_data[10] = ""
 
-                data = self.run_gaussian(
-                    keywords,
-                    extra_sections=extra_sections,
-                    spin_multiplicity=multiplicity,
-                    old_chkpt=chkpt_save,
-                    chkpt=chkpt,
-                )
+                try:
+                    data = self.run_gaussian(
+                        keywords,
+                        extra_sections=extra_sections,
+                        spin_multiplicity=multiplicity,
+                        old_chkpt=chkpt_save,
+                        chkpt=chkpt,
+                    )
 
-                if not self.input_only:
                     self.analyze(data=data, P=P)
-
-                S2_annihilated = (
-                    f"{data['S**2 after annihilation']:.4f}"
-                    if "S**2 after annihilation" in data
-                    else ""
-                )
-                spin_data.append(
-                    [
-                        multiplicity,
-                        data["energy"],
-                        self.chkpt,
-                        data["S**2"],
-                        data["ideal S**2"],
-                        S2_annihilated,
-                        configuration.properties.get(),
-                    ]
-                )
+                except RuntimeError:
+                    text = "Gaussian failed! Skipping this state and hoping..."
+                    printer.normal(__(text, indent=self.indent + 8 * " "))
+                else:
+                    S2 = f"{data['S**2']:.4f}" if "S**2" in data else ""
+                    S2_annihilated = (
+                        f"{data['S**2 after annihilation']:.4f}"
+                        if "S**2 after annihilation" in data
+                        else ""
+                    )
+                    spin_data.append(
+                        [
+                            multiplicity,
+                            data["energy"],
+                            self.chkpt,
+                            S2,
+                            data["ideal S**2"],
+                            S2_annihilated,
+                            configuration.properties.get(),
+                        ]
+                    )
 
                 # Set the id back to its original value
                 self._id = id_save
@@ -488,7 +493,7 @@ class WavefunctionStability(gaussian_step.Energy):
                 "Spin State": [self.spin_state(v[0]).title() for v in spin_data],
                 "Energy": [f"{factor*(v[1]-Emin):.1f}" for v in spin_data],
                 "Units": ["kJ/mol"] * len(spin_data),
-                "S\N{SUPERSCRIPT TWO}": [f"{v[3]:.4f}" for v in spin_data],
+                "S\N{SUPERSCRIPT TWO}": [v[3] for v in spin_data],
                 "annihilated S\N{SUPERSCRIPT TWO}": [v[5] for v in spin_data],
                 "Ideal S\N{SUPERSCRIPT TWO}": [f"{v[4]:.4f}" for v in spin_data],
             }
