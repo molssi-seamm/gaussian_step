@@ -22,8 +22,4 @@ will ensure both that it is installed and up-to-date.
 
 .. _SEAMM Installer: https://molssi-seamm.github.io/installation/index.html
 
-Replace this!
-=============
-Put an example or two here....
-
 That should be enough to get started. For more detail about the functionality in this plug-in, see the :ref:`User Guide <user-guide>`.
