@@ -1,10 +1,10 @@
 =======
 History
 =======
-2025.8.20: Added the atomic referenece energies for wB97XD and M062X functionals
-    * Added the atomic referenece energies for wB97XD and M062X functionals for the
+2025.8.20: Added the atomic reference energies for wB97XD and M062X functionals
+    * Added the atomic reference energies for wB97XD and M062X functionals for the
       6-31G, 6-311G, and CBSB7 basis set families.
-    * Fixed a bug with the decription of the model if the DFT functional was given as a
+    * Fixed a bug with the description of the model if the DFT functional was given as a
       variable.
     * Improved error handling when Gaussian fails.
 
