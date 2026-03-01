@@ -1,6 +1,8 @@
 =======
 History
 =======
+2026.3.1: Internal: switching from deprecated library pkg_resources to importlib
+
 2025.8.20: Added the atomic reference energies for wB97XD and M062X functionals
     * Added the atomic reference energies for wB97XD and M062X functionals for the
       6-31G, 6-311G, and CBSB7 basis set families.

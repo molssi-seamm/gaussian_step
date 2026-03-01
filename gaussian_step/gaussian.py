@@ -2,8 +2,8 @@
 
 """Non-graphical part of the Gaussian step in a SEAMM flowchart"""
 
+import importlib
 import logging
-import pkg_resources
 from pathlib import Path
 import pprint  # noqa: F401
 import sys
@@ -28,7 +28,7 @@ job = printing.getPrinter()
 printer = printing.getPrinter("Gaussian")
 
 # Add this module's properties to the standard properties
-path = Path(pkg_resources.resource_filename(__name__, "data/"))
+path = importlib.resources.files("gaussian_step") / "data"
 csv_file = path / "properties.csv"
 if path.exists():
     molsystem.add_properties_from_file(csv_file)
