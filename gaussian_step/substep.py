@@ -13,7 +13,6 @@ import logging
 from math import isnan
 import os
 from pathlib import Path
-import pkg_resources
 import platform
 import pprint
 import re
@@ -36,7 +35,6 @@ import seamm_exec
 import seamm.data
 from seamm_util import CompactJSONEncoder, Configuration, Q_
 import seamm_util.printing as printing
-
 
 try:
     from itertools import batched
@@ -304,7 +302,7 @@ class Substep(seamm.Node):
         else:
             personal_table = None
 
-        path = Path(pkg_resources.resource_filename(__name__, "data/"))
+        path = importlib.resources.files("gaussian_step") / "data"
         csv_file = path / "atom_energies.csv"
         table = pandas.read_csv(csv_file, index_col=False)
 
@@ -1577,6 +1575,14 @@ class Substep(seamm.Node):
         dict
         """
         lines = path.read_text().splitlines()
+
+        # Gaussian 6 has a summary section at the beginning
+        if self.gversion == "g16":
+            for i, line in enumerate(lines):
+                if "@" in line:
+                    break
+            lines = lines[i + 1 :]
+
         n_lines = len(lines)
 
         # Coordinates come first
@@ -2023,6 +2029,9 @@ class Substep(seamm.Node):
                     cmd = f". {config['setup-environment']} ; {g_ver}"
                 else:
                     cmd = g_ver
+
+                # REcord which version of Gaussian we are using
+                self.parent.gversion = g_ver
 
                 if "scratch-dir" in config and config["scratch-dir"] != "":
                     path = Path(config["scratch-dir"])

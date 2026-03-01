@@ -2,9 +2,8 @@
 
 """Non-graphical part of the Thermodynamics step in a Gaussian flowchart"""
 
+import importlib
 import logging
-from pathlib import Path
-import pkg_resources
 import pprint  # noqa: F401
 
 import gaussian_step  # noqa: E999
@@ -27,7 +26,7 @@ job = printing.getPrinter()
 printer = printing.getPrinter("gaussian")
 
 # Add this module's properties to the standard properties
-path = Path(pkg_resources.resource_filename(__name__, "data/"))
+path = importlib.resources.files("gaussian_step") / "data"
 csv_file = path / "properties.csv"
 if path.exists():
     molsystem.add_properties_from_file(csv_file)
