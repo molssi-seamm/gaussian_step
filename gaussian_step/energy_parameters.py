@@ -354,6 +354,20 @@ class EnergyParameters(seamm.Parameters):
             "description": "Plot difference density:",
             "help_text": "Whether to plot the difference density.",
         },
+        "save wfx": {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "",
+            "description": "Write a wavefunction (wfx) file:",
+            "help_text": (
+                "Whether to write an AIMPAC wavefunction (.wfx) file for the "
+                "calculation. This is required by a following Atomic Charges step "
+                "using DDEC6 (Chargemol). The file is written to the job directory "
+                "as '<step number>.wfx'."
+            ),
+        },
         "orbitals": {
             "default": "no",
             "kind": "boolean",

@@ -387,6 +387,25 @@ class Optimization(gaussian_step.Energy):
             else:
                 n_steps = -1
             data["N steps optimization"] = n_steps
+            if "optimization is converged" not in data:
+                # The optimization summary ("Optimization completed." /
+                # "Stationary point found." and the convergence table) was not
+                # found in Gaussian's output, so convergence cannot be
+                # determined. The calculation may have run (a final energy and
+                # geometry can still come from the checkpoint), but its output
+                # could not be parsed -- typically a truncated log or a Gaussian
+                # installation that suppresses its standard output. Fail with a
+                # clear message rather than a bare KeyError.
+                raise RuntimeError(
+                    "Gaussian did not report geometry-optimization convergence: "
+                    "no optimization summary was found in the output "
+                    f"({self.wd / 'output.txt'}). The calculation may have run, "
+                    "but its results could not be parsed -- this usually means "
+                    "the Gaussian output is truncated or the Gaussian "
+                    "installation is emitting non-standard output. Verify the "
+                    "installation (a normal run prints 'SCF Done' and "
+                    "'Optimization completed.')."
+                )
             if data["optimization is converged"]:
                 text += f"The geometry optimization converged in {n_steps} steps."
             else:

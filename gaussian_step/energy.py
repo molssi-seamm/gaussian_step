@@ -505,6 +505,14 @@ class Energy(Substep):
             keywords.add("Pop=NBORead")
             extra_sections["NBO input"] = "$nbo bndidx $end\n"
 
+        # Write a wavefunction (wfx) file, e.g. for a following DDEC6 charge step
+        save_wfx = P["save wfx"]
+        if not isinstance(save_wfx, bool):
+            save_wfx = save_wfx == "yes"
+        if save_wfx:
+            keywords.add("output=wfx")
+            extra_sections["wfx"] = "gaussian.wfx"
+
         if P["print basis set"] or P["save basis set"].lower() != "no":
             keywords.add("GFInput")
 
