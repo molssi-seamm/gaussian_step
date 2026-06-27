@@ -390,6 +390,7 @@ class TkEnergy(seamm.TkNode):
             "total density",
             "total spin density",
             "orbitals",
+            "save wfx",
         ):
             # "difference density",
             self[key].grid(row=row, column=0, columnspan=4, sticky="ew")

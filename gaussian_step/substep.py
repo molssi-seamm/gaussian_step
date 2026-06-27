@@ -1928,6 +1928,12 @@ class Substep(seamm.Node):
                 if section in extra_sections:
                     lines.append(extra_sections[section])
 
+            # The wfx filename, if requested, must be the last input section
+            # (output=wfx). Followed by a blank line.
+            if "wfx" in extra_sections:
+                lines.append(extra_sections["wfx"])
+                lines.append(" ")
+
             files = {"input.dat": "\n".join(lines)}
             self.logger.debug("input.dat:\n" + files["input.dat"])
 
@@ -2050,6 +2056,8 @@ class Substep(seamm.Node):
                     "gaussian.fchk",
                     "fort.7",
                 ]
+                if "wfx" in extra_sections:
+                    return_files.append("gaussian.wfx")
 
                 self.logger.debug(f"{cmd=}")
                 self.logger.debug(f"{env=}")
@@ -2094,6 +2102,15 @@ class Substep(seamm.Node):
                 else:
                     (directory / "gaussian.chk").unlink(missing_ok=True)
 
+                # Move the wfx file to the job directory as <step_no>.wfx, so a
+                # following step (e.g. Atomic Charges / DDEC6) can find it. This
+                # mirrors the <step_no>.chk convention above.
+                if "wfx" in extra_sections:
+                    wfx = directory / "gaussian.wfx"
+                    if wfx.exists():
+                        step_no = int(self._id[-1])
+                        wfx.rename(directory.parent / f"{step_no}.wfx")
+
         if not self.input_only:
             # Reget or parse the data
             data_file = directory / "data.json"
@@ -2106,7 +2123,16 @@ class Substep(seamm.Node):
                 path = directory / "output.txt"
                 if path.exists():
                     try:
-                        data = vars(cclib.io.ccread(path))
+                        # Use cclib's Gaussian parser directly rather than
+                        # cclib.io.ccread. ccread first auto-detects the program
+                        # from the file header, which buys us nothing here (the
+                        # output is always Gaussian) and is fragile: some builds
+                        # (e.g. the Apple-Silicon G16 RevC.02) emit a header that
+                        # detection does not recognize, so ccread returns None.
+                        # The explicit parser handles the same file sources
+                        # (including compressed logs) without that failure mode.
+                        parsed = cclib.parser.Gaussian(str(path)).parse()
+                        data = vars(parsed)
                         data = self.process_data(data)
                     except Exception as e:
                         with open(directory / "cclib_error.out", "a") as fd:
