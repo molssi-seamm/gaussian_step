@@ -715,6 +715,218 @@ class Substep(seamm.Node):
 
         return text
 
+    def calculate_enthalpy_of_formation_via_seamm_thermochemistry(self, data):
+        """Prototype: the same result as `calculate_enthalpy_of_formation`,
+        via the shared `seamm_thermochemistry` library instead of this
+        package's own ~5000-column `data/atom_energies.csv` and ~200 lines
+        of atomization/formation arithmetic.
+
+        Not wired into `run`/`analyze` -- this exists to prove the
+        "collapses to one call" claim in the reference-energy design
+        (`~/Sites/reference-energy/2026-07-24_reference-energy/`), and is
+        checked bit-for-bit against the production method in
+        `tests/test_formation_via_seamm_thermochemistry.py`. Once
+        `seamm_thermochemistry` covers gaussian_step's full method/basis
+        grid (today it has CBS-QB3 and G4 only, imported as a demo slice)
+        this can replace `calculate_enthalpy_of_formation` outright.
+
+        Sets the same `data["E atomization"]` / `data["H atomization"]` /
+        `data["DfH0"]` keys (kJ/mol) as the production method. Returns a
+        short status string rather than the full formatted report --
+        reporting is a presentation concern, separate from the arithmetic
+        this is proving.
+        """
+        from seamm_thermochemistry import (
+            ThermoDB,
+            atomization_energy,
+            formation_energy,
+            MissingReferenceData,
+        )
+
+        column = (
+            self.model[1:]
+            if self.model.startswith("U") or self.model.startswith("R")
+            else self.model
+        )
+
+        _, configuration = self.get_system_configuration(None)
+        counts = Counter(configuration.atoms.atomic_numbers)
+        composition = Counter()
+        for atno, count in counts.items():
+            composition[elements.to_symbols([atno])[0]] += count
+
+        with ThermoDB(read_only=True) as db:
+            E = Q_(data["energy"], "E_h").m_as("kJ/mol")
+            try:
+                data["E atomization"] = atomization_energy(
+                    composition, E, db, "gaussian", column, units="kJ/mol"
+                )
+            except MissingReferenceData as e:
+                return str(e)
+
+            if "H" not in data:
+                return "Cannot calculate enthalpy of formation without the enthalpy"
+
+            # The stored atomic reference energies are bare electronic
+            # energies (no H298-H0), but data["H"] is the molecule's full
+            # 298 K enthalpy. Shift it by the atoms' H298-H0 (5/2RT per
+            # monatomic ideal gas atom, 6.197 kJ/mol) so both sides of the
+            # Hess cycle are on the same footing -- exactly the correction
+            # `calculate_enthalpy_of_formation` applies per atom above.
+            n_atoms = sum(composition.values())
+            H = Q_(data["H"], "E_h").m_as("kJ/mol") - n_atoms * 6.197
+            try:
+                data["DfH0"] = formation_energy(
+                    composition,
+                    H,
+                    db,
+                    "gaussian",
+                    column,
+                    anchor=True,
+                    anchor_at_0K=False,
+                    units="kJ/mol",
+                )
+            except MissingReferenceData as e:
+                return str(e)
+
+        return (
+            f"E atomization = {data['E atomization']:.2f} kJ/mol, "
+            f"DfH0(298K) = {data['DfH0']:.2f} kJ/mol"
+        )
+
+    def calculate_energy_of_formation(self, data):
+        """Calculate the energy of formation via seamm_thermochemistry.
+
+        The production formation-energy calculation as of the
+        reference-energy redesign
+        (~/Sites/reference-energy/2026-07-24_reference-energy/): report a
+        physically meaningful energy of formation, referenced to the
+        elements at 0 K, for *every* job with an electronic energy -- not
+        only the subset with a full harmonic thermochemistry calculation,
+        which is what `calculate_enthalpy_of_formation` (298 K, requires
+        "H") could do. It is an energy of formation, not an enthalpy,
+        because it excludes the molecule's zero-point energy; add that
+        back in (done automatically here when available) and it is
+        DfH(0K); add the 298 K thermal correction (the old method's
+        approach) and it is DfH(298K).
+
+        Supersedes `calculate_enthalpy_of_formation` as the method called
+        from `analyze()`. That method (and
+        `calculate_enthalpy_of_formation_via_seamm_thermochemistry`, which
+        reproduces it bit-for-bit via this same library -- see
+        `tests/test_formation_via_seamm_thermochemistry.py`) are kept for
+        reference/rollback, not called from the production path.
+
+        A missing formation energy must never break a Gaussian job: if
+        `seamm_thermochemistry` isn't installed, its database isn't built,
+        or the reference data doesn't cover this composition/method yet,
+        this returns a short explanatory message instead of raising.
+
+        Sets `data["E atomization"]` and `data["DfE"]` (kJ/mol) on
+        success, and additionally `data["DfH0"]` (kJ/mol) when a
+        zero-point energy is available (`data["ZPE"]`, Hartree).
+        """
+        column = (
+            self.model[1:]
+            if self.model.startswith("U") or self.model.startswith("R")
+            else self.model
+        )
+
+        _, configuration = self.get_system_configuration(None)
+        counts = Counter(configuration.atoms.atomic_numbers)
+        composition = Counter()
+        for atno, count in counts.items():
+            composition[elements.to_symbols([atno])[0]] += count
+
+        formula = ""
+        for symbol, count in sorted(composition.items()):
+            formula += symbol if count == 1 else f"{symbol}{subscript(count)}"
+
+        name = f"Formula: {formula}"
+        try:
+            name = configuration.PC_iupac_name(fallback=name)
+        except Exception:
+            pass
+        if name is None:
+            name = f"Formula: {formula}"
+
+        try:
+            from seamm_thermochemistry import (
+                ThermoDB,
+                atomization_energy,
+                formation_energy,
+                MissingReferenceData,
+            )
+
+            with ThermoDB(read_only=True) as db:
+                E = Q_(data["energy"], "E_h").m_as("kJ/mol")
+                data["E atomization"] = atomization_energy(
+                    composition, E, db, "gaussian", column, units="kJ/mol"
+                )
+                data["DfE"] = formation_energy(
+                    composition,
+                    E,
+                    db,
+                    "gaussian",
+                    column,
+                    anchor=True,
+                    anchor_at_0K=True,
+                    units="kJ/mol",
+                )
+        except ImportError:
+            return (
+                f"Thermochemistry of {name} with {column}\n\n"
+                "seamm_thermochemistry is not installed; cannot calculate "
+                "an energy of formation. (Expected until it is released "
+                "and added as a gaussian_step dependency.)"
+            )
+        except FileNotFoundError:
+            return (
+                f"Thermochemistry of {name} with {column}\n\n"
+                "The seamm_thermochemistry reference database is not "
+                "built; cannot calculate an energy of formation."
+            )
+        except MissingReferenceData as e:
+            return f"Thermochemistry of {name} with {column}\n\nCannot calculate the energy of formation: {e}"
+
+        lDelta = "\N{GREEK CAPITAL LETTER DELTA}"
+
+        text = f"Energy of Formation for {name} with {column}\n"
+        text += "-" * (len(text) - 1) + "\n\n"
+        text += textwrap.fill(
+            f"The atomization energy is {data['E atomization']:.2f} kJ/mol "
+            f"({Q_(data['E atomization'], 'kJ/mol').m_as('E_h'):.6f} "
+            f"E_h): the electronic energy to separate {formula} into "
+            "gas-phase atoms."
+        )
+        text += "\n\n"
+        text += textwrap.fill(
+            f"The energy of formation, {lDelta}fE, is the energy of "
+            f"forming {formula} from the elements in their standard "
+            "states at 0 K, using the experimental 0 K heat of formation "
+            "of the gas-phase atoms. It is electronic-only (no zero-point "
+            "energy or thermal correction) -- available for any "
+            "calculation with an energy, whether or not a frequency "
+            "calculation was run:"
+        )
+        text += f"\n\n    {lDelta}fE = {data['DfE']:.2f} kJ/mol"
+        text += f" ({Q_(data['DfE'], 'kJ/mol').m_as('E_h'):.6f} E_h)\n"
+
+        if "ZPE" in data:
+            zpe_kJ = Q_(data["ZPE"], "E_h").m_as("kJ/mol")
+            data["DfH0"] = data["DfE"] + zpe_kJ
+            text += "\n"
+            text += textwrap.fill(
+                "A zero-point energy is available, so the 0 K enthalpy of "
+                "formation can also be given:"
+            )
+            text += (
+                f"\n\n    {lDelta}fH{degree_sign}(0K) = {lDelta}fE + ZPE "
+                f"= {data['DfH0']:.2f} kJ/mol\n"
+            )
+
+        return text
+
     def cleanup(self):
         """Perform any requested cleanup at the end of the calculation."""
         P = self.parameters.current_values_to_dict(
