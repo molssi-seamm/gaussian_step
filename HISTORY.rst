@@ -1,8 +1,14 @@
 =======
 History
 =======
-2026.7.28: Initial checkpoint can reference another job
+2026.7.28: Energy of formation via seamm_thermochemistry; initial checkpoint job:// support
 
+    * The energy of formation is now computed via the shared
+      ``seamm_thermochemistry`` library: a 0 K, ZPE-free energy of
+      formation referenced to the elements, computed for every job with an
+      electronic energy rather than only the subset with a full harmonic
+      thermochemistry calculation. Part of unifying the atomic
+      reference-energy handling across steps.
     * **Initial checkpoint** (on the Energy and Wavefunction Stability steps)
       can now reference another job's checkpoint file, via
       ``job://<job number>/<name>`` (SEAMM's ``Node.file_path`` gained
