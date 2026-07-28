@@ -240,7 +240,9 @@ class Energy(Substep):
                 if not initial_chkpt.exists():
                     initial_chkpt = None
         else:
-            initial_chkpt = self.file_path(initial_chkpt, relative_to=self.wd.parent)
+            initial_chkpt = self.file_path(
+                initial_chkpt, relative_to=self.wd.parent, read_only=True
+            )
             if not initial_chkpt.exists():
                 tmp = P["initial checkpoint"]
                 raise ValueError(
@@ -572,8 +574,12 @@ class Energy(Substep):
 
         text = ""
 
-        # Calculate the enthalpy of formation, if possible
-        tmp_text = self.calculate_enthalpy_of_formation(data)
+        # Calculate the energy of formation, if possible. 0 K, ZPE-free,
+        # via seamm_thermochemistry -- see calculate_energy_of_formation's
+        # docstring for why this replaced calculate_enthalpy_of_formation
+        # (298 K, required a frequency calculation) as of the
+        # reference-energy redesign.
+        tmp_text = self.calculate_energy_of_formation(data)
         if tmp_text != "":
             path = self.wd / "Thermochemistry.txt"
             path.write_text(tmp_text)

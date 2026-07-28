@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.7.28: Initial checkpoint can reference another job
+
+    * **Initial checkpoint** (on the Energy and Wavefunction Stability steps)
+      can now reference another job's checkpoint file, via
+      ``job://<job number>/<name>`` (SEAMM's ``Node.file_path`` gained
+      read-only cross-job references) -- useful for seeding from a
+      checkpoint computed in a different job.
+
 2026.3.1: Internal: switching from deprecated library pkg_resources to importlib
 
 2025.8.20: Added the atomic reference energies for wB97XD and M062X functionals
