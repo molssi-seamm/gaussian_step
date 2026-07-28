@@ -887,7 +887,10 @@ class Substep(seamm.Node):
                 "built; cannot calculate an energy of formation."
             )
         except MissingReferenceData as e:
-            return f"Thermochemistry of {name} with {column}\n\nCannot calculate the energy of formation: {e}"
+            return (
+                f"Thermochemistry of {name} with {column}\n\n"
+                f"Cannot calculate the energy of formation: {e}"
+            )
 
         lDelta = "\N{GREEK CAPITAL LETTER DELTA}"
 
