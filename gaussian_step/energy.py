@@ -240,7 +240,9 @@ class Energy(Substep):
                 if not initial_chkpt.exists():
                     initial_chkpt = None
         else:
-            initial_chkpt = self.file_path(initial_chkpt, relative_to=self.wd.parent)
+            initial_chkpt = self.file_path(
+                initial_chkpt, relative_to=self.wd.parent, read_only=True
+            )
             if not initial_chkpt.exists():
                 tmp = P["initial checkpoint"]
                 raise ValueError(
