@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.6.27 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.7.28 documentation</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,12 +35,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=e3a086cf"></script>
+    <script src="../../_static/documentation_options.js?v=197c1917"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.6.27" />
+  <meta name="docsearch:version" content="2026.7.28" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1204,6 +1204,227 @@
                 <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; for </span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="n">references</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; from </span><span class="si">{</span><span class="n">references</span><span class="p">[</span><span class="n">atno</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_enthalpy_of_formation_via_seamm_thermochemistry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prototype: the same result as `calculate_enthalpy_of_formation`,</span>
+<span class="sd">        via the shared `seamm_thermochemistry` library instead of this</span>
+<span class="sd">        package&#39;s own ~5000-column `data/atom_energies.csv` and ~200 lines</span>
+<span class="sd">        of atomization/formation arithmetic.</span>
+
+<span class="sd">        Not wired into `run`/`analyze` -- this exists to prove the</span>
+<span class="sd">        &quot;collapses to one call&quot; claim in the reference-energy design</span>
+<span class="sd">        (`~/Sites/reference-energy/2026-07-24_reference-energy/`), and is</span>
+<span class="sd">        checked bit-for-bit against the production method in</span>
+<span class="sd">        `tests/test_formation_via_seamm_thermochemistry.py`. Once</span>
+<span class="sd">        `seamm_thermochemistry` covers gaussian_step&#39;s full method/basis</span>
+<span class="sd">        grid (today it has CBS-QB3 and G4 only, imported as a demo slice)</span>
+<span class="sd">        this can replace `calculate_enthalpy_of_formation` outright.</span>
+
+<span class="sd">        Sets the same `data[&quot;E atomization&quot;]` / `data[&quot;H atomization&quot;]` /</span>
+<span class="sd">        `data[&quot;DfH0&quot;]` keys (kJ/mol) as the production method. Returns a</span>
+<span class="sd">        short status string rather than the full formatted report --</span>
+<span class="sd">        reporting is a presentation concern, separate from the arithmetic</span>
+<span class="sd">        this is proving.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_thermochemistry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">ThermoDB</span><span class="p">,</span>
+            <span class="n">atomization_energy</span><span class="p">,</span>
+            <span class="n">formation_energy</span><span class="p">,</span>
+            <span class="n">MissingReferenceData</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">column</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
+        <span class="n">composition</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">atno</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">composition</span><span class="p">[</span><span class="n">elements</span><span class="o">.</span><span class="n">to_symbols</span><span class="p">([</span><span class="n">atno</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">count</span>
+
+        <span class="k">with</span> <span class="n">ThermoDB</span><span class="p">(</span><span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">],</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E atomization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomization_energy</span><span class="p">(</span>
+                    <span class="n">composition</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;kJ/mol&quot;</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">MissingReferenceData</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;Cannot calculate enthalpy of formation without the enthalpy&quot;</span>
+
+            <span class="c1"># The stored atomic reference energies are bare electronic</span>
+            <span class="c1"># energies (no H298-H0), but data[&quot;H&quot;] is the molecule&#39;s full</span>
+            <span class="c1"># 298 K enthalpy. Shift it by the atoms&#39; H298-H0 (5/2RT per</span>
+            <span class="c1"># monatomic ideal gas atom, 6.197 kJ/mol) so both sides of the</span>
+            <span class="c1"># Hess cycle are on the same footing -- exactly the correction</span>
+            <span class="c1"># `calculate_enthalpy_of_formation` applies per atom above.</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">composition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">H</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">],</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_atoms</span> <span class="o">*</span> <span class="mf">6.197</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfH0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">formation_energy</span><span class="p">(</span>
+                    <span class="n">composition</span><span class="p">,</span>
+                    <span class="n">H</span><span class="p">,</span>
+                    <span class="n">db</span><span class="p">,</span>
+                    <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">,</span>
+                    <span class="n">anchor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">anchor_at_0K</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">units</span><span class="o">=</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">MissingReferenceData</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;E atomization = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E atomization&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kJ/mol, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;DfH0(298K) = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DfH0&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kJ/mol&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Substep.calculate_energy_of_formation">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.Substep.calculate_energy_of_formation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_energy_of_formation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the energy of formation via seamm_thermochemistry.</span>
+
+<span class="sd">        The production formation-energy calculation as of the</span>
+<span class="sd">        reference-energy redesign</span>
+<span class="sd">        (~/Sites/reference-energy/2026-07-24_reference-energy/): report a</span>
+<span class="sd">        physically meaningful energy of formation, referenced to the</span>
+<span class="sd">        elements at 0 K, for *every* job with an electronic energy -- not</span>
+<span class="sd">        only the subset with a full harmonic thermochemistry calculation,</span>
+<span class="sd">        which is what `calculate_enthalpy_of_formation` (298 K, requires</span>
+<span class="sd">        &quot;H&quot;) could do. It is an energy of formation, not an enthalpy,</span>
+<span class="sd">        because it excludes the molecule&#39;s zero-point energy; add that</span>
+<span class="sd">        back in (done automatically here when available) and it is</span>
+<span class="sd">        DfH(0K); add the 298 K thermal correction (the old method&#39;s</span>
+<span class="sd">        approach) and it is DfH(298K).</span>
+
+<span class="sd">        Supersedes `calculate_enthalpy_of_formation` as the method called</span>
+<span class="sd">        from `analyze()`. That method (and</span>
+<span class="sd">        `calculate_enthalpy_of_formation_via_seamm_thermochemistry`, which</span>
+<span class="sd">        reproduces it bit-for-bit via this same library -- see</span>
+<span class="sd">        `tests/test_formation_via_seamm_thermochemistry.py`) are kept for</span>
+<span class="sd">        reference/rollback, not called from the production path.</span>
+
+<span class="sd">        A missing formation energy must never break a Gaussian job: if</span>
+<span class="sd">        `seamm_thermochemistry` isn&#39;t installed, its database isn&#39;t built,</span>
+<span class="sd">        or the reference data doesn&#39;t cover this composition/method yet,</span>
+<span class="sd">        this returns a short explanatory message instead of raising.</span>
+
+<span class="sd">        Sets `data[&quot;E atomization&quot;]` and `data[&quot;DfE&quot;]` (kJ/mol) on</span>
+<span class="sd">        success, and additionally `data[&quot;DfH0&quot;]` (kJ/mol) when a</span>
+<span class="sd">        zero-point energy is available (`data[&quot;ZPE&quot;]`, Hartree).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
+        <span class="n">composition</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">atno</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">composition</span><span class="p">[</span><span class="n">elements</span><span class="o">.</span><span class="n">to_symbols</span><span class="p">([</span><span class="n">atno</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">count</span>
+
+        <span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">composition</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">formula</span> <span class="o">+=</span> <span class="n">symbol</span> <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}{</span><span class="n">subscript</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Formula: </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">PC_iupac_name</span><span class="p">(</span><span class="n">fallback</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Formula: </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_thermochemistry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+                <span class="n">ThermoDB</span><span class="p">,</span>
+                <span class="n">atomization_energy</span><span class="p">,</span>
+                <span class="n">formation_energy</span><span class="p">,</span>
+                <span class="n">MissingReferenceData</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">ThermoDB</span><span class="p">(</span><span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+                <span class="n">E</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">],</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;E atomization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomization_energy</span><span class="p">(</span>
+                    <span class="n">composition</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;kJ/mol&quot;</span>
+                <span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">formation_energy</span><span class="p">(</span>
+                    <span class="n">composition</span><span class="p">,</span>
+                    <span class="n">E</span><span class="p">,</span>
+                    <span class="n">db</span><span class="p">,</span>
+                    <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">,</span>
+                    <span class="n">anchor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">anchor_at_0K</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">units</span><span class="o">=</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Thermochemistry of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;seamm_thermochemistry is not installed; cannot calculate &quot;</span>
+                <span class="s2">&quot;an energy of formation. (Expected until it is released &quot;</span>
+                <span class="s2">&quot;and added as a gaussian_step dependency.)&quot;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Thermochemistry of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;The seamm_thermochemistry reference database is not &quot;</span>
+                <span class="s2">&quot;built; cannot calculate an energy of formation.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">MissingReferenceData</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Thermochemistry of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot calculate the energy of formation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">lDelta</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\N{GREEK CAPITAL LETTER DELTA}</span><span class="s2">&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Energy of Formation for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;The atomization energy is </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E atomization&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kJ/mol &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E atomization&#39;</span><span class="p">],</span><span class="w"> </span><span class="s1">&#39;kJ/mol&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s1">&#39;E_h&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;E_h): the electronic energy to separate </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2"> into &quot;</span>
+            <span class="s2">&quot;gas-phase atoms.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;The energy of formation, </span><span class="si">{</span><span class="n">lDelta</span><span class="si">}</span><span class="s2">fE, is the energy of &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;forming </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2"> from the elements in their standard &quot;</span>
+            <span class="s2">&quot;states at 0 K, using the experimental 0 K heat of formation &quot;</span>
+            <span class="s2">&quot;of the gas-phase atoms. It is electronic-only (no zero-point &quot;</span>
+            <span class="s2">&quot;energy or thermal correction) -- available for any &quot;</span>
+            <span class="s2">&quot;calculation with an energy, whether or not a frequency &quot;</span>
+            <span class="s2">&quot;calculation was run:&quot;</span>
+        <span class="p">)</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">    </span><span class="si">{</span><span class="n">lDelta</span><span class="si">}</span><span class="s2">fE = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DfE&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kJ/mol&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DfE&#39;</span><span class="p">],</span><span class="w"> </span><span class="s1">&#39;kJ/mol&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s1">&#39;E_h&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> E_h)</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="s2">&quot;ZPE&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">zpe_kJ</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ZPE&quot;</span><span class="p">],</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;kJ/mol&quot;</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfH0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DfE&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">zpe_kJ</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span>
+                <span class="s2">&quot;A zero-point energy is available, so the 0 K enthalpy of &quot;</span>
+                <span class="s2">&quot;formation can also be given:&quot;</span>
+            <span class="p">)</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">    </span><span class="si">{</span><span class="n">lDelta</span><span class="si">}</span><span class="s2">fH</span><span class="si">{</span><span class="n">degree_sign</span><span class="si">}</span><span class="s2">(0K) = </span><span class="si">{</span><span class="n">lDelta</span><span class="si">}</span><span class="s2">fE + ZPE &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;= </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DfH0&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kJ/mol</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">text</span></div>
 
@@ -2871,8 +3092,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2884,7 +3105,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
 </p></div>
       
     </div>
