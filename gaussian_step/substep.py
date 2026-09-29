@@ -1009,6 +1009,91 @@ class Substep(seamm.Node):
 
         return method, method_data, method_string
 
+    def _gaussian_config(self, executor_type, ini_dir):
+        """How to run Gaussian, from the executor's section of gaussian.ini.
+
+        A missing gaussian.ini is created from the template in data/gaussian.ini.
+        If it does not say where Gaussian is, the Gaussian environment variables
+        (g16root, g09root) and the PATH are searched, and what is found is saved in
+        the file.
+
+        Parameters
+        ----------
+        executor_type : str
+            The executor's name, e.g. "local": the section of gaussian.ini to use.
+        ini_dir : pathlib.Path
+            The directory with gaussian.ini, usually the SEAMM root (~/SEAMM).
+
+        Returns
+        -------
+        dict(str, str)
+            The options in that section.
+        """
+        full_config = configparser.ConfigParser()
+        path = ini_dir / "gaussian.ini"
+
+        # If the config file doesn't exist, get the default
+        if not path.exists():
+            resources = importlib.resources.files("gaussian_step") / "data"
+            ini_text = (resources / "gaussian.ini").read_text()
+            txt_config = Configuration(path)
+            txt_config.from_string(ini_text)
+            txt_config.save()
+
+        full_config.read(ini_dir / "gaussian.ini")
+
+        # Getting desperate! Look for an executable in the path
+        if (
+            executor_type not in full_config
+            or "root-directory" not in full_config[executor_type]
+            or "setup-environment" not in full_config[executor_type]
+        ):
+            # See if we can find the Gaussian environment variables
+            if "g16root" in os.environ:
+                g_ver = "g16"
+                root_directory = os.environ["g16root"]
+                if "GAUSS_BSDDIR" in os.environ:
+                    setup_directory = Path(os.environ["GAUSS_BSDDIR"])
+                else:
+                    setup_directory = Path(root_directory) / g_ver / "bsd"
+            elif "g09root" in os.environ:
+                g_ver = "g09"
+                root_directory = os.environ["g09root"]
+                if "GAUSS_BSDDIR" in os.environ:
+                    setup_directory = Path(os.environ["GAUSS_BSDDIR"])
+                else:
+                    setup_directory = Path(root_directory) / g_ver / "bsd"
+            else:
+                root_directory = None
+                exe_path = shutil.which("g16")
+                if exe_path is None:
+                    exe_path = shutil.which("g09")
+                if exe_path is None:
+                    raise RuntimeError(
+                        "SEAMM cannot find Gaussian. Give 'root-directory' and "
+                        f"'setup-environment' in the [{executor_type}] section of "
+                        f"{path}, set $g16root or $g09root, or put g16 or g09 on "
+                        "your PATH."
+                    )
+                g_ver = exe_path.name
+                root_directory = str(exe_path.parent.parent)
+                setup_directory = Path(root_directory) / g_ver / "bsd"
+            setup_environment = str(setup_directory / f"{g_ver}.profile")
+
+            txt_config = Configuration(path)
+
+            if not txt_config.section_exists(executor_type):
+                txt_config.add_section(executor_type)
+
+            txt_config.set_value(executor_type, "installation", "local")
+            txt_config.set_value(executor_type, "code", g_ver)
+            txt_config.set_value(executor_type, "root-directory", root_directory)
+            txt_config.set_value(executor_type, "setup-environment", setup_environment)
+            txt_config.save()
+            full_config.read(ini_dir / "gaussian.ini")
+
+        return dict(full_config.items(executor_type))
+
     def make_plots(self, data):
         """Create the density and orbital plots if requested.
 
@@ -1043,15 +1128,7 @@ class Substep(seamm.Node):
         # Read configuration file for Gaussian
         seamm_options = self.global_options
         ini_dir = Path(seamm_options["root"]).expanduser()
-        full_config = configparser.ConfigParser()
-        full_config.read(ini_dir / "gaussian.ini")
-        executor_type = executor.name
-        if executor_type not in full_config:
-            raise RuntimeError(
-                f"No section for '{executor_type}' in MOPAC ini file "
-                f"({ini_dir / 'mopac.ini'})"
-            )
-        config = dict(full_config.items(executor_type))
+        config = self._gaussian_config(executor.name, ini_dir)
 
         # Set up the environment
         if config["root-directory"] != "":
@@ -2165,76 +2242,9 @@ class Substep(seamm.Node):
             else:
                 executor = self.parent.flowchart.executor
 
-                # Read configuration file for Gaussian if it exists
                 executor_type = executor.name
-                full_config = configparser.ConfigParser()
                 ini_dir = Path(seamm_options["root"]).expanduser()
-                path = ini_dir / "gaussian.ini"
-
-                # If the config file doesn't exist, get the default
-                if not path.exists():
-                    resources = importlib.resources.files("gaussian_step") / "data"
-                    ini_text = (resources / "gaussian.ini").read_text()
-                    txt_config = Configuration(path)
-                    txt_config.from_string(ini_text)
-                    txt_config.save()
-
-                full_config.read(ini_dir / "gaussian.ini")
-
-                # Getting desperate! Look for an executable in the path
-                if (
-                    executor_type not in full_config
-                    or "root-directory" not in full_config[executor_type]
-                    or "setup-environment" not in full_config[executor_type]
-                ):
-                    # See if we can find the Gaussian environment variables
-                    if "g16root" in os.environ:
-                        g_ver = "g16"
-                        root_directory = os.environ["g16root"]
-                        if "GAUSS_BSDDIR" in os.environ:
-                            setup_directory = Path(os.environ["GAUSS_BSDDIR"])
-                        else:
-                            setup_directory = Path(root_directory) / g_ver / "bsd"
-                    elif "g09root" in os.environ:
-                        g_ver = "g09"
-                        root_directory = os.environ["g09root"]
-                        if "GAUSS_BSDDIR" in os.environ:
-                            setup_directory = Path(os.environ["GAUSS_BSDDIR"])
-                        else:
-                            setup_directory = Path(root_directory) / g_ver / "bsd"
-                    else:
-                        root_directory = None
-                        exe_path = shutil.which("g16")
-                        if exe_path is None:
-                            exe_path = shutil.which("g09")
-                        if exe_path is None:
-                            raise RuntimeError(
-                                f"No section for '{executor_type}' in Gaussian ini file"
-                                f" ({ini_dir / 'gaussian.ini'}), nor in the defaults, "
-                                "nor in the path!"
-                            )
-                        g_ver = exe_path.name
-                        root_directory = str(exe_path.parent.parent)
-                        setup_directory = Path(root_directory) / g_ver / "bsd"
-                    setup_environment = str(setup_directory / f"{g_ver}.profile")
-
-                    txt_config = Configuration(path)
-
-                    if not txt_config.section_exists(executor_type):
-                        txt_config.add_section(executor_type)
-
-                    txt_config.set_value(executor_type, "installation", "local")
-                    txt_config.set_value(executor_type, "code", g_ver)
-                    txt_config.set_value(
-                        executor_type, "root-directory", root_directory
-                    )
-                    txt_config.set_value(
-                        executor_type, "setup-environment", setup_environment
-                    )
-                    txt_config.save()
-                    full_config.read(ini_dir / "gaussian.ini")
-
-                config = dict(full_config.items(executor_type))
+                config = self._gaussian_config(executor_type, ini_dir)
                 # Use the matching version of the seamm-gaussian image by default.
                 config["version"] = self.version
 

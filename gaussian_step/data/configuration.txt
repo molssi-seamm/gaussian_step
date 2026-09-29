@@ -1,0 +1,3 @@
+[gaussian-step]
+# Options for the Gaussian step. Where Gaussian is and how to launch it are set
+# separately, in gaussian.ini in the SEAMM root (usually ~/SEAMM/gaussian.ini).

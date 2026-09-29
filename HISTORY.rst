@@ -1,6 +1,18 @@
 =======
 History
 =======
+2026.9.29 -- Bugfix: an installer that writes gaussian.ini, and cube files without it
+    * Added ``gaussian-step-installer``, which the SEAMM Manager runs when the step is
+      installed, to write the commented template to ``~/SEAMM/gaussian.ini`` for you to
+      edit, rather than only on the first calculation.
+    * Making cube files (cubegen) read ``gaussian.ini`` without creating it or finding
+      Gaussian, and its error named MOPAC's ``mopac.ini``. It now finds Gaussian the same
+      way as the calculations do.
+    * When Gaussian cannot be found, the error says what to set, rather than reporting a
+      missing section.
+    * The documentation describes installing with the SEAMM Manager and configuring
+      ``gaussian.ini``.
+
 2026.7.28: Energy of formation via seamm_thermochemistry; initial checkpoint job:// support
 
     * The energy of formation is now computed via the shared
