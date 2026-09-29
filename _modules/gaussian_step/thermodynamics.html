@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.thermodynamics &#8212; SEAMM Gaussian Plug-in 2026.7.28 documentation</title>
+    <title>gaussian_step.thermodynamics &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,12 +34,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=197c1917"></script>
+    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28" />
+  <meta name="docsearch:version" content="2026.9.29" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -100,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -218,7 +217,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,15 +228,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -274,7 +273,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -379,15 +378,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -479,7 +478,7 @@
   <h1>Source code for gaussian_step.thermodynamics</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;Non-graphical part of the Thermodynamics step in a Gaussian flowchart&quot;&quot;&quot;</span>
+<span class="sd">"""Non-graphical part of the Thermodynamics step in a Gaussian flowchart"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -493,20 +492,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_util.printing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedText</span> <span class="k">as</span> <span class="n">__</span>
 
 <span class="c1"># In addition to the normal logger, two logger-like printing facilities are</span>
-<span class="c1"># defined: &quot;job&quot; and &quot;printer&quot;. &quot;job&quot; send output to the main job.out file for</span>
+<span class="c1"># defined: "job" and "printer". "job" send output to the main job.out file for</span>
 <span class="c1"># the job, and should be used very sparingly, typically to echo what this step</span>
 <span class="c1"># will do in the initial summary of the job.</span>
 <span class="c1">#</span>
-<span class="c1"># &quot;printer&quot; sends output to the file &quot;step.out&quot; in this steps working</span>
+<span class="c1"># "printer" sends output to the file "step.out" in this steps working</span>
 <span class="c1"># directory, and is used for all normal output from this step.</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"Gaussian"</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
-<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">"gaussian"</span><span class="p">)</span>
 
-<span class="c1"># Add this module&#39;s properties to the standard properties</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;gaussian_step&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
-<span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;properties.csv&quot;</span>
+<span class="c1"># Add this module's properties to the standard properties</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"gaussian_step"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data"</span>
+<span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">"properties.csv"</span>
 <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
     <span class="n">molsystem</span><span class="o">.</span><span class="n">add_properties_from_file</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
 
@@ -514,7 +513,7 @@
 <div class="viewcode-block" id="Thermodynamics">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Thermodynamics</span><span class="p">(</span><span class="n">gaussian_step</span><span class="o">.</span><span class="n">Optimization</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The non-graphical part of a Thermodynamics step in a flowchart.</span>
 
 <span class="sd">    Attributes</span>
@@ -536,17 +535,17 @@
 <span class="sd">    --------</span>
 <span class="sd">    TkThermodynamics,</span>
 <span class="sd">    Thermodynamics, ThermodynamicsParameters</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Thermodynamics&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Thermodynamics"</span><span class="p">,</span>
         <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">module</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span>
         <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A substep for Thermodynamics in a subflowchart for Gaussian.</span>
+<span class="w">        </span><span class="sd">"""A substep for Thermodynamics in a subflowchart for Gaussian.</span>
 
 <span class="sd">        You may wish to change the title above, which is the string displayed</span>
 <span class="sd">        in the box representing the step in the flowchart.</span>
@@ -566,41 +565,41 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating Thermodynamics </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Creating Thermodynamics </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Thermodynamics&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">"Thermodynamics"</span><span class="p">,</span>
             <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">,</span>
             <span class="n">module</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span>
             <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_calculation</span> <span class="o">=</span> <span class="s2">&quot;thermodynamics&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calculation</span> <span class="o">=</span> <span class="s2">"thermodynamics"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">ThermodynamicsParameters</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A printable header for this section of output&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;Step </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""A printable header for this section of output"""</span>
+        <span class="k">return</span> <span class="s2">"Step </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The semantic version of this module.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The semantic version of this module."""</span>
         <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">__version__</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">git_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The git version of this module.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The git version of this module."""</span>
         <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">__git_revision__</span>
 
 <div class="viewcode-block" id="Thermodynamics.description_text">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.description_text">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="s2">&quot;Thermodynamics&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the text description of what this step will do.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="s2">"Thermodynamics"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create the text description of what this step will do.</span>
 <span class="sd">        The dictionary of control values is passed in as P so that</span>
 <span class="sd">        the code can test values, etc.</span>
 
@@ -613,22 +612,22 @@
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            A description of the current step.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values_to_dict</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">]</span>
-            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"yes"</span>
         <span class="p">):</span>
-            <span class="n">calculation</span> <span class="o">=</span> <span class="s2">&quot; The structure will be optimized and then the &quot;</span>
+            <span class="n">calculation</span> <span class="o">=</span> <span class="s2">" The structure will be optimized and then the "</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">calculation</span> <span class="o">=</span> <span class="s2">&quot;The &quot;</span>
+            <span class="n">calculation</span> <span class="o">=</span> <span class="s2">"The "</span>
 
-        <span class="n">calculation</span> <span class="o">+=</span> <span class="s2">&quot;thermodynamic functions will be calculated at </span><span class="si">{T}</span><span class="s2"> and </span><span class="si">{P}</span><span class="s2">&quot;</span>
+        <span class="n">calculation</span> <span class="o">+=</span> <span class="s2">"thermodynamic functions will be calculated at </span><span class="si">{T}</span><span class="s2"> and </span><span class="si">{P}</span><span class="s2">"</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">]:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">description_text</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="n">calculation</span>
             <span class="p">)</span>
@@ -638,15 +637,15 @@
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
-            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"yes"</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Thermodynamics</span><span class="p">:</span>
                 <span class="n">added</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">The input file will be written. No calculation will be run.&quot;</span>
+                    <span class="s2">"</span><span class="se">\n\n</span><span class="s2">The input file will be written. No calculation will be run."</span>
                 <span class="p">)</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">added</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">added</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">text</span></div>
 
@@ -654,7 +653,7 @@
 <div class="viewcode-block" id="Thermodynamics.run">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a Thermodynamics step.</span>
+<span class="w">        </span><span class="sd">"""Run a Thermodynamics step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -665,7 +664,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        seamm.Node</span>
 <span class="sd">            The next node object in the flowchart.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">keywords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -675,7 +674,7 @@
         <span class="p">)</span>
 
         <span class="c1"># Set the attribute for writing just the input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span>
 
         <span class="c1"># Get the current system and configuration (ignoring the system...)</span>
         <span class="c1"># _, configuration = self.get_system_configuration(None)</span>
@@ -684,9 +683,9 @@
         <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span><span class="p">,</span> <span class="n">method_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_method</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">composite_methods</span><span class="p">:</span>
-            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Freq&quot;</span><span class="p">)</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Freq"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">]:</span>
             <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="n">keywords</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Energy</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="n">keywords</span><span class="p">)</span></div>
@@ -694,8 +693,8 @@
 
 <div class="viewcode-block" id="Thermodynamics.analyze">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.analyze">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="p">[],</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze and print the thermodynamic and vibrational data.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="p">[],</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Analyze and print the thermodynamic and vibrational data.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -709,8 +708,8 @@
 <span class="sd">            The tabular data for the main output.</span>
 <span class="sd">        P: {}</span>
 <span class="sd">            The control parameters.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;optimize first&quot;</span><span class="p">]:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"optimize first"</span><span class="p">]:</span>
             <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gaussian_step</span><span class="o">.</span><span class="n">Energy</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">)</span></div>
@@ -745,8 +744,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -758,7 +757,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>

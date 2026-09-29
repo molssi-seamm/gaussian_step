@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.gaussian &#8212; SEAMM Gaussian Plug-in 2026.7.28 documentation</title>
+    <title>gaussian_step.gaussian &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,12 +34,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=197c1917"></script>
+    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28" />
+  <meta name="docsearch:version" content="2026.9.29" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -100,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -218,7 +217,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,15 +228,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -274,7 +273,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -379,15 +378,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -479,7 +478,7 @@
   <h1>Source code for gaussian_step.gaussian</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;Non-graphical part of the Gaussian step in a SEAMM flowchart&quot;&quot;&quot;</span>
+<span class="sd">"""Non-graphical part of the Gaussian step in a SEAMM flowchart"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -495,73 +494,73 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_util.printing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedText</span> <span class="k">as</span> <span class="n">__</span>
 
 <span class="c1"># In addition to the normal logger, two logger-like printing facilities are</span>
-<span class="c1"># defined: &quot;job&quot; and &quot;printer&quot;. &quot;job&quot; send output to the main job.out file for</span>
+<span class="c1"># defined: "job" and "printer". "job" send output to the main job.out file for</span>
 <span class="c1"># the job, and should be used very sparingly, typically to echo what this step</span>
 <span class="c1"># will do in the initial summary of the job.</span>
 <span class="c1">#</span>
-<span class="c1"># &quot;printer&quot; sends output to the file &quot;step.out&quot; in this steps working</span>
+<span class="c1"># "printer" sends output to the file "step.out" in this steps working</span>
 <span class="c1"># directory, and is used for all normal output from this step.</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"Gaussian"</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
-<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">"Gaussian"</span><span class="p">)</span>
 
-<span class="c1"># Add this module&#39;s properties to the standard properties</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;gaussian_step&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
-<span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;properties.csv&quot;</span>
+<span class="c1"># Add this module's properties to the standard properties</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"gaussian_step"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data"</span>
+<span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">"properties.csv"</span>
 <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
     <span class="n">molsystem</span><span class="o">.</span><span class="n">add_properties_from_file</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="humanize">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.humanize">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">humanize</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">kilo</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">humanize</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">"B"</span><span class="p">,</span> <span class="n">kilo</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Scale memory to its proper format e.g:</span>
 
-<span class="sd">        1253656 =&gt; &#39;1.20 MiB&#39;</span>
-<span class="sd">        1253656678 =&gt; &#39;1.17 GiB&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        1253656 =&gt; '1.20 MiB'</span>
+<span class="sd">        1253656678 =&gt; '1.17 GiB'</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">kilo</span> <span class="o">==</span> <span class="mi">1000</span><span class="p">:</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">]</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">,</span> <span class="s2">"M"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"T"</span><span class="p">,</span> <span class="s2">"P"</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">kilo</span> <span class="o">==</span> <span class="mi">1024</span><span class="p">:</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Ki&quot;</span><span class="p">,</span> <span class="s2">&quot;Mi&quot;</span><span class="p">,</span> <span class="s2">&quot;Gi&quot;</span><span class="p">,</span> <span class="s2">&quot;Ti&quot;</span><span class="p">,</span> <span class="s2">&quot;Pi&quot;</span><span class="p">]</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"Ki"</span><span class="p">,</span> <span class="s2">"Mi"</span><span class="p">,</span> <span class="s2">"Gi"</span><span class="p">,</span> <span class="s2">"Ti"</span><span class="p">,</span> <span class="s2">"Pi"</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kilo must be 1000 or 1024!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"kilo must be 1000 or 1024!"</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">memory</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">kilo</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">memory</span><span class="p">)</span><span class="si">}{</span><span class="n">unit</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">memory</span><span class="p">)</span><span class="si">}{</span><span class="n">unit</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">memory</span> <span class="o">/=</span> <span class="n">kilo</span></div>
 
 
 
 <div class="viewcode-block" id="dehumanize">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.dehumanize">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">dehumanize</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dehumanize</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">"B"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Unscale memory from its human readable form e.g:</span>
 
-<span class="sd">        &#39;1.20 MB&#39; =&gt; 1200000</span>
-<span class="sd">        &#39;1.17 GB&#39; =&gt; 1170000000</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        '1.20 MB' =&gt; 1200000</span>
+<span class="sd">        '1.17 GB' =&gt; 1170000000</span>
+<span class="sd">    """</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-        <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-        <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
-        <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span>
-        <span class="s2">&quot;Ki&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-        <span class="s2">&quot;Mi&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-        <span class="s2">&quot;Gi&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
-        <span class="s2">&quot;Pi&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span>
+        <span class="s2">""</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">"k"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="s2">"M"</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s2">"G"</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
+        <span class="s2">"P"</span><span class="p">:</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span>
+        <span class="s2">"Ki"</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">"Mi"</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s2">"Gi"</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
+        <span class="s2">"Pi"</span><span class="p">:</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">memory</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Memory must be &lt;number&gt; &lt;units&gt;, e.g. 1.23 GB&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Memory must be &lt;number&gt; &lt;units&gt;, e.g. 1.23 GB"</span><span class="p">)</span>
 
     <span class="n">amount</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">tmp</span>
     <span class="n">amount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
@@ -570,14 +569,14 @@
         <span class="k">if</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">==</span> <span class="n">unit</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span> <span class="o">*</span> <span class="n">units</span><span class="p">[</span><span class="n">prefix</span><span class="p">])</span>
 
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize the units on &#39;</span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Don't recognize the units on '</span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="Gaussian">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Gaussian</span><span class="p">(</span><span class="n">seamm</span><span class="o">.</span><span class="n">Node</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The non-graphical part of a Gaussian step in a flowchart.</span>
 
 <span class="sd">    Attributes</span>
@@ -599,17 +598,17 @@
 <span class="sd">    --------</span>
 <span class="sd">    TkGaussian,</span>
 <span class="sd">    Gaussian, GaussianParameters</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">,</span>
-        <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;org.molssi.seamm.gaussian&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Gaussian"</span><span class="p">,</span>
+        <span class="n">namespace</span><span class="o">=</span><span class="s2">"org.molssi.seamm.gaussian"</span><span class="p">,</span>
         <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A step for Gaussian in a SEAMM flowchart.</span>
+<span class="w">        </span><span class="sd">"""A step for Gaussian in a SEAMM flowchart.</span>
 
 <span class="sd">        You may wish to change the title above, which is the string displayed</span>
 <span class="sd">        in the box representing the step in the flowchart.</span>
@@ -631,37 +630,37 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating Gaussian </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Creating Gaussian </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Flowchart</span><span class="p">(</span>
-            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="n">namespace</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Gaussian"</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="n">namespace</span>
         <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">"Gaussian"</span><span class="p">,</span>
             <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">,</span>
             <span class="n">module</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span>
             <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">GaussianParameters</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gversion</span> <span class="o">=</span> <span class="s2">&quot;g09&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gversion</span> <span class="o">=</span> <span class="s2">"g09"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The semantic version of this module.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The semantic version of this module."""</span>
         <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">__version__</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">git_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The git version of this module.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The git version of this module."""</span>
         <span class="k">return</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">__git_revision__</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">gversion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The Gaussian version to target.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The Gaussian version to target."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gversion</span>
 
     <span class="nd">@gversion</span><span class="o">.</span><span class="n">setter</span>
@@ -671,7 +670,7 @@
 <div class="viewcode-block" id="Gaussian.set_id">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian.set_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the id for node to a given tuple&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the id for node to a given tuple"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">node_id</span>
 
         <span class="c1"># and set our subnodes</span>
@@ -683,8 +682,8 @@
 <div class="viewcode-block" id="Gaussian.create_parser">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian.create_parser">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the command-line / config file parser&quot;&quot;&quot;</span>
-        <span class="c1"># parser_name = &#39;gaussian-step&#39;</span>
+<span class="w">        </span><span class="sd">"""Setup the command-line / config file parser"""</span>
+        <span class="c1"># parser_name = 'gaussian-step'</span>
         <span class="n">parser_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_type</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">parser</span>
 
@@ -701,54 +700,54 @@
         <span class="c1"># Options for Gaussian</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--max-atoms-to-print&quot;</span><span class="p">,</span>
+            <span class="s2">"--max-atoms-to-print"</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum number of atoms to print charges, etc.&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"Maximum number of atoms to print charges, etc."</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--gaussian-path&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the path to the Gaussian executable&quot;</span><span class="p">,</span>
+            <span class="s2">"--gaussian-path"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"the path to the Gaussian executable"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--gaussian-exe&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;g16&quot;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the Gaussian executable&quot;</span><span class="p">,</span>
+            <span class="s2">"--gaussian-exe"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">"g16"</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"the Gaussian executable"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--gaussian-root&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The location of the root direction for the Gaussian installation&quot;</span><span class="p">,</span>
+            <span class="s2">"--gaussian-root"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"The location of the root direction for the Gaussian installation"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--gaussian-environment&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;A file to source to setup the Gaussian environment&quot;</span><span class="p">,</span>
+            <span class="s2">"--gaussian-environment"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"A file to source to setup the Gaussian environment"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--ncores&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;How many threads to use in Gaussian&quot;</span><span class="p">,</span>
+            <span class="s2">"--ncores"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">"4"</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">"How many threads to use in Gaussian"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="n">parser_name</span><span class="p">,</span>
-            <span class="s2">&quot;--memory&quot;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;available&quot;</span><span class="p">,</span>
+            <span class="s2">"--memory"</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">"available"</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="p">(</span>
-                <span class="s2">&quot;The maximum amount of memory to use for Gaussian, which can be &quot;</span>
-                <span class="s2">&quot;&#39;all&#39; or &#39;available&#39;, or a number, which may use k, Ki, &quot;</span>
-                <span class="s2">&quot;M, Mi, etc. suffixes. Default: available.&quot;</span>
+                <span class="s2">"The maximum amount of memory to use for Gaussian, which can be "</span>
+                <span class="s2">"'all' or 'available', or a number, which may use k, Ki, "</span>
+                <span class="s2">"M, Mi, etc. suffixes. Default: available."</span>
             <span class="p">),</span>
         <span class="p">)</span>
 
@@ -758,7 +757,7 @@
 <div class="viewcode-block" id="Gaussian.description_text">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian.description_text">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the text description of what this step will do.</span>
+<span class="w">        </span><span class="sd">"""Create the text description of what this step will do.</span>
 <span class="sd">        The dictionary of control values is passed in as P so that</span>
 <span class="sd">        the code can test values, etc.</span>
 
@@ -771,33 +770,33 @@
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            A description of the current step.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">root_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span>
 
         <span class="c1"># Get the first real node</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
-        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span>
         <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="n">__</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">description_text</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="n">__</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">description_text</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error describing gaussian flowchart: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error describing gaussian flowchart: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error describing gaussian flowchart: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error describing gaussian flowchart: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">raise</span>
             <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="s2">&quot;Unexpected error describing gaussian flowchart: </span><span class="si">{}</span><span class="s2"> in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"Unexpected error describing gaussian flowchart: </span><span class="si">{}</span><span class="s2"> in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-                    <span class="s2">&quot;Unexpected error describing gaussian flowchart: </span><span class="si">{}</span><span class="s2"> in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"Unexpected error describing gaussian flowchart: </span><span class="si">{}</span><span class="s2"> in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
                 <span class="k">raise</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">text</span></div>
@@ -806,7 +805,7 @@
 <div class="viewcode-block" id="Gaussian.run">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a Gaussian step.</span>
+<span class="w">        </span><span class="sd">"""Run a Gaussian step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -816,7 +815,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        seamm.Node</span>
 <span class="sd">            The next node object in the flowchart.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Create the directory</span>
         <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
         <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -825,10 +824,10 @@
         <span class="n">next_node</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">printer</span><span class="p">)</span>
 
         <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
-        <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="c1"># Get the first real node</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_runable</span><span class="p">:</span>
@@ -836,7 +835,7 @@
             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
         <span class="c1"># Handle any cleanup of files requested</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_runable</span><span class="p">:</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -847,48 +846,48 @@
 
 <div class="viewcode-block" id="Gaussian.analyze">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.gaussian.Gaussian.analyze">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fchk</span><span class="o">=</span><span class="p">[],</span> <span class="n">output</span><span class="o">=</span><span class="p">[],</span> <span class="n">configuration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do any analysis of the output from this step.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">fchk</span><span class="o">=</span><span class="p">[],</span> <span class="n">output</span><span class="o">=</span><span class="p">[],</span> <span class="n">configuration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Do any analysis of the output from this step.</span>
 
 <span class="sd">        Also print important results to the local step.out file using</span>
-<span class="sd">        &quot;printer&quot;.</span>
+<span class="sd">        "printer".</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        indent: str</span>
 <span class="sd">            An extra indentation for the output</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get the first real node</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subflowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
         <span class="c1"># Loop over the subnodes, asking them to do their analysis</span>
         <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
                 <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="n">node</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">)</span>
-            <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
         <span class="c1"># Update the structure</span>
-        <span class="k">if</span> <span class="s2">&quot;Current cartesian coordinates&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
-            <span class="n">factor</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;Å&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
-            <span class="n">system_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">&quot;_system_db&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"Current cartesian coordinates"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"a0"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"Å"</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+            <span class="n">system_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">"_system_db"</span><span class="p">)</span>
             <span class="n">configuration</span> <span class="o">=</span> <span class="n">system_db</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">configuration</span>
             <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">ys</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">zs</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;Current cartesian coordinates&quot;</span><span class="p">])</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"Current cartesian coordinates"</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
                 <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
                 <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
                 <span class="n">zs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
-            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">xs</span>
-            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ys</span>
-            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">zs</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"x"</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">xs</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"y"</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ys</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"z"</span><span class="p">][</span><span class="mi">0</span><span class="p">:]</span> <span class="o">=</span> <span class="n">zs</span>
             <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;    Updated the system with the structure from Gaussian&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="s2">"    Updated the system with the structure from Gaussian"</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+            <span class="n">printer</span><span class="o">.</span><span class="n">important</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -920,8 +919,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -933,7 +932,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>

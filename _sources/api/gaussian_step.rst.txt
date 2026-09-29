@@ -52,6 +52,14 @@ gaussian\_step.gaussian\_step module
    :show-inheritance:
    :undoc-members:
 
+gaussian\_step.installer module
+-------------------------------
+
+.. automodule:: gaussian_step.installer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 gaussian\_step.metadata module
 ------------------------------
 

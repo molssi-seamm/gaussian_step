@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2026.7.28 documentation</title>
+    <title>gaussian_step.optimization &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,12 +34,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=197c1917"></script>
+    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28" />
+  <meta name="docsearch:version" content="2026.9.29" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -100,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -218,7 +217,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,15 +228,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -274,7 +273,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -379,15 +378,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -479,7 +478,7 @@
   <h1>Source code for gaussian_step.optimization</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;Setup and run Gaussian&quot;&quot;&quot;</span>
+<span class="sd">"""Setup and run Gaussian"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
@@ -499,18 +498,18 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">islice</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">batched</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="s2">&quot;Batch data into tuples of length n. The last batch may be shorter.&quot;</span>
-        <span class="c1"># batched(&#39;ABCDEFG&#39;, 3) --&gt; ABC DEF G</span>
+        <span class="s2">"Batch data into tuples of length n. The last batch may be shorter."</span>
+        <span class="c1"># batched('ABCDEFG', 3) --&gt; ABC DEF G</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be at least one&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n must be at least one"</span><span class="p">)</span>
         <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">batch</span> <span class="o">:=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">n</span><span class="p">)):</span>
             <span class="k">yield</span> <span class="n">batch</span>
 
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"Gaussian"</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
-<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+<span class="n">printer</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">(</span><span class="s2">"gaussian"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Optimization">
@@ -519,14 +518,14 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Optimization&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Optimization"</span><span class="p">,</span>
         <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">module</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span>
         <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the node&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the node"""</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating Optimization </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Creating Optimization </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span>
@@ -536,82 +535,82 @@
             <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_calculation</span> <span class="o">=</span> <span class="s2">&quot;optimization&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calculation</span> <span class="o">=</span> <span class="s2">"optimization"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">OptimizationParameters</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;A geometry optimization&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">"A geometry optimization"</span>
 
 <div class="viewcode-block" id="Optimization.description_text">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.optimization.Optimization.description_text">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="s2">&quot;Geometry optimization&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare information about what this node will do&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="s2">"Geometry optimization"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Prepare information about what this node will do"""</span>
 
         <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values_to_dict</span><span class="p">()</span>
 
         <span class="n">text</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">description_text</span><span class="p">(</span><span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">calculation</span><span class="o">=</span><span class="n">calculation</span><span class="p">)</span>
 
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
-        <span class="n">added</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The geometry optimization is targeting &quot;</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"coordinates"</span><span class="p">]</span>
+        <span class="n">added</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">The geometry optimization is targeting "</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;a minimum or saddle point, depending on </span><span class="si">{target}</span><span class="s2">,&quot;</span>
-        <span class="k">elif</span> <span class="s2">&quot;min&quot;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;the minimum&quot;</span>
-        <span class="k">elif</span> <span class="s2">&quot;trans&quot;</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;ts&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;a transition state&quot;</span>
-        <span class="k">elif</span> <span class="s2">&quot;saddle&quot;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;a saddle point with {saddle order} downhill directions&quot;</span>
-        <span class="n">added</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; using </span><span class="si">{</span><span class="n">coordinates</span><span class="si">}</span><span class="s2"> coordinates,&quot;</span>
-        <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; a {geometry convergence} convergence criterion, &quot;</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;max geometry steps&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">"a minimum or saddle point, depending on </span><span class="si">{target}</span><span class="s2">,"</span>
+        <span class="k">elif</span> <span class="s2">"min"</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">"the minimum"</span>
+        <span class="k">elif</span> <span class="s2">"trans"</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">"ts"</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">"a transition state"</span>
+        <span class="k">elif</span> <span class="s2">"saddle"</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">"a saddle point with {saddle order} downhill directions"</span>
+        <span class="n">added</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" using </span><span class="si">{</span><span class="n">coordinates</span><span class="si">}</span><span class="s2"> coordinates,"</span>
+        <span class="n">added</span> <span class="o">+=</span> <span class="s2">" a {geometry convergence} convergence criterion, "</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"max geometry steps"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"default"</span><span class="p">:</span>
             <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
-                <span class="s2">&quot;and the default maximum number of steps, which is based on the &quot;</span>
-                <span class="s2">&quot;system size.&quot;</span>
+                <span class="s2">"and the default maximum number of steps, which is based on the "</span>
+                <span class="s2">"system size."</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;and no more than {max geometry steps} steps.&quot;</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">"and no more than {max geometry steps} steps."</span>
 
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default guess&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be initialized with a default guess.&quot;</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]):</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; How the Hessian is initialized will be determined by </span><span class="si">{hessian}</span><span class="s2">.&quot;</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;read from checkpoint&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The initial Hessian will be read from the checkpoint file.&quot;</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;from property on configuration&quot;</span><span class="p">:</span>
-            <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The initial Hessian will be read from the configuration.&quot;</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;calculate&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]):</span>
-                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; When to calculate the Hessian will be determined by &quot;</span>
-                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot;{recalc hessian}.&quot;</span>
-            <span class="k">elif</span> <span class="s2">&quot;every&quot;</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]:</span>
-                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be recalculated every step.&quot;</span>
-            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
-                <span class="n">added</span> <span class="o">+=</span> <span class="s2">&quot; The Hessian will be calculated once at the beginning.&quot;</span>
-            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"default guess"</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">" The Hessian will be initialized with a default guess."</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]):</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">" How the Hessian is initialized will be determined by </span><span class="si">{hessian}</span><span class="s2">."</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"read from checkpoint"</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">" The initial Hessian will be read from the checkpoint file."</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"from property on configuration"</span><span class="p">:</span>
+            <span class="n">added</span> <span class="o">+=</span> <span class="s2">" The initial Hessian will be read from the configuration."</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"calculate"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]):</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">" When to calculate the Hessian will be determined by "</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">"{recalc hessian}."</span>
+            <span class="k">elif</span> <span class="s2">"every"</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">" The Hessian will be recalculated every step."</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"at beginning"</span><span class="p">:</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="s2">" The Hessian will be calculated once at the beginning."</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"HF at beginning"</span><span class="p">:</span>
                 <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="s2">&quot; The Hartree-Fock Hessian will be calculated once at the &quot;</span>
-                    <span class="s2">&quot;beginning.&quot;</span>
+                    <span class="s2">" The Hartree-Fock Hessian will be calculated once at the "</span>
+                    <span class="s2">"beginning."</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="s2">&quot; The Hessian will be recalculated every {recalc hessian} steps.&quot;</span>
+                    <span class="s2">" The Hessian will be recalculated every {recalc hessian} steps."</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
-            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"yes"</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Optimization</span><span class="p">:</span>
                 <span class="n">added</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">The input file will be written. No calculation will be run.&quot;</span>
+                    <span class="s2">"</span><span class="se">\n\n</span><span class="s2">The input file will be written. No calculation will be run."</span>
                 <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">added</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">__</span><span class="p">(</span><span class="n">added</span><span class="p">,</span> <span class="o">**</span><span class="n">P</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Optimization.format_force_constants">
@@ -622,11 +621,11 @@
         <span class="n">force_constants</span><span class="p">,</span>
         <span class="n">fc_units</span><span class="p">,</span>
         <span class="n">energy</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">energy_units</span><span class="o">=</span><span class="s2">&quot;E_h&quot;</span><span class="p">,</span>
+        <span class="n">energy_units</span><span class="o">=</span><span class="s2">"E_h"</span><span class="p">,</span>
         <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gradient_units</span><span class="o">=</span><span class="s2">&quot;E_h/Å&quot;</span><span class="p">,</span>
+        <span class="n">gradient_units</span><span class="o">=</span><span class="s2">"E_h/Å"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format the force constants for the Gaussian input.</span>
+<span class="w">        </span><span class="sd">"""Format the force constants for the Gaussian input.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -665,13 +664,13 @@
 
 <span class="sd">        The force constants are in lower triangular form: ((F(J,I),J=1,I),I=1,3Natoms),</span>
 <span class="sd">        where 3Natoms is the number of Cartesian coordinates.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># The energy is not used, but is required</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">energy_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">:</span><span class="s2">24.16e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">energy_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">"E_h"</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">tmp</span><span class="si">:</span><span class="s2">24.16e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># The gradients</span>
         <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -686,12 +685,12 @@
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">gradients</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Can&#39;t handle gradients of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span><span class="si">}</span><span class="s2">. Wrong dimensions?&quot;</span>
+                <span class="sa">f</span><span class="s2">"Can't handle gradients of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span><span class="si">}</span><span class="s2">. Wrong dimensions?"</span>
             <span class="p">)</span>
 
-        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">gradient_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h/Å&quot;</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">gradient_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">"E_h/Å"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
 
         <span class="c1"># The force constants</span>
         <span class="n">ndof</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span>
@@ -707,24 +706,24 @@
             <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Can&#39;t handle force constants of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="s2">&quot;Wrong dimensions?&quot;</span>
+                <span class="sa">f</span><span class="s2">"Can't handle force constants of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">force_constants</span><span class="p">)</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="s2">"Wrong dimensions?"</span>
             <span class="p">)</span>
 
-        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fc_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">&quot;E_h/a_0^2&quot;</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fc_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="s2">"E_h/a_0^2"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">fac</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]))</span>
 
         <span class="c1"># Section ends in blank line</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Optimization.run">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.optimization.Optimization.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an optimization calculation with Gaussian&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Run an optimization calculation with Gaussian"""</span>
         <span class="k">if</span> <span class="n">keywords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -735,264 +734,264 @@
         <span class="p">)</span>
 
         <span class="c1"># Set the attribute for writing just the input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;input only&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_only</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span>
 
         <span class="n">subkeywords</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">convergence</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">optimization_convergence</span><span class="p">[</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;geometry convergence&quot;</span><span class="p">]]</span>
-        <span class="k">if</span> <span class="n">convergence</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">convergence</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">optimization_convergence</span><span class="p">[</span><span class="n">P</span><span class="p">[</span><span class="s2">"geometry convergence"</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">convergence</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
             <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">convergence</span><span class="p">)</span>
-        <span class="n">max_steps</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;max geometry steps&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">max_steps</span> <span class="o">!=</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;nAtoms&quot;</span> <span class="ow">in</span> <span class="n">max_steps</span><span class="p">:</span>
+        <span class="n">max_steps</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"max geometry steps"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_steps</span> <span class="o">!=</span> <span class="s2">"default"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"nAtoms"</span> <span class="ow">in</span> <span class="n">max_steps</span><span class="p">:</span>
                 <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span>
-                <span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;nAtoms&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"nAtoms"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
                 <span class="n">max_steps</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">max_steps</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">max_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_steps</span><span class="p">)</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MaxCycles=</span><span class="si">{</span><span class="n">max_steps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MaxCycles=</span><span class="si">{</span><span class="n">max_steps</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="c1"># Also need to use an IOP to set the max. Odd.</span>
             <span class="c1"># https://mattermodeling.stackexchange.com/questions/5087/ (continued)</span>
             <span class="c1">#       why-does-gaussian-ignore-the-opt-maxcycles-keyword-for-optimizations</span>
-            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;iop(1/152=</span><span class="si">{</span><span class="n">max_steps</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">"iop(1/152=</span><span class="si">{</span><span class="n">max_steps</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
         <span class="c1"># Handle the target for the optimization</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;min&quot;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">"min"</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="k">elif</span> <span class="s2">&quot;trans&quot;</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;ts&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TS&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s2">&quot;saddle&quot;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saddle=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;saddle order&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">"trans"</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">"ts"</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"TS"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">"saddle"</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saddle=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">'saddle order'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;min&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;ignore curvature error&quot;</span><span class="p">]:</span>
-                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NoEigenTest&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"min"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"ignore curvature error"</span><span class="p">]:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"NoEigenTest"</span><span class="p">)</span>
 
         <span class="c1"># Handle options for the Hessian</span>
-        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;default guess&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"default guess"</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;read from checkpoint&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ReadFC&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;from property on configuration&quot;</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FCCards&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"read from checkpoint"</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"ReadFC"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"from property on configuration"</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"FCCards"</span><span class="p">)</span>
             <span class="n">properties</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;force constants*&quot;</span><span class="p">,</span> <span class="n">include_system_properties</span><span class="o">=</span><span class="kc">True</span>
+                <span class="s2">"force constants*"</span><span class="p">,</span> <span class="n">include_system_properties</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;properties:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"properties:"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\t</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
             <span class="n">possibilities</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">properties</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possibilities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;No force constants found in the configuration properties.&quot;</span>
+                    <span class="s2">"No force constants found in the configuration properties."</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">possibilities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s2">"value"</span><span class="p">]</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">units</span><span class="p">(</span><span class="n">possibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
-                    <span class="s2">&quot;   Warning: found more than one set of force constants:&quot;</span>
+                    <span class="s2">"   Warning: found more than one set of force constants:"</span>
                 <span class="p">)</span>
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possibilities</span><span class="p">))</span>
-                <span class="nb">print</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    using </span><span class="si">{</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\t</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possibilities</span><span class="p">))</span>
+                <span class="nb">print</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    using </span><span class="si">{</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+                <span class="n">d2E</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="s2">"value"</span><span class="p">]</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">units</span><span class="p">(</span><span class="n">possibilities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-            <span class="n">extra_sections</span><span class="p">[</span><span class="s2">&quot;Initial force constants&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_force_constants</span><span class="p">(</span>
+            <span class="n">extra_sections</span><span class="p">[</span><span class="s2">"Initial force constants"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_force_constants</span><span class="p">(</span>
                 <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
                 <span class="n">d2E</span><span class="p">,</span>
                 <span class="n">units</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;calculate&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;every step&quot;</span><span class="p">:</span>
-                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcAll&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;at beginning&quot;</span><span class="p">:</span>
-                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcFC&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HF at beginning&quot;</span><span class="p">:</span>
-                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;CalcHFFC&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"calculate"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"every step"</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"CalcAll"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"at beginning"</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"CalcFC"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"HF at beginning"</span><span class="p">:</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"CalcHFFC"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">&quot;recalc hessian&quot;</span><span class="p">])</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="s2">"recalc hessian"</span><span class="p">])</span>
                     <span class="k">if</span> <span class="n">tmp</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;The Hessian recalculation interval must be &gt; 0&quot;</span>
+                            <span class="s2">"The Hessian recalculation interval must be &gt; 0"</span>
                         <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Calculating the Hessian must either be a keyword or integer.&quot;</span>
+                        <span class="s2">"Calculating the Hessian must either be a keyword or integer."</span>
                     <span class="p">)</span>
-                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RecalcFC=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">&#39;recalc hessian&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RecalcFC=</span><span class="si">{</span><span class="n">P</span><span class="p">[</span><span class="s1">'recalc hessian'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;GIC&quot;</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
-            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GIC&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">coordinates</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;redundant&quot;</span><span class="p">,</span> <span class="s2">&quot;cartesian&quot;</span><span class="p">):</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"coordinates"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">"GIC"</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
+            <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"GIC"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">coordinates</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"redundant"</span><span class="p">,</span> <span class="s2">"cartesian"</span><span class="p">):</span>
             <span class="n">subkeywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize optimization coordinates &#39;</span><span class="si">{</span><span class="n">coordinates</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">"Don't recognize optimization coordinates '</span><span class="si">{</span><span class="n">coordinates</span><span class="si">}</span><span class="s2">'"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opt=</span><span class="si">{</span><span class="n">subkeywords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Opt=</span><span class="si">{</span><span class="n">subkeywords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opt=(</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="n">keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Opt=(</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeywords</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="n">keywords</span><span class="p">,</span> <span class="n">extra_sections</span><span class="o">=</span><span class="n">extra_sections</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Optimization.analyze">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.optimization.Optimization.analyze">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="p">[],</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the output and generating the text output and store the</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="p">[],</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Parse the output and generating the text output and store the</span>
 <span class="sd">        data in variables for other stages to access</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">current_values_to_dict</span><span class="p">(</span>
                 <span class="n">context</span><span class="o">=</span><span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span>
             <span class="p">)</span>
 
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">""</span>
 
         <span class="k">if</span> <span class="n">table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">table</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;Property&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;Value&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;Units&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"Property"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"Value"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"Units"</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
 
-        <span class="c1"># metadata = gaussian_step.metadata[&quot;results&quot;]</span>
-        <span class="k">if</span> <span class="s2">&quot;energy&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;Gaussian did not produce the energy. Something is wrong!&quot;</span>
+        <span class="c1"># metadata = gaussian_step.metadata["results"]</span>
+        <span class="k">if</span> <span class="s2">"energy"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"Gaussian did not produce the energy. Something is wrong!"</span>
 
         <span class="c1"># Get the system &amp; configuration</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;System is an atom, so nothing to optimize.&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"System is an atom, so nothing to optimize."</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Information about the optimization</span>
-            <span class="k">if</span> <span class="s2">&quot;N steps optimization&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">n_steps</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N steps optimization&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"N steps optimization"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">n_steps</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"N steps optimization"</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">n_steps</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N steps optimization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_steps</span>
-            <span class="k">if</span> <span class="s2">&quot;optimization is converged&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="c1"># The optimization summary (&quot;Optimization completed.&quot; /</span>
-                <span class="c1"># &quot;Stationary point found.&quot; and the convergence table) was not</span>
-                <span class="c1"># found in Gaussian&#39;s output, so convergence cannot be</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">"N steps optimization"</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_steps</span>
+            <span class="k">if</span> <span class="s2">"optimization is converged"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="c1"># The optimization summary ("Optimization completed." /</span>
+                <span class="c1"># "Stationary point found." and the convergence table) was not</span>
+                <span class="c1"># found in Gaussian's output, so convergence cannot be</span>
                 <span class="c1"># determined. The calculation may have run (a final energy and</span>
                 <span class="c1"># geometry can still come from the checkpoint), but its output</span>
                 <span class="c1"># could not be parsed -- typically a truncated log or a Gaussian</span>
                 <span class="c1"># installation that suppresses its standard output. Fail with a</span>
                 <span class="c1"># clear message rather than a bare KeyError.</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Gaussian did not report geometry-optimization convergence: &quot;</span>
-                    <span class="s2">&quot;no optimization summary was found in the output &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wd</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;output.txt&#39;</span><span class="si">}</span><span class="s2">). The calculation may have run, &quot;</span>
-                    <span class="s2">&quot;but its results could not be parsed -- this usually means &quot;</span>
-                    <span class="s2">&quot;the Gaussian output is truncated or the Gaussian &quot;</span>
-                    <span class="s2">&quot;installation is emitting non-standard output. Verify the &quot;</span>
-                    <span class="s2">&quot;installation (a normal run prints &#39;SCF Done&#39; and &quot;</span>
-                    <span class="s2">&quot;&#39;Optimization completed.&#39;).&quot;</span>
+                    <span class="s2">"Gaussian did not report geometry-optimization convergence: "</span>
+                    <span class="s2">"no optimization summary was found in the output "</span>
+                    <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wd</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">'output.txt'</span><span class="si">}</span><span class="s2">). The calculation may have run, "</span>
+                    <span class="s2">"but its results could not be parsed -- this usually means "</span>
+                    <span class="s2">"the Gaussian output is truncated or the Gaussian "</span>
+                    <span class="s2">"installation is emitting non-standard output. Verify the "</span>
+                    <span class="s2">"installation (a normal run prints 'SCF Done' and "</span>
+                    <span class="s2">"'Optimization completed.')."</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;optimization is converged&quot;</span><span class="p">]:</span>
-                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;The geometry optimization converged in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> steps.&quot;</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">"optimization is converged"</span><span class="p">]:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"The geometry optimization converged in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> steps."</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Warning: The geometry optimization did not converge in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="s2">&quot;steps.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Warning: The geometry optimization did not converge in </span><span class="si">{</span><span class="n">n_steps</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="s2">"steps."</span>
                 <span class="p">)</span>
 
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
-                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">))</span>
+                <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="s2">""</span>
 
                 <span class="n">table2</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
-                    <span class="s2">&quot;maximum atom force&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;RMS atom force&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;maximum atom displacement&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;RMS atom displacement&quot;</span><span class="p">,</span>
+                    <span class="s2">"maximum atom force"</span><span class="p">,</span>
+                    <span class="s2">"RMS atom force"</span><span class="p">,</span>
+                    <span class="s2">"maximum atom displacement"</span><span class="p">,</span>
+                    <span class="s2">"RMS atom displacement"</span><span class="p">,</span>
                 <span class="p">):</span>
-                    <span class="k">if</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; trajectory&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">" trajectory"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                         <span class="k">continue</span>
-                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; trajectory&quot;</span><span class="p">]]</span>
-                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
-                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; Threshold&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span> <span class="o">+</span> <span class="s2">" trajectory"</span><span class="p">]]</span>
+                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
+                    <span class="n">table2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">' Threshold'</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">table2</span> <span class="o">!=</span> <span class="p">{}:</span>
                     <span class="n">tmp</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span>
                         <span class="n">table2</span><span class="p">,</span>
-                        <span class="n">headers</span><span class="o">=</span><span class="s2">&quot;keys&quot;</span><span class="p">,</span>
-                        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;rounded_outline&quot;</span><span class="p">,</span>
-                        <span class="n">colalign</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">),</span>
+                        <span class="n">headers</span><span class="o">=</span><span class="s2">"keys"</span><span class="p">,</span>
+                        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">"rounded_outline"</span><span class="p">,</span>
+                        <span class="n">colalign</span><span class="o">=</span><span class="p">(</span><span class="s2">"decimal"</span><span class="p">,</span> <span class="s2">"decimal"</span><span class="p">,</span> <span class="s2">"decimal"</span><span class="p">,</span> <span class="s2">"decimal"</span><span class="p">),</span>
                         <span class="n">disable_numparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Convergence&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+                    <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Convergence"</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
                     <span class="n">text_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
                     <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
-                        <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+                        <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">)</span>
                     <span class="p">)</span>
 
             <span class="c1"># If calculating 2nd derivatives each step has the vibrations</span>
-            <span class="k">if</span> <span class="s2">&quot;vibrational frequencies&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">imaginary</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;vibrational frequencies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;N saddle modes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                <span class="k">if</span> <span class="s2">&quot;trans&quot;</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;ts&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"vibrational frequencies"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">imaginary</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"vibrational frequencies"</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">"N saddle modes"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">"trans"</span> <span class="ow">in</span> <span class="n">target</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">"ts"</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="s2">&quot; The structure is a transition state, as requested, &quot;</span>
-                            <span class="s2">&quot;with one mode with negative curvature of &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> cm^-1.&quot;</span>
+                            <span class="s2">" The structure is a transition state, as requested, "</span>
+                            <span class="s2">"with one mode with negative curvature of "</span>
+                            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> cm^-1."</span>
                         <span class="p">)</span>
-                        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;TS frequency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s2">"TS frequency"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="s2">&quot; Optimization to a transition state was requested, &quot;</span>
-                            <span class="s2">&quot;however, the structure has no modes with negative &quot;</span>
-                            <span class="s2">&quot;curvature.&quot;</span>
+                            <span class="s2">" Optimization to a transition state was requested, "</span>
+                            <span class="s2">"however, the structure has no modes with negative "</span>
+                            <span class="s2">"curvature."</span>
                         <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">freqs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imaginary</span><span class="p">])</span>
+                        <span class="n">freqs</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imaginary</span><span class="p">])</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="s2">&quot; A transition state was requested, but the structure is &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;a saddle point with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span><span class="si">}</span><span class="s2"> modes with negative &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;curvature: </span><span class="si">{</span><span class="n">freqs</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="s2">" A transition state was requested, but the structure is "</span>
+                            <span class="sa">f</span><span class="s2">"a saddle point with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span><span class="si">}</span><span class="s2"> modes with negative "</span>
+                            <span class="sa">f</span><span class="s2">"curvature: </span><span class="si">{</span><span class="n">freqs</span><span class="si">}</span><span class="s2">"</span>
                         <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="s2">&quot; The structure is a transition state &quot;</span>
-                            <span class="s2">&quot;with one mode with negative curvature of &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> cm^-1.&quot;</span>
+                            <span class="s2">" The structure is a transition state "</span>
+                            <span class="s2">"with one mode with negative curvature of "</span>
+                            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">imaginary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> cm^-1."</span>
                         <span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="k">pass</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">freqs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imaginary</span><span class="p">])</span>
+                        <span class="n">freqs</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imaginary</span><span class="p">])</span>
                         <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="s2">&quot; The structure is &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;a saddle point with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span><span class="si">}</span><span class="s2"> modes with negative &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;curvature: </span><span class="si">{</span><span class="n">freqs</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="s2">" The structure is "</span>
+                            <span class="sa">f</span><span class="s2">"a saddle point with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">imaginary</span><span class="p">)</span><span class="si">}</span><span class="s2"> modes with negative "</span>
+                            <span class="sa">f</span><span class="s2">"curvature: </span><span class="si">{</span><span class="n">freqs</span><span class="si">}</span><span class="s2">"</span>
                         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">" "</span><span class="p">))</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span>
             <span class="n">printer</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
-                <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;optimization is converged&quot;</span><span class="p">]</span>
-                <span class="ow">and</span> <span class="ow">not</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;ignore unconverged optimization&quot;</span><span class="p">]</span>
+                <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">"optimization is converged"</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">P</span><span class="p">[</span><span class="s2">"ignore unconverged optimization"</span><span class="p">]</span>
             <span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Gaussian geometry optimization failed to converge.&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Gaussian geometry optimization failed to converge."</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1024,8 +1023,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1037,7 +1036,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>
