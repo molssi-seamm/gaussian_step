@@ -96,5 +96,9 @@ setup(
             'Optimization = gaussian_step:OptimizationStep',
             'Wavefunction Stability = gaussian_step:WavefunctionStabilityStep'
         ],
+
+        'console_scripts': [
+            'gaussian-step-installer=gaussian_step.__main__:run',
+        ],
     }
 )
