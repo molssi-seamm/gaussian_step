@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
+    <title>History &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=45a1f582"></script>
+    <script src="_static/documentation_options.js?v=65cfade2"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <link rel="prev" title="Development Team" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -496,6 +496,22 @@
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.1 – Settings that depend on each other; naming choices fixed</dt><dd><ul class="simple">
+<li><p>The dialogs show only the settings that apply with the current choices, and SEAMM’s
+flowchart tools use the same rules: the functional and integration grid only for
+DFT; a dispersion correction only from the functional’s own list (now also GD2 and
+PFD); freezing the core only for methods that can; the basis set only for methods
+that use one; Wavefunction Stability takes its method from ‘method’.</p></li>
+<li><p>Bugfix: Energy and Optimization listed their naming choice twice for the
+configuration name and dropped “keep current name”; each name now offers the step’s
+own choice alongside the usual ones. Defaults are unchanged.</p></li>
+<li><p>Flowcharts saved with the dispersion correction <code class="docutils literal notranslate"><span class="pre">DG2</span></code>, a misspelling of <code class="docutils literal notranslate"><span class="pre">GD2</span></code>
+that Gaussian rejects, are read as <code class="docutils literal notranslate"><span class="pre">GD2</span></code>.</p></li>
+<li><p>Documented in the user guide. Needs seamm 2026.10.1.</p></li>
+<li><p>Internal: CI now installs the package’s declared dependencies with uv rather than
+a conda test environment.</p></li>
+</ul>
+</dd>
 <dt>2026.9.29 – Bugfix: an installer that writes gaussian.ini, and cube files without it</dt><dd><ul class="simple">
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">gaussian-step-installer</span></code>, which the SEAMM Manager runs when the step is
 installed, to write the commented template to <code class="docutils literal notranslate"><span class="pre">~/SEAMM/gaussian.ini</span></code> for you to

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.tk_optimization &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
+    <title>gaussian_step.tk_optimization &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -621,14 +621,12 @@
         <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">():</span>
             <span class="n">slave</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
 
-        <span class="n">input_only</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"yes"</span>
-
         <span class="c1"># Whether to just write input</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">"input only"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"w"</span><span class="p">)</span>
         <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># And how to handle files</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">input_only</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">applies</span><span class="p">(</span><span class="s2">"file handling"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget_values</span><span class="p">()):</span>
             <span class="bp">self</span><span class="p">[</span><span class="s2">"file handling"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"w"</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -654,30 +652,36 @@
 <div class="viewcode-block" id="TkOptimization.reset_optimization">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.tk_optimization.TkOptimization.reset_optimization">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Lay out the optimization frame, showing the controls that apply</span>
+<span class="sd">        according to the parameters' rules."""</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"optimization"</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">():</span>
             <span class="n">slave</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-        <span class="n">hessian</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"hessian"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget_values</span><span class="p">()</span>
 
         <span class="n">widgets</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">widgets2</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-        <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"target"</span><span class="p">])</span>
-        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"minimum"</span><span class="p">,</span> <span class="s2">"transition state"</span><span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">"saddle order"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-            <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"saddle order"</span><span class="p">])</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">row</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">P</span><span class="o">.</span><span class="n">applies</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
+                <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
+                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"minimum"</span><span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">"ignore curvature error"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-            <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"ignore curvature error"</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"target"</span><span class="p">)</span>
+        <span class="c1"># The order of the saddle point, and whether to ignore the curvature,</span>
+        <span class="c1"># indented under the target</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"saddle order"</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"ignore curvature error"</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="s2">"geometry convergence"</span><span class="p">,</span>
@@ -685,20 +689,10 @@
             <span class="s2">"max geometry steps"</span><span class="p">,</span>
             <span class="s2">"hessian"</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"recalc hessian"</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">hessian</span> <span class="o">==</span> <span class="s2">"calculate"</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"recalc hessian"</span><span class="p">,):</span>
-                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"ignore unconverged optimization"</span><span class="p">,):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"ew"</span><span class="p">)</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"ignore unconverged optimization"</span><span class="p">)</span>
 
         <span class="n">w1</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">(</span><span class="n">widgets</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"e"</span><span class="p">)</span>
         <span class="n">w2</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">(</span><span class="n">widgets2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">"e"</span><span class="p">)</span>

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.tk_wavefunction_stability &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
+    <title>gaussian_step.tk_wavefunction_stability &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -481,10 +481,8 @@
 <span class="sd">"""The graphical part of a Gaussian wavefunction stability analysis node"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">gaussian_step</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">seamm_widgets</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sw</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"Gaussian"</span><span class="p">)</span>
 
@@ -542,99 +540,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Finished creating the dialog"</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TkWavefunctionStability.reset_calculation">
-<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.tk_wavefunction_stability.TkWavefunctionStability.reset_calculation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">reset_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"level"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-
-        <span class="n">long_method</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">"advanced_method"</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">long_method</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">long_method</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">meta</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">long_method</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">long_method</span><span class="p">][</span><span class="s2">"method"</span><span class="p">]</span>
-                <span class="n">meta</span> <span class="o">=</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">long_method</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># See if it matches the keyword part</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mdata</span> <span class="ow">in</span> <span class="n">gaussian_step</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">long_method</span> <span class="o">==</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]:</span>
-                        <span class="n">long_method</span> <span class="o">=</span> <span class="n">key</span>
-                        <span class="bp">self</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">long_method</span><span class="p">)</span>
-                        <span class="n">meta</span> <span class="o">=</span> <span class="n">mdata</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span>
-                        <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">long_method</span>
-                    <span class="n">meta</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># Set up the results table because it depends on the method</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results_widgets</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setup_results</span><span class="p">()</span>
-
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"calculation"</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">():</span>
-            <span class="n">slave</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
-
-        <span class="n">widgets</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">widgets2</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">"level"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">"initial checkpoint"</span><span class="p">,</span>
-            <span class="s2">"checkpoint"</span><span class="p">,</span>
-            <span class="s2">"geometry"</span><span class="p">,</span>
-            <span class="s2">"initial wavefunction"</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_header_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The full-width controls at the top of the calculation frame. The rest</span>
+<span class="sd">        of the layout, and which controls apply, is as for the Energy (see</span>
+<span class="sd">        WavefunctionStabilityParameters for the rules)."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="o">*</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_header_keys</span><span class="p">(),</span>
             <span class="s2">"stability analysis"</span><span class="p">,</span>
             <span class="s2">"test spin multiplicity"</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="bp">self</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-        <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"method"</span><span class="p">])</span>
-        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">"recommended"</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"DFT"</span><span class="p">:</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">"functional"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"functional"</span><span class="p">])</span>
-                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">"integral grid"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"integral grid"</span><span class="p">])</span>
-                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"DFT"</span><span class="p">:</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">"advanced_functional"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"advanced_functional"</span><span class="p">])</span>
-                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">"integral grid"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-                <span class="n">widgets2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"integral grid"</span><span class="p">])</span>
-                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s2">"nobasis"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">meta</span><span class="p">[</span><span class="s2">"nobasis"</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">"basis"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s2">"basis"</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">"spin-restricted"</span><span class="p">,</span>
-            <span class="s2">"use symmetry"</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="n">width0</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">(</span><span class="n">widgets</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
-        <span class="n">width1</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">(</span><span class="n">widgets2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
-        <span class="n">frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="n">width0</span> <span class="o">-</span> <span class="n">width1</span> <span class="o">+</span> <span class="mi">50</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">row</span></div>
-</div>
+        <span class="p">)</span></div>
 
 </pre></div>
 

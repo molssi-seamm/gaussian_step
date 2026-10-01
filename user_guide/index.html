@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
+    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../_static/documentation_options.js?v=45a1f582"></script>
+    <script src="../_static/documentation_options.js?v=65cfade2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="prev" title="Getting Started" href="../getting_started/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -497,6 +497,21 @@
   <section id="user-guide">
 <span id="id1"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
 <p>The Gaussian plug-in provides an interface to the Gaussian quantum chemistry code.</p>
+<section id="settings-that-depend-on-each-other">
+<h2>Settings that depend on each other<a class="headerlink" href="#settings-that-depend-on-each-other" title="Link to this heading">#</a></h2>
+<p>Which settings apply depends on others: the functional and integration grid only for
+DFT, a dispersion correction only from the functional’s own list, freezing the core only
+for methods that can, and the basis set only for methods that use one. The step’s
+dialogs show only the settings that apply with the current choices, and the same rules
+are used when a flowchart is built or edited without the editor (<code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> or
+SEAMM’s MCP server): a setting that would have no effect is refused, with the reason,
+and a value that contradicts another is refused too. See “Flowcharts without the editor”
+in SEAMM’s user guide.</p>
+<p>Each sub-step offers its own naming choice for the system and configuration (for
+example “optimized with {model}”) alongside the usual ones. Flowcharts saved with the
+dispersion correction <code class="docutils literal notranslate"><span class="pre">DG2</span></code>, a misspelling of <code class="docutils literal notranslate"><span class="pre">GD2</span></code> that Gaussian rejects, are read
+as <code class="docutils literal notranslate"><span class="pre">GD2</span></code>.</p>
+</section>
 <section id="index">
 <h2>Index<a class="headerlink" href="#index" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -552,6 +567,7 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#settings-that-depend-on-each-other">Settings that depend on each other</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#index">Index</a></li>
 </ul>
   </nav></div>

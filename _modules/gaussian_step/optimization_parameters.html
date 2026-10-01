@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.optimization_parameters &#8212; SEAMM Gaussian Plug-in 2026.9.29 documentation</title>
+    <title>gaussian_step.optimization_parameters &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -506,6 +506,7 @@
             <span class="p">),</span>
         <span class="p">},</span>
         <span class="s2">"saddle order"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"applies_when"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"target"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"not"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"minimum"</span><span class="p">,</span> <span class="s2">"transition state"</span><span class="p">]}},</span>
             <span class="s2">"default"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
             <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"integer"</span><span class="p">,</span>
             <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
@@ -561,6 +562,7 @@
             <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"Which step to get the Hessian from."</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">"recalc hessian"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"applies_when"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"hessian"</span><span class="p">:</span> <span class="s2">"calculate"</span><span class="p">},</span>
             <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"at beginning"</span><span class="p">,</span>
             <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"integer"</span><span class="p">,</span>
             <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
@@ -592,6 +594,7 @@
             <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The typ of coordinates to use in the minimization."</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">"ignore curvature error"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"applies_when"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"target"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"not"</span><span class="p">:</span> <span class="s2">"minimum"</span><span class="p">}},</span>
             <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"no"</span><span class="p">,</span>
             <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"boolean"</span><span class="p">,</span>
             <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
@@ -616,6 +619,21 @@
         <span class="p">},</span>
     <span class="p">}</span>
 
+    <span class="c1"># Rules shared by the dialog and the flowchart builder (see seamm.Parameters):</span>
+    <span class="c1"># the "applies_when" entries above, and these parameters that an optimization</span>
+    <span class="c1"># does not use.</span>
+    <span class="n">unused</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">gaussian_step</span><span class="o">.</span><span class="n">EnergyParameters</span><span class="o">.</span><span class="n">unused</span><span class="p">,</span>
+        <span class="s2">"calculate gradient"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"only the Energy sub-step uses it; this step always calculates the "</span>
+            <span class="s2">"gradient"</span>
+        <span class="p">),</span>
+        <span class="s2">"hessian step"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"the Gaussian step does not use it; the Hessian cannot be taken from a "</span>
+            <span class="s2">"previous step"</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{},</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Initialize the instance, by default from the default</span>
 <span class="sd">        parameters given in the class"""</span>
@@ -625,13 +643,17 @@
         <span class="p">)</span>
 
         <span class="c1"># Do any local editing of defaults</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"enumeration"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">,</span> <span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">enumeration</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="s2">"keep current name"</span>
-
-        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"enumeration"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">,</span> <span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">enumeration</span><span class="p">]</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span></div>
+        <span class="c1"># Replace the Energy step's naming choice with the optimization's own</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">"system name"</span><span class="p">,</span> <span class="s2">"keep current name"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"configuration name"</span><span class="p">,</span> <span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"enumeration"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="o">*</span><span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">enumeration</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">"single-point with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">],</span>
+            <span class="p">]</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span></div>
 
 </pre></div>
 
