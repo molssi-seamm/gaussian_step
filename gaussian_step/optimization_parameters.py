@@ -26,6 +26,7 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
             ),
         },
         "saddle order": {
+            "applies_when": {"target": {"not": ["minimum", "transition state"]}},
             "default": 2,
             "kind": "integer",
             "default_units": "",
@@ -81,6 +82,7 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
             "help_text": "Which step to get the Hessian from.",
         },
         "recalc hessian": {
+            "applies_when": {"hessian": "calculate"},
             "default": "at beginning",
             "kind": "integer",
             "default_units": "",
@@ -112,6 +114,7 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
             "help_text": "The typ of coordinates to use in the minimization.",
         },
         "ignore curvature error": {
+            "applies_when": {"target": {"not": "minimum"}},
             "default": "no",
             "kind": "boolean",
             "default_units": "",
@@ -134,6 +137,21 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
                 "an error is thrown."
             ),
         },
+    }
+
+    # Rules shared by the dialog and the flowchart builder (see seamm.Parameters):
+    # the "applies_when" entries above, and these parameters that an optimization
+    # does not use.
+    unused = {
+        **gaussian_step.EnergyParameters.unused,
+        "calculate gradient": (
+            "only the Energy sub-step uses it; this step always calculates the "
+            "gradient"
+        ),
+        "hessian step": (
+            "the Gaussian step does not use it; the Hessian cannot be taken from a "
+            "previous step"
+        ),
     }
 
     def __init__(self, defaults={}, data=None):

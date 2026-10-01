@@ -130,14 +130,12 @@ class TkOptimization(gaussian_step.TkEnergy):
         for slave in frame.grid_slaves():
             slave.grid_forget()
 
-        input_only = self["input only"].get().lower() == "yes"
-
         # Whether to just write input
         self["input only"].grid(row=row, column=0, sticky="w")
         row += 1
 
         # And how to handle files
-        if not input_only:
+        if self.node.parameters.applies("file handling", self._widget_values()):
             self["file handling"].grid(row=row, column=0, columnspan=2, sticky="w")
             row += 1
 
@@ -160,30 +158,36 @@ class TkOptimization(gaussian_step.TkEnergy):
         return row
 
     def reset_optimization(self, widget=None):
+        """Lay out the optimization frame, showing the controls that apply
+        according to the parameters' rules."""
         frame = self["optimization"]
         for slave in frame.grid_slaves():
             slave.grid_forget()
 
-        target = self["target"].get()
-        hessian = self["hessian"].get()
+        P = self.node.parameters
+        values = self._widget_values()
 
         widgets = []
         widgets2 = []
         row = 0
 
-        self["target"].grid(row=row, column=0, columnspan=2, sticky="ew")
-        widgets.append(self["target"])
-        row += 1
-
-        if target not in ("minimum", "transition state"):
-            self["saddle order"].grid(row=row, column=1, sticky="ew")
-            widgets2.append(self["saddle order"])
+        def add(key, column=0):
+            nonlocal row
+            if not P.applies(key, values):
+                return
+            if column == 0:
+                self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
+                widgets.append(self[key])
+            else:
+                self[key].grid(row=row, column=1, sticky="ew")
+                widgets2.append(self[key])
             row += 1
 
-        if target not in ("minimum"):
-            self["ignore curvature error"].grid(row=row, column=1, sticky="ew")
-            widgets2.append(self["ignore curvature error"])
-            row += 1
+        add("target")
+        # The order of the saddle point, and whether to ignore the curvature,
+        # indented under the target
+        add("saddle order", column=1)
+        add("ignore curvature error", column=1)
 
         for key in (
             "geometry convergence",
@@ -191,20 +195,10 @@ class TkOptimization(gaussian_step.TkEnergy):
             "max geometry steps",
             "hessian",
         ):
-            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
-            widgets.append(self[key])
-            row += 1
+            add(key)
+        add("recalc hessian", column=1)
 
-        if hessian == "calculate":
-            for key in ("recalc hessian",):
-                self[key].grid(row=row, column=1, sticky="ew")
-                widgets2.append(self[key])
-                row += 1
-
-        for key in ("ignore unconverged optimization",):
-            self[key].grid(row=row, column=0, columnspan=2, sticky="ew")
-            widgets.append(self[key])
-            row += 1
+        add("ignore unconverged optimization")
 
         w1 = sw.align_labels(widgets, sticky="e")
         w2 = sw.align_labels(widgets2, sticky="e")

@@ -145,8 +145,9 @@ class TkThermodynamics(gaussian_step.TkOptimization):
         for slave in frame.grid_slaves():
             slave.grid_forget()
 
-        input_only = self["input only"].get().lower() == "yes"
-        optimize_first = self["optimize first"].get() != "no"
+        # What applies comes from the parameters' rules
+        P = self.node.parameters
+        values = self._widget_values()
 
         row = 0
         # Whether to just write input
@@ -154,7 +155,7 @@ class TkThermodynamics(gaussian_step.TkOptimization):
         row += 1
 
         # And how to handle files
-        if not input_only:
+        if P.applies("file handling", values):
             self["file handling"].grid(row=row, column=0, sticky=tk.W)
             row += 1
 
@@ -165,7 +166,8 @@ class TkThermodynamics(gaussian_step.TkOptimization):
         self.reset_calculation()
         row += 1
 
-        if optimize_first:
+        # The optimization's controls apply only when optimizing first
+        if P.applies("target", values):
             self["optimization"].grid(row=row, column=0)
             self.reset_optimization()
 

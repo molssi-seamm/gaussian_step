@@ -105,6 +105,21 @@ class ThermodynamicsParameters(gaussian_step.OptimizationParameters):
         },
     }
 
+    # Rules shared by the dialog and the flowchart builder (see seamm.Parameters):
+    # the optimization's parameters apply only if optimizing first, and the
+    # temperature and pressure are not used yet.
+    unused = {
+        **gaussian_step.OptimizationParameters.unused,
+        "T": (
+            "the Gaussian step does not use it yet; the thermodynamic functions are "
+            "at Gaussian's default of 298.15 K"
+        ),
+        "P": (
+            "the Gaussian step does not use it yet; the thermodynamic functions are "
+            "at Gaussian's default of 1 atm"
+        ),
+    }
+
     def __init__(self, defaults={}, data=None):
         """
         Initialize the parameters, by default with the parameters defined above
@@ -125,6 +140,23 @@ class ThermodynamicsParameters(gaussian_step.OptimizationParameters):
 
         logger.debug("ThermodynamicsParameters.__init__")
 
+        # The optimization's parameters apply only when optimizing first. This is
+        # in the definitions, not edited afterwards, so that from_dict() keeps it.
+        optimization = {}
+        for key, definition in gaussian_step.OptimizationParameters.parameters.items():
+            if key in self.unused:
+                continue
+            conditions = definition.get("applies_when") or {}
+            optimization[key] = {
+                **definition,
+                "applies_when": {"optimize first": "yes", **conditions},
+            }
+
         super().__init__(
-            defaults={**ThermodynamicsParameters.parameters, **defaults}, data=data
+            defaults={
+                **ThermodynamicsParameters.parameters,
+                **optimization,
+                **defaults,
+            },
+            data=data,
         )
