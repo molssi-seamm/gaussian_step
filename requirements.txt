@@ -2,7 +2,7 @@ cclib
 py-cpuinfo
 numpy
 pandas
-seamm
+seamm>=2026.10.1
 seamm-exec
 seamm-util
 seamm-widgets

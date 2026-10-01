@@ -1,6 +1,21 @@
 =======
 History
 =======
+2026.10.1 -- Settings that depend on each other; naming choices fixed
+    * The dialogs show only the settings that apply with the current choices, and SEAMM's
+      flowchart tools use the same rules: the functional and integration grid only for
+      DFT; a dispersion correction only from the functional's own list (now also GD2 and
+      PFD); freezing the core only for methods that can; the basis set only for methods
+      that use one; Wavefunction Stability takes its method from 'method'.
+    * Bugfix: Energy and Optimization listed their naming choice twice for the
+      configuration name and dropped "keep current name"; each name now offers the step's
+      own choice alongside the usual ones. Defaults are unchanged.
+    * Flowcharts saved with the dispersion correction ``DG2``, a misspelling of ``GD2``
+      that Gaussian rejects, are read as ``GD2``.
+    * Documented in the user guide. Needs seamm 2026.10.1.
+    * Internal: CI now installs the package's declared dependencies with uv rather than
+      a conda test environment.
+
 2026.9.29 -- Bugfix: an installer that writes gaussian.ini, and cube files without it
     * Added ``gaussian-step-installer``, which the SEAMM Manager runs when the step is
       installed, to write the commented template to ``~/SEAMM/gaussian.ini`` for you to
