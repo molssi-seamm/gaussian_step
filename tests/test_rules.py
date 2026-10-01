@@ -82,7 +82,7 @@ def test_optimization():
     opt = node("Optimization")
     with pytest.raises(FlowchartBuildError, match="always calculates the gradient"):
         set_parameters(opt, calculate_gradient="no")
-    with pytest.raises(FlowchartBuildError, match="'target' is not"):
+    with pytest.raises(FlowchartBuildError, match="'target' is neither 'minimum' nor 'transition state'"):
         set_parameters(opt, saddle_order=3)
     set_parameters(opt, target="saddle point", saddle_order=3)
     with pytest.raises(FlowchartBuildError, match="'hessian' is 'calculate'"):
