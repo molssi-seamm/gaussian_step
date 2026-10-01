@@ -82,7 +82,10 @@ def test_optimization():
     opt = node("Optimization")
     with pytest.raises(FlowchartBuildError, match="always calculates the gradient"):
         set_parameters(opt, calculate_gradient="no")
-    with pytest.raises(FlowchartBuildError, match="'target' is neither 'minimum' nor 'transition state'"):
+    with pytest.raises(
+        FlowchartBuildError,
+        match="'target' is neither 'minimum' nor 'transition state'",
+    ):
         set_parameters(opt, saddle_order=3)
     set_parameters(opt, target="saddle point", saddle_order=3)
     with pytest.raises(FlowchartBuildError, match="'hessian' is 'calculate'"):
@@ -130,3 +133,37 @@ def test_rules_survive_from_dict(substep):
     if substep == "Wavefunction Stability":
         assert len(P["method"].enumeration) == 2
         assert P.applies("method", {**P.current_values(), "level": "advanced"})
+
+
+@pytest.mark.parametrize(
+    "substep, own",
+    [
+        ("Energy", "single-point with {model}"),
+        ("Optimization", "optimized with {model}"),
+        ("Thermodynamics", "optimized with {model}"),
+    ],
+)
+def test_naming_choices(substep, own):
+    """Each step adds its own naming choice to both names, keeping the others (the
+    system name's edit was applied to the configuration name twice, listing the
+    choice twice and losing 'keep current name'). They survive from_dict()."""
+    P = node(substep).parameters
+    for _ in range(2):
+        for key in ("system name", "configuration name"):
+            choices = list(P[key].enumeration)
+            assert choices[0] == own
+            assert choices.count(own) == 1
+            assert "keep current name" in choices
+            if own != "single-point with {model}":
+                assert "single-point with {model}" not in choices
+        assert P["system name"].default == "keep current name"
+        assert P["configuration name"].default == own
+        P.from_dict(P.to_dict())
+
+
+def test_misspelt_dispersion_translated():
+    """Old flowcharts may hold 'DG2', a misspelling of 'GD2' that Gaussian rejects."""
+    from gaussian_step import EnergyParameters
+
+    P = EnergyParameters(data={"dispersion": {"value": "DG2", "units": None}})
+    assert P["dispersion"].value == "GD2"

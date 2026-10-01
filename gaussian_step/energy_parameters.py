@@ -619,6 +619,12 @@ class EnergyParameters(seamm.Parameters):
         """Initialize the instance, by default from the default
         parameters given in the class"""
 
+        # The dispersion choices used to include 'DG2', a misspelling of 'GD2', which
+        # Gaussian rejects; flowcharts saved then may hold it.
+        if data is not None and isinstance(data.get("dispersion"), dict):
+            if data["dispersion"].get("value") == "DG2":
+                data["dispersion"]["value"] = "GD2"
+
         super().__init__(
             defaults={
                 **EnergyParameters.parameters,
@@ -630,8 +636,8 @@ class EnergyParameters(seamm.Parameters):
         )
 
         # Do any local editing of defaults
-        tmp = self["configuration name"]
-        tmp._data["enumeration"] = ["single-point with {model}", *tmp.enumeration[1:]]
+        tmp = self["system name"]
+        tmp._data["enumeration"] = ["single-point with {model}", *tmp.enumeration]
         tmp.default = "keep current name"
 
         tmp = self["configuration name"]

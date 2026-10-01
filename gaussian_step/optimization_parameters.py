@@ -163,10 +163,14 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
         )
 
         # Do any local editing of defaults
-        tmp = self["configuration name"]
-        tmp._data["enumeration"] = ["optimized with {model}", *tmp.enumeration[1:]]
-        tmp.default = "keep current name"
-
-        tmp = self["configuration name"]
-        tmp._data["enumeration"] = ["optimized with {model}", *tmp.enumeration]
-        tmp.default = "optimized with {model}"
+        # Replace the Energy step's naming choice with the optimization's own
+        for key, default in (
+            ("system name", "keep current name"),
+            ("configuration name", "optimized with {model}"),
+        ):
+            tmp = self[key]
+            tmp._data["enumeration"] = [
+                "optimized with {model}",
+                *[v for v in tmp.enumeration if v != "single-point with {model}"],
+            ]
+            tmp.default = default
