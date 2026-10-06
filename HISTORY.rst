@@ -1,6 +1,12 @@
 =======
 History
 =======
+2026.10.7 -- The step declares what its cost model is made of
+    * ``substep.TIMING_SPEC`` -- basis functions, electrons and atoms as size variables, the method as the class, the task, SCF runs as the unit -- is passed when a run is
+      recorded (seamm-exec 2026.10.7 writes it beside the records), so the cost
+      model is fitted from the step's own description rather than a table in
+      seamm-exec.
+
 2026.10.6 -- Timing records that a cost model can be fitted to
     * Each Gaussian run appends a record to ``~/.seamm.d/timing/gaussian.csv``
       through ``seamm_exec.timing``: the machine class, threads, wall time and
