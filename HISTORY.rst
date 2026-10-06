@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.6 -- Timing records that a cost model can be fitted to
+    * Each Gaussian run appends a record to ``~/.seamm.d/timing/gaussian.csv``
+      through ``seamm_exec.timing``: the machine class, threads, wall time and
+      outcome, and the descriptors of the calculation -- the model, method and
+      basis, the route's kind of task, symmetry detected and used, basis functions
+      and electrons, the structure, and from the log the SCF runs and cycles and
+      Gaussian's own CPU and elapsed times. This replaces the step's own CSV, which
+      grew without bound. See seamm_exec's campaign of 2026-10-05.
+    * Requires seamm-exec 2026.10.6.
 2026.10.1 -- Settings that depend on each other; naming choices fixed
     * The dialogs show only the settings that apply with the current choices, and SEAMM's
       flowchart tools use the same rules: the functional and integration grid only for

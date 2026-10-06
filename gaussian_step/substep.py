@@ -4,8 +4,6 @@
 
 from collections import Counter
 import configparser
-import csv
-from datetime import datetime, timezone
 import gzip
 import importlib
 import json
@@ -13,7 +11,6 @@ import logging
 from math import isnan
 import os
 from pathlib import Path
-import platform
 import pprint
 import re
 import shutil
@@ -23,7 +20,6 @@ import time
 import traceback
 
 import cclib
-from cpuinfo import get_cpu_info
 import numpy as np
 import pandas
 from tabulate import tabulate
@@ -172,6 +168,83 @@ standard_state = {
 }
 
 
+def _output_text(directory, names):
+    """The text of the first of ``names`` found in ``directory``, or None."""
+    for name in names:
+        path = Path(directory) / name
+        if path.exists():
+            try:
+                return path.read_text(errors="replace")
+            except OSError:
+                return None
+    return None
+
+
+def task_kind(keywords):
+    """The kind of calculation a Gaussian route asks for, for the timing records:
+    ``freq``, ``opt`` (with or without Freq), ``gradient`` (Force) or ``energy``."""
+    words = [w.lower().split("=")[0].split("(")[0] for w in keywords.split()]
+    if "opt" in words:
+        return "opt+freq" if "freq" in words else "opt"
+    if "freq" in words:
+        return "freq"
+    if "force" in words:
+        return "gradient"
+    return "energy"
+
+
+def timing_descriptors(keywords, data, log_text=None, configuration=None):
+    """The descriptors of a Gaussian run for its timing record (seamm_exec's
+    campaign of 2026-10-05): the model (``type/method/basis``), the route's
+    keywords and kind of task, symmetry detected and used, the basis functions
+    and electrons, the structure, and from the log the SCF cycles and
+    Gaussian's own CPU and elapsed times.
+    """
+    d = {
+        "model": data.get("model", ""),
+        "keywords": keywords,
+        "task": task_kind(keywords),
+    }
+    parts = str(d["model"]).split("/")
+    d["method"] = parts[1] if len(parts) > 1 else ""
+    d["basis"] = parts[2] if len(parts) > 2 else ""
+    d["symmetry_detected"] = data.get("metadata/symmetry_detected", "")
+    d["symmetry_used"] = data.get("metadata/symmetry_used", "")
+    d["nbf"] = data.get("Number of basis functions")
+    if configuration is not None:
+        d.update(seamm_exec.structure_descriptors(configuration))
+    if log_text:
+        d["scf_runs"] = len(re.findall(r"SCF Done:", log_text))
+        cycles = [int(x) for x in re.findall(r"SCF Done:[^\n]*?(\d+) cycles", log_text)]
+        d["scf_cycles"] = sum(cycles) if cycles else None
+        m = re.search(r"(\d+) alpha electrons\s+(\d+) beta electrons", log_text)
+        if m:
+            d["n_electrons"] = int(m.group(1)) + int(m.group(2))
+        m = re.search(r"(\d+) basis functions,", log_text)
+        if m and not d.get("nbf"):
+            d["nbf"] = int(m.group(1))
+        cpu = [
+            ((int(a) * 24 + int(b)) * 60 + int(c)) * 60 + float(e)
+            for a, b, c, e in re.findall(
+                r"Job cpu time:\s+(\d+) days\s+(\d+) hours\s+(\d+) minutes"
+                r"\s+([\d.]+) seconds",
+                log_text,
+            )
+        ]
+        d["cpu_seconds"] = sum(cpu) if cpu else None
+        wall = [
+            ((int(a) * 24 + int(b)) * 60 + int(c)) * 60 + float(e)
+            for a, b, c, e in re.findall(
+                r"Elapsed time:\s+(\d+) days\s+(\d+) hours\s+(\d+) minutes"
+                r"\s+([\d.]+) seconds",
+                log_text,
+            )
+        ]
+        d["code_seconds"] = sum(wall) if wall else None
+        d["terminated_normally"] = "Normal termination" in log_text
+    return d
+
+
 class Substep(seamm.Node):
     def __init__(
         self,
@@ -191,51 +264,7 @@ class Substep(seamm.Node):
 
         self._chkpt = None
         self._input_only = False
-        self._timing_data = []
-        self._timing_path = Path("~/.seamm.d/timing/gaussian.csv").expanduser()
-
-        # Set up the timing information
-        self._timing_header = [
-            "node",  # 0
-            "cpu",  # 1
-            "cpu_version",  # 2
-            "cpu_count",  # 3
-            "cpu_speed",  # 4
-            "date",  # 5
-            "SMILES",  # 6
-            "H_SMILES",  # 7
-            "formula",  # 8
-            "net_charge",  # 9
-            "spin_multiplicity",  # 10
-            "model",  # 11
-            "keywords",  # 12
-            "symmetry",  # 13
-            "symmetry_used",  # 14
-            "nbf",  # 15
-            "nproc",  # 16
-            "time",  # 17
-        ]
-        try:
-            self._timing_path.parent.mkdir(parents=True, exist_ok=True)
-
-            self._timing_data = 18 * [""]
-            self._timing_data[0] = platform.node()
-            tmp = get_cpu_info()
-            if "arch" in tmp:
-                self._timing_data[1] = tmp["arch"]
-            if "cpuinfo_version_string" in tmp:
-                self._timing_data[2] = tmp["cpuinfo_version_string"]
-            if "count" in tmp:
-                self._timing_data[3] = str(tmp["count"])
-            if "hz_advertized_friendly" in tmp:
-                self._timing_data[4] = tmp["hz_advertized_friendly"]
-
-            if not self._timing_path.exists():
-                with self._timing_path.open("w", newline="") as fd:
-                    writer = csv.writer(fd)
-                    writer.writerow(self._timing_header)
-        except Exception:
-            self._timing_data = None
+        self._timing_run = None
 
     @property
     def version(self):
@@ -2065,6 +2094,28 @@ class Substep(seamm.Node):
 
         return new
 
+    def record_timing(self, data, configuration):
+        """Append this run's timing record (``~/.seamm.d/timing/gaussian.csv``)
+        with :func:`timing_descriptors`; never raises."""
+        try:
+            run = getattr(self, "_timing_run", None)
+            if not run:
+                return
+            self._timing_run = None
+            text = _output_text(self.directory, ("gaussian.log", "output.log"))
+            descriptors = timing_descriptors(run["keywords"], data, text, configuration)
+            seamm_exec.record_timing(
+                "gaussian",
+                run["wall"],
+                descriptors,
+                ntasks=1,
+                cpus_per_task=run["n_threads"],
+                state="finished" if data.get("success") else "failed",
+                in_situ=True,
+            )
+        except Exception as e:  # pragma: no cover - must never stop the step
+            self.logger.warning(f"Could not record the timing of the Gaussian run: {e}")
+
     def run_gaussian(
         self,
         keywords,
@@ -2287,9 +2338,6 @@ class Substep(seamm.Node):
                 self.logger.debug(f"{cmd=}")
                 self.logger.debug(f"{env=}")
 
-                if self._timing_data is not None:
-                    self._timing_data[12] = " ".join(keywords)
-                    self._timing_data[5] = datetime.now(timezone.utc).isoformat()
                 t0 = time.time_ns()
 
                 result = executor.run(
@@ -2304,9 +2352,11 @@ class Substep(seamm.Node):
                 )
 
                 t = (time.time_ns() - t0) / 1.0e9
-                if self._timing_data is not None:
-                    self._timing_data[17] = f"{t:.3f}"
-                    self._timing_data[16] = str(n_threads)
+                self._timing_run = {
+                    "wall": t,
+                    "n_threads": n_threads,
+                    "keywords": " ".join(keywords),
+                }
 
                 # Check for errors
                 chkpoint_ok = True
@@ -2503,26 +2553,7 @@ class Substep(seamm.Node):
             if data["success"]:
                 success_file.write_text("success")
 
-                if self._timing_data is not None:
-                    self._timing_data[11] = data["model"]
-                    if "metadata/symmetry_detected" in data:
-                        self._timing_data[13] = str(data["metadata/symmetry_detected"])
-                    else:
-                        self._timing_data[13] = ""
-                    if "metadata/symmetry_used" in data:
-                        self._timing_data[14] = str(data["metadata/symmetry_used"])
-                    else:
-                        self._timing_data[14] = ""
-                    if "Number of basis functions" in data:
-                        self._timing_data[15] = str(data["Number of basis functions"])
-                    else:
-                        self._timing_data[15] = ""
-                    try:
-                        with self._timing_path.open("a", newline="") as fd:
-                            writer = csv.writer(fd)
-                            writer.writerow(self._timing_data)
-                    except Exception:
-                        pass
+                self.record_timing(data, configuration)
 
         # Add other citations here or in the appropriate place in the code.
         # Add the bibtex to data/references.bib, and add a self.reference.cite
