@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.1 documentation</title>
+    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.6 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../_static/documentation_options.js?v=ae463d2f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="prev" title="gaussian_step" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1" />
+  <meta name="docsearch:version" content="2026.10.6" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1386,6 +1386,13 @@ this is proving.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.record_timing">
+<span class="sig-name descname"><span class="pre">record_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.record_timing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.record_timing" title="Link to this definition">#</a></dt>
+<dd><p>Append this run’s timing record (<code class="docutils literal notranslate"><span class="pre">~/.seamm.d/timing/gaussian.csv</span></code>)
+with <a class="reference internal" href="#gaussian_step.substep.timing_descriptors" title="gaussian_step.substep.timing_descriptors"><code class="xref py py-func docutils literal notranslate"><span class="pre">timing_descriptors()</span></code></a>; never raises.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="gaussian_step.substep.Substep.run_gaussian">
 <span class="sig-name descname"><span class="pre">run_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin_multiplicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_chkpt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chkpt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.run_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.run_gaussian" title="Link to this definition">#</a></dt>
 <dd><p>Run Gaussian.</p>
@@ -1441,6 +1448,23 @@ this is proving.</p>
 <dt class="sig sig-object py" id="gaussian_step.substep.subscript">
 <span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">subscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#subscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.subscript" title="Link to this definition">#</a></dt>
 <dd><p>Return the number using Unicode subscript characters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.substep.task_kind">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">task_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#task_kind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.task_kind" title="Link to this definition">#</a></dt>
+<dd><p>The kind of calculation a Gaussian route asks for, for the timing records:
+<code class="docutils literal notranslate"><span class="pre">freq</span></code>, <code class="docutils literal notranslate"><span class="pre">opt</span></code> (with or without Freq), <code class="docutils literal notranslate"><span class="pre">gradient</span></code> (Force) or <code class="docutils literal notranslate"><span class="pre">energy</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.substep.timing_descriptors">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">timing_descriptors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#timing_descriptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.timing_descriptors" title="Link to this definition">#</a></dt>
+<dd><p>The descriptors of a Gaussian run for its timing record (seamm_exec’s
+campaign of 2026-10-05): the model (<code class="docutils literal notranslate"><span class="pre">type/method/basis</span></code>), the route’s
+keywords and kind of task, symmetry detected and used, the basis functions
+and electrons, the structure, and from the log the SCF cycles and
+Gaussian’s own CPU and elapsed times.</p>
 </dd></dl>
 
 </section>
@@ -2476,6 +2500,7 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.parse_output"><code class="docutils literal notranslate"><span class="pre">Substep.parse_output()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.parse_punch"><code class="docutils literal notranslate"><span class="pre">Substep.parse_punch()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.process_data"><code class="docutils literal notranslate"><span class="pre">Substep.process_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.record_timing"><code class="docutils literal notranslate"><span class="pre">Substep.record_timing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.run_gaussian"><code class="docutils literal notranslate"><span class="pre">Substep.run_gaussian()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.version"><code class="docutils literal notranslate"><span class="pre">Substep.version</span></code></a></li>
 </ul>
@@ -2483,6 +2508,8 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.subscript"><code class="docutils literal notranslate"><span class="pre">subscript()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.task_kind"><code class="docutils literal notranslate"><span class="pre">task_kind()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.timing_descriptors"><code class="docutils literal notranslate"><span class="pre">timing_descriptors()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.thermodynamics">gaussian_step.thermodynamics module</a><ul class="pst-show_toc_level nav section-nav flex-column">
