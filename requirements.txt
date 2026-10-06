@@ -3,7 +3,7 @@ py-cpuinfo
 numpy
 pandas
 seamm>=2026.10.1
-seamm-exec
+seamm-exec>=2026.10.6
 seamm-util
 seamm-widgets
 tabulate
