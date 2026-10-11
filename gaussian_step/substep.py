@@ -180,6 +180,24 @@ def _output_text(directory, names):
     return None
 
 
+#: What the cost model is made of (seamm_exec.timing_model.Spec as plain data): basis
+#: functions, electrons and atoms as size variables, the method as the class, the task,
+#: SCF runs as the unit. Written beside the records when a run is recorded.
+TIMING_SPEC = {
+    "size": ["nbf", "n_electrons", "n_atoms"],
+    "klass": ["method"],
+    "task": "task",
+    "units": "scf_runs",
+    "multiplier": None,
+    "default_alpha": 0.8,
+}
+
+
+def _record_kwargs():
+    """``spec=`` for seamm-exec releases that take it (2026.10.6.1 on)."""
+    return {"spec": TIMING_SPEC} if hasattr(seamm_exec, "TimingSpec") else {}
+
+
 def task_kind(keywords):
     """The kind of calculation a Gaussian route asks for, for the timing records:
     ``freq``, ``opt`` (with or without Freq), ``gradient`` (Force) or ``energy``."""
@@ -2112,6 +2130,7 @@ class Substep(seamm.Node):
                 cpus_per_task=run["n_threads"],
                 state="finished" if data.get("success") else "failed",
                 in_situ=True,
+                **_record_kwargs(),
             )
         except Exception as e:  # pragma: no cover - must never stop the step
             self.logger.warning(f"Could not record the timing of the Gaussian run: {e}")

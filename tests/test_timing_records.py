@@ -48,3 +48,9 @@ def test_descriptors():
     assert abs(d["code_seconds"] - 8.2) < 1e-9
     assert d["terminated_normally"] is True
     assert d["n_atoms"] == 3 and d["n_heavy"] == 1
+
+
+def test_timing_spec():
+    from gaussian_step import substep
+
+    assert substep.TIMING_SPEC["units"] == "scf_runs"
