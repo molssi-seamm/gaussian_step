@@ -148,16 +148,23 @@ def test_naming_choices(substep, own):
     system name's edit was applied to the configuration name twice, listing the
     choice twice and losing 'keep current name'). They survive from_dict()."""
     P = node(substep).parameters
+    # An optimization's result keeps its current name, e.g. a title read from a
+    # file, in front of its own choice (SEAMM 5380)
+    current = None
+    if own == "optimized with {model}":
+        current = "{current name} optimized with {model}"
     for _ in range(2):
         for key in ("system name", "configuration name"):
             choices = list(P[key].enumeration)
-            assert choices[0] == own
+            first = current if key == "configuration name" and current else own
+            assert choices[0] == first
+            assert choices.count(first) == 1
             assert choices.count(own) == 1
             assert "keep current name" in choices
             if own != "single-point with {model}":
                 assert "single-point with {model}" not in choices
         assert P["system name"].default == "keep current name"
-        assert P["configuration name"].default == own
+        assert P["configuration name"].default == (current or own)
         P.from_dict(P.to_dict())
 
 

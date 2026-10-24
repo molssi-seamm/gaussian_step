@@ -174,3 +174,10 @@ class OptimizationParameters(gaussian_step.EnergyParameters):
                 *[v for v in tmp.enumeration if v != "single-point with {model}"],
             ]
             tmp.default = default
+        # The configuration keeps its current name, e.g. a title read from a file
+        tmp = self["configuration name"]
+        tmp._data["enumeration"] = [
+            "{current name} optimized with {model}",
+            *tmp.enumeration,
+        ]
+        tmp.default = "{current name} optimized with {model}"
