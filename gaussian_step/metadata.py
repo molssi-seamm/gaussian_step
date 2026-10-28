@@ -615,6 +615,24 @@ metadata["results"] = {
         "units": "E_h",
         "format": ".6f",
     },
+    "total energy": {
+        "description": "total energy including all terms",
+        "dimensionality": "scalar",
+        "property": "total energy#Gaussian#{model}",
+        "type": "float",
+        "units": "E_h",
+        "format": ".6f",
+    },
+    "H(298.15 K)": {
+        "calculation": ["thermodynamics"],
+        "description": "the absolute enthalpy at 298.15 K: E + ZPE + the thermal "
+        "correction",
+        "dimensionality": "scalar",
+        "property": "H(298.15 K)#Gaussian#{model}",
+        "type": "float",
+        "units": "E_h",
+        "format": ".6f",
+    },
     "H 0": {
         "calculation": ["thermodynamics"],
         "description": "the electronic energy plus ZPE",

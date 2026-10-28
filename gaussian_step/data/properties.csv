@@ -25,10 +25,12 @@ E mp5#Gaussian#{model},float,E_h,The MP5 energy from {model},
 E qcisd_t#Gaussian#{model},float,E_h,The QCISD(T) energy from {model},
 E scf#Gaussian#{model},float,E_h,The  SCF energy from {model},
 E#Gaussian#{model},float,E_h,"The {model} energy, E.",
+total energy#Gaussian#{model},float,E_h,"The {model} total energy, E, including all terms",
 U#Gaussian#{model},float,E_h,"The {model} internal energy",
 H(0 K)#Gaussian#{model},float,E_h,"The {model} enthalpy at 0 K, H0.",
 G#Gaussian#{model},float,E_h,"The {model} free energy, G.",
 H#Gaussian#{model},float,E_h,"The {model} enthalpy, H.",
+H(298.15 K)#Gaussian#{model},float,E_h,"The {model} absolute enthalpy at 298.15 K: E + ZPE + the thermal correction",
 HOMO energy#Gaussian#{model},float,eV,The {model} energy of the highest occupied molecular orbital (HOMO),https://en.wikipedia.org/wiki/HOMO_and_LUMO
 LUMO energy#Gaussian#{model},float,eV,The {model} energy of the lowest unoccupied molecular orbital (LUMO),https://en.wikipedia.org/wiki/HOMO_and_LUMO
 MO energies#Gaussian#{model},json,eV,The orbital energies from {model},

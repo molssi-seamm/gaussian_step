@@ -296,6 +296,12 @@ class Energy(Substep):
             restricted = True
         else:
             restricted = False
+        # The R or U put before the method because of the multiplicity is not a
+        # setting of the calculation (see gaussian_step.fingerprint)
+        if spin_restricted == "default":
+            self._spin_prefix = "R" if multiplicity == 1 else "U"
+        else:
+            self._spin_prefix = None
 
         # And possible frozen core
         if "freeze core?" in method_data:
@@ -941,6 +947,9 @@ class Energy(Substep):
 
         # Put any requested results into variables or tables
         self.store_results(data=data, create_tables=True, configuration=configuration)
+        # Always stored: other steps, e.g. Thermochemistry, look for them
+        self.store_properties(configuration, data, self.standard_properties)
+        self.store_fingerprints(configuration, data)
 
     def _bond_orders(self, P, bond_order_matrix, configuration):
         """Analyze and print the bond orders, and optionally use for the bonding

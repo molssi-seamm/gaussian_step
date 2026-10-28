@@ -25,11 +25,13 @@ import pandas
 from tabulate import tabulate
 
 import gaussian_step
+from .fingerprint import gaussian_calculation_record
 from molsystem import elements
 import seamm
 import seamm_exec
 import seamm.data
 from seamm_util import CompactJSONEncoder, Configuration, Q_
+from seamm_util.fingerprint import geometry_fingerprint
 import seamm_util.printing as printing
 
 try:
@@ -261,6 +263,17 @@ def timing_descriptors(keywords, data, log_text=None, configuration=None):
         d["code_seconds"] = sum(wall) if wall else None
         d["terminated_normally"] = "Normal termination" in log_text
     return d
+
+
+def standard_names(data):
+    """Add results under the names that the QC plug-ins and the Thermochemistry
+    step share: ``total energy`` (beside ``energy``, stored as ``E``) and, at
+    298.15 K, ``H(298.15 K)``. ``ZPE``, ``H`` and ``T`` already have them."""
+    if data.get("energy") is not None:
+        data["total energy"] = data["energy"]
+    if data.get("H") is not None and data.get("T") is not None:
+        if abs(float(data["T"]) - 298.15) < 1.0e-6:
+            data["H(298.15 K)"] = data["H"]
 
 
 class Substep(seamm.Node):
@@ -2112,6 +2125,35 @@ class Substep(seamm.Node):
 
         return new
 
+    #: What a sub-step's fingerprints describe: "settings" (the energy) and, for a
+    #: frequency calculation, "frequency" too
+    fingerprint_kinds = ("settings",)
+    #: The results always stored as properties, under the names the QC plug-ins
+    #: and the Thermochemistry step share
+    standard_properties = ("total energy",)
+
+    def store_fingerprints(self, configuration, data):
+        """Store the fingerprints of the calculation's settings with its results
+        (see :mod:`gaussian_step.fingerprint`), with the geometry the results
+        belong to: the configuration's, after any optimization."""
+        record = (data or {}).get("calculation record")
+        if record is None or configuration is None:
+            return
+        try:
+            record = dict(record)
+            record["geometry fingerprint"] = geometry_fingerprint(
+                configuration.atoms.atomic_numbers,
+                configuration.atoms.get_coordinates(fractionals=False),
+            )
+            for kind in self.fingerprint_kinds:
+                self.store_calculation_record(
+                    configuration, "Gaussian", record, kind=kind
+                )
+        except Exception as e:  # pragma: no cover - never stop the step
+            self.logger.warning(
+                f"Could not store the fingerprints of the calculation: {e}"
+            )
+
     def record_timing(self, data, configuration):
         """Append this run's timing record (``~/.seamm.d/timing/gaussian.csv``)
         with :func:`timing_descriptors`; never raises."""
@@ -2561,6 +2603,21 @@ class Substep(seamm.Node):
                     keys = "\n".join(data.keys())
                     self.logger.debug(f"Data keys:\n{keys}")
                     self.logger.debug(f"Data:\n{pprint.pformat(data)}")
+
+                # The names shared by the QC plug-ins and the Thermochemistry step
+                standard_names(data)
+
+                # The fingerprints of the settings, stored with the results
+                try:
+                    data["calculation record"] = gaussian_calculation_record(
+                        files["input.dat"],
+                        data,
+                        spin_prefix=getattr(self, "_spin_prefix", None),
+                    )
+                except Exception as e:  # pragma: no cover - never stop the step
+                    self.logger.warning(
+                        f"Could not fingerprint the Gaussian input: {e}"
+                    )
 
                 # Save the parsed data as JSON
                 with data_file.open("w") as fd:
