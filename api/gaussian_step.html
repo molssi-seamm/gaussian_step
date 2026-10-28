@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.28 documentation</title>
+    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="../_static/documentation_options.js?v=e3e63ff4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.28.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -666,6 +666,79 @@ the full name.</p>
 <span class="sig-name descname"><span class="pre">my_description</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'description':</span> <span class="pre">'Energy</span> <span class="pre">calculation</span> <span class="pre">using</span> <span class="pre">Gaussian',</span> <span class="pre">'group':</span> <span class="pre">'Calculation',</span> <span class="pre">'name':</span> <span class="pre">'Energy'}</span></span><a class="headerlink" href="#gaussian_step.energy_step.EnergyStep.my_description" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-gaussian_step.fingerprint">
+<span id="gaussian-step-fingerprint-module"></span><h2>gaussian_step.fingerprint module<a class="headerlink" href="#module-gaussian_step.fingerprint" title="Link to this heading">#</a></h2>
+<p>Fingerprints of the settings of Gaussian calculations.</p>
+<p>What Gaussian’s input holds that does not belong to the settings is removed here,
+and <code class="xref py py-func docutils literal notranslate"><span class="pre">seamm_util.fingerprint.calculation_record()</span></code> hashes the rest: the route,
+with its keywords in any order and in upper case, since Gaussian’s input is
+case-insensitive.</p>
+<p>Removed:</p>
+<ul class="simple">
+<li><p>the Link 0 lines (<code class="docutils literal notranslate"><span class="pre">%Chk</span></code>, <code class="docutils literal notranslate"><span class="pre">%OldChk</span></code>, <code class="docutils literal notranslate"><span class="pre">%Mem</span></code>, <code class="docutils literal notranslate"><span class="pre">%NProcShared</span></code>, …);</p></li>
+<li><p>the task (<code class="docutils literal notranslate"><span class="pre">SP</span></code>, <code class="docutils literal notranslate"><span class="pre">Force</span></code>, <code class="docutils literal notranslate"><span class="pre">Opt</span></code>, <code class="docutils literal notranslate"><span class="pre">Freq</span></code>), output (<code class="docutils literal notranslate"><span class="pre">Pop</span></code>, <code class="docutils literal notranslate"><span class="pre">GFInput</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Output=wfx</span></code>, <code class="docutils literal notranslate"><span class="pre">Punch</span></code>, …) and the starting guess and geometry from a
+checkpoint (<code class="docutils literal notranslate"><span class="pre">Guess</span></code>, <code class="docutils literal notranslate"><span class="pre">Geom</span></code>), which do not change the energy at a geometry;</p></li>
+<li><p>the title, charge, multiplicity and geometry, which belong to the species, and
+the sections after them (initial force constants, NBO input, the wfx file);</p></li>
+<li><p>the R or U the step puts before the method when it chooses from the
+multiplicity (restricted for singlets, unrestricted otherwise). When the user
+chose, it stays: ROHF is not the same calculation as UHF.</p></li>
+</ul>
+<p>The step only uses basis sets by name, so there are no per-element blocks.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.fingerprint.gaussian_calculation_record">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.fingerprint.</span></span><span class="sig-name descname"><span class="pre">gaussian_calculation_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomic_numbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/fingerprint.html#gaussian_calculation_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.fingerprint.gaussian_calculation_record" title="Link to this definition">#</a></dt>
+<dd><p>The record of a Gaussian calculation’s settings, with its fingerprints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_text</strong> (<em>str</em>) – The input file as run.</p></li>
+<li><p><strong>data</strong> (<em>dict</em>) – The step’s parsed results, for the Gaussian version.</p></li>
+<li><p><strong>spin_prefix</strong> (<em>str</em><em> or </em><em>None</em>) – See <a class="reference internal" href="#gaussian_step.fingerprint.settings_text" title="gaussian_step.fingerprint.settings_text"><code class="xref py py-func docutils literal notranslate"><span class="pre">settings_text()</span></code></a>.</p></li>
+<li><p><strong>atomic_numbers</strong> (<em>optional</em>) – The geometry, for its fingerprint.</p></li>
+<li><p><strong>coordinates</strong> (<em>optional</em>) – The geometry, for its fingerprint.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">seamm_util.fingerprint.calculation_record()</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.fingerprint.gaussian_version">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.fingerprint.</span></span><span class="sig-name descname"><span class="pre">gaussian_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/fingerprint.html#gaussian_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.fingerprint.gaussian_version" title="Link to this definition">#</a></dt>
+<dd><p>The Gaussian version from the step’s parsed data, e.g. “G09 E.01”, and the
+part that is hashed, e.g. “G09 E”: the release and the revision letter, not
+the revision’s number.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.fingerprint.settings_text">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.fingerprint.</span></span><span class="sig-name descname"><span class="pre">settings_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/fingerprint.html#settings_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.fingerprint.settings_text" title="Link to this definition">#</a></dt>
+<dd><p>The route keywords of a Gaussian input that make up its settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_text</strong> (<em>str</em>) – The contents of the input file.</p></li>
+<li><p><strong>spin_prefix</strong> (<em>str</em><em> or </em><em>None</em>) – The R, RO or U that the step put before the method because of the
+multiplicity, to remove; None if the user chose it.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The route, as one normalized line.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[str]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -1282,6 +1355,18 @@ this is proving.</p>
 <dd><p>Perform any requested cleanup at the end of the calculation.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.fingerprint_kinds">
+<span class="sig-name descname"><span class="pre">fingerprint_kinds</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('settings',)</span></span><a class="headerlink" href="#gaussian_step.substep.Substep.fingerprint_kinds" title="Link to this definition">#</a></dt>
+<dd><p>“settings” (the energy) and, for a
+frequency calculation, “frequency” too</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>What a sub-step’s fingerprints describe</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="gaussian_step.substep.Substep.get_functional">
 <span class="sig-name descname"><span class="pre">get_functional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.get_functional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.get_functional" title="Link to this definition">#</a></dt>
@@ -1417,6 +1502,21 @@ with <a class="reference internal" href="#gaussian_step.substep.timing_descripto
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.standard_properties">
+<span class="sig-name descname"><span class="pre">standard_properties</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('total</span> <span class="pre">energy',)</span></span><a class="headerlink" href="#gaussian_step.substep.Substep.standard_properties" title="Link to this definition">#</a></dt>
+<dd><p>The results always stored as properties, under the names the QC plug-ins
+and the Thermochemistry step share</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gaussian_step.substep.Substep.store_fingerprints">
+<span class="sig-name descname"><span class="pre">store_fingerprints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#Substep.store_fingerprints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.Substep.store_fingerprints" title="Link to this definition">#</a></dt>
+<dd><p>Store the fingerprints of the calculation’s settings with its results
+(see <a class="reference internal" href="#module-gaussian_step.fingerprint" title="gaussian_step.fingerprint"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gaussian_step.fingerprint</span></code></a>), with the geometry the results
+belong to: the configuration’s, after any optimization.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="gaussian_step.substep.Substep.version">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#gaussian_step.substep.Substep.version" title="Link to this definition">#</a></dt>
@@ -1456,6 +1556,14 @@ SCF runs as the unit. Written beside the records when a run is recorded.</p>
 <div><p>1253656 =&gt; ‘1.20 MiB’
 1253656678 =&gt; ‘1.17 GiB’</p>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.substep.standard_names">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">standard_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#standard_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.standard_names" title="Link to this definition">#</a></dt>
+<dd><p>Add results under the names that the QC plug-ins and the Thermochemistry
+step share: <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">energy</span></code> (beside <code class="docutils literal notranslate"><span class="pre">energy</span></code>, stored as <code class="docutils literal notranslate"><span class="pre">E</span></code>) and, at
+298.15 K, <code class="docutils literal notranslate"><span class="pre">H(298.15</span> <span class="pre">K)</span></code>. <code class="docutils literal notranslate"><span class="pre">ZPE</span></code>, <code class="docutils literal notranslate"><span class="pre">H</span></code> and <code class="docutils literal notranslate"><span class="pre">T</span></code> already have them.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1577,6 +1685,18 @@ parameters.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.fingerprint_kinds">
+<span class="sig-name descname"><span class="pre">fingerprint_kinds</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('settings',</span> <span class="pre">'frequency')</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.fingerprint_kinds" title="Link to this definition">#</a></dt>
+<dd><p>“settings” (the energy) and, for a
+frequency calculation, “frequency” too</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>What a sub-step’s fingerprints describe</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.git_revision">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.git_revision" title="Link to this definition">#</a></dt>
@@ -1604,6 +1724,13 @@ parameters.</p>
 <dd class="field-odd"><p>seamm.Node</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gaussian_step.thermodynamics.Thermodynamics.standard_properties">
+<span class="sig-name descname"><span class="pre">standard_properties</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('total</span> <span class="pre">energy',</span> <span class="pre">'ZPE',</span> <span class="pre">'H',</span> <span class="pre">'T',</span> <span class="pre">'H(298.15</span> <span class="pre">K)')</span></span><a class="headerlink" href="#gaussian_step.thermodynamics.Thermodynamics.standard_properties" title="Link to this definition">#</a></dt>
+<dd><p>The results always stored as properties, under the names the QC plug-ins
+and the Thermochemistry step share</p>
 </dd></dl>
 
 <dl class="py property">
@@ -2418,6 +2545,12 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.fingerprint">gaussian_step.fingerprint module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.fingerprint.gaussian_calculation_record"><code class="docutils literal notranslate"><span class="pre">gaussian_calculation_record()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.fingerprint.gaussian_version"><code class="docutils literal notranslate"><span class="pre">gaussian_version()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.fingerprint.settings_text"><code class="docutils literal notranslate"><span class="pre">settings_text()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gaussian_step.gaussian">gaussian_step.gaussian module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.gaussian.Gaussian"><code class="docutils literal notranslate"><span class="pre">Gaussian</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.gaussian.Gaussian.parser"><code class="docutils literal notranslate"><span class="pre">Gaussian.parser</span></code></a></li>
@@ -2501,6 +2634,7 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry"><code class="docutils literal notranslate"><span class="pre">Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.chkpt"><code class="docutils literal notranslate"><span class="pre">Substep.chkpt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.cleanup"><code class="docutils literal notranslate"><span class="pre">Substep.cleanup()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.fingerprint_kinds"><code class="docutils literal notranslate"><span class="pre">Substep.fingerprint_kinds</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.get_functional"><code class="docutils literal notranslate"><span class="pre">Substep.get_functional()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.get_method"><code class="docutils literal notranslate"><span class="pre">Substep.get_method()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.git_revision"><code class="docutils literal notranslate"><span class="pre">Substep.git_revision</span></code></a></li>
@@ -2516,12 +2650,15 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.process_data"><code class="docutils literal notranslate"><span class="pre">Substep.process_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.record_timing"><code class="docutils literal notranslate"><span class="pre">Substep.record_timing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.run_gaussian"><code class="docutils literal notranslate"><span class="pre">Substep.run_gaussian()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.standard_properties"><code class="docutils literal notranslate"><span class="pre">Substep.standard_properties</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.store_fingerprints"><code class="docutils literal notranslate"><span class="pre">Substep.store_fingerprints()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.Substep.version"><code class="docutils literal notranslate"><span class="pre">Substep.version</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.TIMING_SPEC"><code class="docutils literal notranslate"><span class="pre">TIMING_SPEC</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.standard_names"><code class="docutils literal notranslate"><span class="pre">standard_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.subscript"><code class="docutils literal notranslate"><span class="pre">subscript()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.task_kind"><code class="docutils literal notranslate"><span class="pre">task_kind()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.timing_descriptors"><code class="docutils literal notranslate"><span class="pre">timing_descriptors()</span></code></a></li>
@@ -2535,9 +2672,11 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.parameters"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parameters</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.analyze"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.analyze()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.description_text"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.description_text()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.fingerprint_kinds"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.fingerprint_kinds</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.git_revision"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.git_revision</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.header"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.header</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.run"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.standard_properties"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.standard_properties</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.thermodynamics.Thermodynamics.version"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.version</span></code></a></li>
 </ul>
 </li>

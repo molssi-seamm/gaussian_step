@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step &#8212; SEAMM Gaussian Plug-in 2026.10.28 documentation</title>
+    <title>gaussian_step &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="../_static/documentation_options.js?v=e3e63ff4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.28.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -546,6 +546,12 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.fingerprint">gaussian_step.fingerprint module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.fingerprint.gaussian_calculation_record"><code class="docutils literal notranslate"><span class="pre">gaussian_calculation_record()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.fingerprint.gaussian_version"><code class="docutils literal notranslate"><span class="pre">gaussian_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.fingerprint.settings_text"><code class="docutils literal notranslate"><span class="pre">settings_text()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="gaussian_step.html#module-gaussian_step.gaussian">gaussian_step.gaussian module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.gaussian.Gaussian"><code class="docutils literal notranslate"><span class="pre">Gaussian</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.gaussian.Gaussian.parser"><code class="docutils literal notranslate"><span class="pre">Gaussian.parser</span></code></a></li>
@@ -629,6 +635,7 @@
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry"><code class="docutils literal notranslate"><span class="pre">Substep.calculate_enthalpy_of_formation_via_seamm_thermochemistry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.chkpt"><code class="docutils literal notranslate"><span class="pre">Substep.chkpt</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.cleanup"><code class="docutils literal notranslate"><span class="pre">Substep.cleanup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.fingerprint_kinds"><code class="docutils literal notranslate"><span class="pre">Substep.fingerprint_kinds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.get_functional"><code class="docutils literal notranslate"><span class="pre">Substep.get_functional()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.get_method"><code class="docutils literal notranslate"><span class="pre">Substep.get_method()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.git_revision"><code class="docutils literal notranslate"><span class="pre">Substep.git_revision</span></code></a></li>
@@ -644,12 +651,15 @@
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.process_data"><code class="docutils literal notranslate"><span class="pre">Substep.process_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.record_timing"><code class="docutils literal notranslate"><span class="pre">Substep.record_timing()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.run_gaussian"><code class="docutils literal notranslate"><span class="pre">Substep.run_gaussian()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.standard_properties"><code class="docutils literal notranslate"><span class="pre">Substep.standard_properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.store_fingerprints"><code class="docutils literal notranslate"><span class="pre">Substep.store_fingerprints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.Substep.version"><code class="docutils literal notranslate"><span class="pre">Substep.version</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.TIMING_SPEC"><code class="docutils literal notranslate"><span class="pre">TIMING_SPEC</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.standard_names"><code class="docutils literal notranslate"><span class="pre">standard_names()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.subscript"><code class="docutils literal notranslate"><span class="pre">subscript()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.task_kind"><code class="docutils literal notranslate"><span class="pre">task_kind()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gaussian_step.html#gaussian_step.substep.timing_descriptors"><code class="docutils literal notranslate"><span class="pre">timing_descriptors()</span></code></a></li>
@@ -663,9 +673,11 @@
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.parameters"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.parameters</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.analyze"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.analyze()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.description_text"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.description_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.fingerprint_kinds"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.fingerprint_kinds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.git_revision"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.git_revision</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.header"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.header</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.run"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.standard_properties"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.standard_properties</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="gaussian_step.html#gaussian_step.thermodynamics.Thermodynamics.version"><code class="docutils literal notranslate"><span class="pre">Thermodynamics.version</span></code></a></li>
 </ul>
 </li>

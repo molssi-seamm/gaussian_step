@@ -29,6 +29,26 @@ example "optimized with {model}") alongside the usual ones. Flowcharts saved wit
 dispersion correction ``DG2``, a misspelling of ``GD2`` that Gaussian rejects, are read
 as ``GD2``.
 
+Results stored for other steps
+==============================
+
+Whatever results are selected, the sub-steps always store the energy as ``total
+energy#Gaussian#<model>`` and, for Thermodynamics, the zero-point energy (``ZPE``), the
+absolute enthalpy (``H``) at the temperature (``T``) and, at 298.15 K, ``H(298.15 K)``:
+the names that SEAMM's quantum-chemistry steps and the Thermochemistry step share.
+
+They also store a fingerprint of the settings of the calculation, so that one can tell
+whether results on different structures -- the energies of the species of a reaction,
+say -- come from the same kind of calculation: ``settings fingerprint#Gaussian#<model>``,
+a hash of the route less the task (``Opt``, ``Freq``, ...), output, starting guess and
+Link 0 lines and less what belongs to the structure (its title, charge, multiplicity and
+geometry, and the R or U the step chose from the multiplicity); ``element
+fingerprints#Gaussian#<model>``; and ``calculation#Gaussian#<model>``, the whole record
+-- the full Gaussian version, the fingerprints, a fingerprint of the geometry and the
+text that was hashed -- for finding the cause of a mismatch. Thermodynamics stores them
+as ``frequency fingerprint`` etc. too. The Gaussian release and revision letter count
+(G09 E), not the number of the revision.
+
 
 Index
 =====

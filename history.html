@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM Gaussian Plug-in 2026.10.28 documentation</title>
+    <title>History &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="_static/documentation_options.js?v=e3e63ff4"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.28.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -497,6 +497,24 @@
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.28.1 – Fingerprints of the settings of calculations; standard names</dt><dd><ul class="simple">
+<li><p>The Energy, Optimization and Thermodynamics sub-steps store, with their results,
+a fingerprint of the settings of the calculation – <code class="docutils literal notranslate"><span class="pre">settings</span> <span class="pre">fingerprint</span></code>,
+<code class="docutils literal notranslate"><span class="pre">element</span> <span class="pre">fingerprints</span></code> and <code class="docutils literal notranslate"><span class="pre">calculation</span></code> (#Gaussian#&lt;model&gt;), and the
+<code class="docutils literal notranslate"><span class="pre">frequency</span></code> ones for Thermodynamics – so that one can tell whether results on
+different structures, such as the energies of the species of a reaction, come
+from the same kind of calculation. The fingerprint is a hash of the route, less
+the task, output, guess and Link 0 lines and the structure’s title, charge,
+multiplicity and geometry, and less the R or U that the step chose from the
+multiplicity (one the user chose stays). The release and revision letter of
+Gaussian count (G09 E), not the revision’s number.</p></li>
+<li><p>The energy is also stored as <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">energy</span></code> (beside <code class="docutils literal notranslate"><span class="pre">E</span></code>) and, at 298.15 K,
+the absolute enthalpy as <code class="docutils literal notranslate"><span class="pre">H(298.15</span> <span class="pre">K)</span></code>, the names the quantum-chemistry steps
+and the Thermochemistry step share. These and <code class="docutils literal notranslate"><span class="pre">ZPE</span></code>, <code class="docutils literal notranslate"><span class="pre">H</span></code> and <code class="docutils literal notranslate"><span class="pre">T</span></code> are always
+stored as properties, whether or not they are selected as results.</p></li>
+<li><p>Requires seamm 2026.10.28 and seamm-util 2026.10.28.1.</p></li>
+</ul>
+</dd>
 <dt>2026.10.28 – Bugfix: every Gaussian calculation failed at the start</dt><dd><ul class="simple">
 <li><p>Since 2026.10.6 the Energy, Optimization, Thermodynamics (including the composite
 methods such as CBS-QB3) and Wavefunction Stability steps stopped before running

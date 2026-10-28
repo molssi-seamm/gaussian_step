@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.10.28 documentation</title>
+    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="../_static/documentation_options.js?v=e3e63ff4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.28.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -513,6 +513,24 @@ example “optimized with {model}”) alongside the usual ones. Flowcharts saved
 dispersion correction <code class="docutils literal notranslate"><span class="pre">DG2</span></code>, a misspelling of <code class="docutils literal notranslate"><span class="pre">GD2</span></code> that Gaussian rejects, are read
 as <code class="docutils literal notranslate"><span class="pre">GD2</span></code>.</p>
 </section>
+<section id="results-stored-for-other-steps">
+<h2>Results stored for other steps<a class="headerlink" href="#results-stored-for-other-steps" title="Link to this heading">#</a></h2>
+<p>Whatever results are selected, the sub-steps always store the energy as <code class="docutils literal notranslate"><span class="pre">total</span>
+<span class="pre">energy#Gaussian#&lt;model&gt;</span></code> and, for Thermodynamics, the zero-point energy (<code class="docutils literal notranslate"><span class="pre">ZPE</span></code>), the
+absolute enthalpy (<code class="docutils literal notranslate"><span class="pre">H</span></code>) at the temperature (<code class="docutils literal notranslate"><span class="pre">T</span></code>) and, at 298.15 K, <code class="docutils literal notranslate"><span class="pre">H(298.15</span> <span class="pre">K)</span></code>:
+the names that SEAMM’s quantum-chemistry steps and the Thermochemistry step share.</p>
+<p>They also store a fingerprint of the settings of the calculation, so that one can tell
+whether results on different structures – the energies of the species of a reaction,
+say – come from the same kind of calculation: <code class="docutils literal notranslate"><span class="pre">settings</span> <span class="pre">fingerprint#Gaussian#&lt;model&gt;</span></code>,
+a hash of the route less the task (<code class="docutils literal notranslate"><span class="pre">Opt</span></code>, <code class="docutils literal notranslate"><span class="pre">Freq</span></code>, …), output, starting guess and
+Link 0 lines and less what belongs to the structure (its title, charge, multiplicity and
+geometry, and the R or U the step chose from the multiplicity); <code class="docutils literal notranslate"><span class="pre">element</span>
+<span class="pre">fingerprints#Gaussian#&lt;model&gt;</span></code>; and <code class="docutils literal notranslate"><span class="pre">calculation#Gaussian#&lt;model&gt;</span></code>, the whole record
+– the full Gaussian version, the fingerprints, a fingerprint of the geometry and the
+text that was hashed – for finding the cause of a mismatch. Thermodynamics stores them
+as <code class="docutils literal notranslate"><span class="pre">frequency</span> <span class="pre">fingerprint</span></code> etc. too. The Gaussian release and revision letter count
+(G09 E), not the number of the revision.</p>
+</section>
 <section id="index">
 <h2>Index<a class="headerlink" href="#index" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -569,6 +587,7 @@ as <code class="docutils literal notranslate"><span class="pre">GD2</span></code
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#settings-that-depend-on-each-other">Settings that depend on each other</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-stored-for-other-steps">Results stored for other steps</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#index">Index</a></li>
 </ul>
   </nav></div>

@@ -28,6 +28,14 @@ gaussian\_step.energy\_step module
    :show-inheritance:
    :undoc-members:
 
+gaussian\_step.fingerprint module
+---------------------------------
+
+.. automodule:: gaussian_step.fingerprint
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 gaussian\_step.gaussian module
 ------------------------------
 
