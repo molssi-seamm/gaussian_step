@@ -57,6 +57,10 @@ class Thermodynamics(gaussian_step.Optimization):
     Thermodynamics, ThermodynamicsParameters
     """
 
+    # The energy and the frequencies come from the same calculation
+    fingerprint_kinds = ("settings", "frequency")
+    standard_properties = ("total energy", "ZPE", "H", "T", "H(298.15 K)")
+
     def __init__(
         self,
         flowchart=None,

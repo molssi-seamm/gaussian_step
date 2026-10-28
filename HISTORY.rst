@@ -1,6 +1,23 @@
 =======
 History
 =======
+2026.10.28.1 -- Fingerprints of the settings of calculations; standard names
+    * The Energy, Optimization and Thermodynamics sub-steps store, with their results,
+      a fingerprint of the settings of the calculation -- ``settings fingerprint``,
+      ``element fingerprints`` and ``calculation`` (#Gaussian#<model>), and the
+      ``frequency`` ones for Thermodynamics -- so that one can tell whether results on
+      different structures, such as the energies of the species of a reaction, come
+      from the same kind of calculation. The fingerprint is a hash of the route, less
+      the task, output, guess and Link 0 lines and the structure's title, charge,
+      multiplicity and geometry, and less the R or U that the step chose from the
+      multiplicity (one the user chose stays). The release and revision letter of
+      Gaussian count (G09 E), not the revision's number.
+    * The energy is also stored as ``total energy`` (beside ``E``) and, at 298.15 K,
+      the absolute enthalpy as ``H(298.15 K)``, the names the quantum-chemistry steps
+      and the Thermochemistry step share. These and ``ZPE``, ``H`` and ``T`` are always
+      stored as properties, whether or not they are selected as results.
+    * Requires seamm 2026.10.28 and seamm-util 2026.10.28.1.
+
 2026.10.28 -- Bugfix: every Gaussian calculation failed at the start
     * Since 2026.10.6 the Energy, Optimization, Thermodynamics (including the composite
       methods such as CBS-QB3) and Wavefunction Stability steps stopped before running

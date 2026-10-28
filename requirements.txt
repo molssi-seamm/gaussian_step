@@ -2,8 +2,8 @@ cclib
 py-cpuinfo
 numpy
 pandas
-seamm>=2026.10.24
+seamm>=2026.10.28
 seamm-exec>=2026.10.6
-seamm-util
+seamm-util>=2026.10.28.1
 seamm-widgets
 tabulate
