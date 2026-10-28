@@ -266,32 +266,6 @@ class WavefunctionStability(gaussian_step.Energy):
             else:
                 keywords.add(f"UHF/{basis}")
 
-        if self._timing_data is not None:
-            try:
-                self._timing_data[6] = starting_configuration.to_smiles(
-                    canonical=True, flavor="openbabel"
-                )
-            except Exception:
-                self._timing_data[6] = ""
-            try:
-                self._timing_data[7] = starting_configuration.to_smiles(
-                    canonical=True, hydrogens=True, flavor="openbabel"
-                )
-            except Exception:
-                self._timing_data[7] = ""
-            try:
-                self._timing_data[8] = starting_configuration.formula[0]
-            except Exception:
-                self._timing_data[7] = ""
-            try:
-                self._timing_data[9] = str(starting_configuration.charge)
-            except Exception:
-                self._timing_data[9] = ""
-            try:
-                self._timing_data[10] = str(starting_configuration.spin_multiplicity)
-            except Exception:
-                self._timing_data[10] = ""
-
         data = self.run_gaussian(
             keywords,
             extra_sections=extra_sections,
@@ -406,32 +380,6 @@ class WavefunctionStability(gaussian_step.Energy):
                             keywords.add(f"ROHF/{basis}")
                     else:
                         keywords.add(f"UHF/{basis}")
-
-                if self._timing_data is not None:
-                    try:
-                        self._timing_data[6] = starting_configuration.to_smiles(
-                            canonical=True, flavor="openbabel"
-                        )
-                    except Exception:
-                        self._timing_data[6] = ""
-                    try:
-                        self._timing_data[7] = starting_configuration.to_smiles(
-                            canonical=True, hydrogens=True, flavor="openbabel"
-                        )
-                    except Exception:
-                        self._timing_data[7] = ""
-                    try:
-                        self._timing_data[8] = starting_configuration.formula[0]
-                    except Exception:
-                        self._timing_data[7] = ""
-                    try:
-                        self._timing_data[9] = str(starting_configuration.charge)
-                    except Exception:
-                        self._timing_data[9] = ""
-                    try:
-                        self._timing_data[10] = str(multiplicity)
-                    except Exception:
-                        self._timing_data[10] = ""
 
                 try:
                     data = self.run_gaussian(

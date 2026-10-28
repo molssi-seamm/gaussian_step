@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.28 -- Bugfix: every Gaussian calculation failed at the start
+    * Since 2026.10.6 the Energy, Optimization, Thermodynamics (including the composite
+      methods such as CBS-QB3) and Wavefunction Stability steps stopped before running
+      Gaussian with "AttributeError: ... has no attribute '_timing_data'". The old
+      timing code that 2026.10.6 replaced was still called in those steps; it is now
+      removed, and the timing records are written as intended.
+    * New tests run the Energy step end to end, with a recorded Gaussian run and,
+      where Gaussian is installed, with Gaussian itself.
+
 2026.10.24 -- The optimized structure keeps its name
     * The structures that optimizations write are now named '{current name} optimized
       with {model}' by default, keeping the name the structure had, such as a title
