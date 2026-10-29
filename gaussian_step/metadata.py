@@ -361,6 +361,14 @@ dft_functionals = {
             (2, "10.1063/1.476928"),
         ],
     },
+    "B2PLYP : double hybrid of Grimme, with MP2 correlation": {
+        "name": "B2PLYP",
+        "dispersion": ["none", "GD3BJ", "GD3"],
+        "level": "normal",
+        "citations": [
+            (1, "10.1063/1.2148954"),
+        ],
+    },
     "wB97XD : hybrid functional of Chai and Head-Gordon, with dispersion": {
         "name": "wB97XD",
         "dispersion": ["none"],

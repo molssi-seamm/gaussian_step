@@ -1,6 +1,22 @@
 =======
 History
 =======
+2026.10.29 -- The double hybrid B2PLYP; the dispersion correction in the model
+    * Added the double-hybrid functional B2PLYP (Grimme 2006), with the dispersion
+      corrections GD3 (Grimme's D3 with zero damping) and GD3BJ. Gaussian computes its
+      MP2 part with the core frozen, as it does for MP2, and has analytic frequencies
+      for it, so Thermodynamics runs an optimization and analytic frequencies at, for
+      example, B2PLYP/cc-pVTZ with EmpiricalDispersion=GD3, as in the CBH-ANL work.
+    * The dispersion correction is now part of the model, as for ORCA's D3ZERO and
+      D3BJ, since it changes the energy: B2PLYP-D3(0)-FC/cc-pVTZ for GD3,
+      B3LYP-D3(BJ)/6-31G(d) for GD3BJ, and -D2 and -PFD for GD2 and PFD. **This changes
+      the names of the properties of the functionals that already offered a
+      dispersion correction** (B3LYP, PBE, PBE0 with GD3BJ, GD3, GD2 or PFD), which
+      were stored under the model without it, e.g. B3LYP/6-31G(d); calculations
+      without a dispersion correction keep their names. The energy of formation
+      still uses the atoms' references of the model without the correction, which
+      are the same, since a lone atom has no dispersion energy.
+
 2026.10.28.1 -- Fingerprints of the settings of calculations; standard names
     * The Energy, Optimization and Thermodynamics sub-steps store, with their results,
       a fingerprint of the settings of the calculation -- ``settings fingerprint``,
