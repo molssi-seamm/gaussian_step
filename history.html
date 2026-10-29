@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
+    <title>History &#8212; SEAMM Gaussian Plug-in 2026.10.29 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=e3e63ff4"></script>
+    <script src="_static/documentation_options.js?v=1fe4c37e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28.1" />
+  <meta name="docsearch:version" content="2026.10.29" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -497,6 +497,23 @@
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.29 – The double hybrid B2PLYP; the dispersion correction in the model</dt><dd><ul class="simple">
+<li><p>Added the double-hybrid functional B2PLYP (Grimme 2006), with the dispersion
+corrections GD3 (Grimme’s D3 with zero damping) and GD3BJ. Gaussian computes its
+MP2 part with the core frozen, as it does for MP2, and has analytic frequencies
+for it, so Thermodynamics runs an optimization and analytic frequencies at, for
+example, B2PLYP/cc-pVTZ with EmpiricalDispersion=GD3, as in the CBH-ANL work.</p></li>
+<li><p>The dispersion correction is now part of the model, as for ORCA’s D3ZERO and
+D3BJ, since it changes the energy: B2PLYP-D3(0)-FC/cc-pVTZ for GD3,
+B3LYP-D3(BJ)/6-31G(d) for GD3BJ, and -D2 and -PFD for GD2 and PFD. <strong>This changes
+the names of the properties of the functionals that already offered a
+dispersion correction</strong> (B3LYP, PBE, PBE0 with GD3BJ, GD3, GD2 or PFD), which
+were stored under the model without it, e.g. B3LYP/6-31G(d); calculations
+without a dispersion correction keep their names. The energy of formation
+still uses the atoms’ references of the model without the correction, which
+are the same, since a lone atom has no dispersion energy.</p></li>
+</ul>
+</dd>
 <dt>2026.10.28.1 – Fingerprints of the settings of calculations; standard names</dt><dd><ul class="simple">
 <li><p>The Energy, Optimization and Thermodynamics sub-steps store, with their results,
 a fingerprint of the settings of the calculation – <code class="docutils literal notranslate"><span class="pre">settings</span> <span class="pre">fingerprint</span></code>,

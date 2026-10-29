@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.28.1 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.29 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=e3e63ff4"></script>
+    <script src="../../_static/documentation_options.js?v=1fe4c37e"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28.1" />
+  <meta name="docsearch:version" content="2026.10.29" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -759,6 +759,48 @@
 
 
 
+<span class="c1">#: The names of the dispersion corrections in models, by Gaussian's keyword: as in</span>
+<span class="c1">#: ORCA, D3(0) is Grimme's D3 with zero damping (GD3) and D3(BJ) with Becke-Johnson</span>
+<span class="c1">#: damping (GD3BJ)</span>
+<span class="n">_DISPERSION_TAGS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"GD3"</span><span class="p">:</span> <span class="s2">"D3(0)"</span><span class="p">,</span> <span class="s2">"GD3BJ"</span><span class="p">:</span> <span class="s2">"D3(BJ)"</span><span class="p">,</span> <span class="s2">"GD2"</span><span class="p">:</span> <span class="s2">"D2"</span><span class="p">,</span> <span class="s2">"PFD"</span><span class="p">:</span> <span class="s2">"PFD"</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="model_with_dispersion">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.model_with_dispersion">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">model_with_dispersion</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The model with the dispersion correction the route asks for, if any, after the</span>
+<span class="sd">    functional: B2PLYP-FC/cc-pVTZ with EmpiricalDispersion=GD3 is</span>
+<span class="sd">    B2PLYP-D3(0)-FC/cc-pVTZ, and B3LYP/6-31G(d) with GD3BJ is B3LYP-D3(BJ)/6-31G(d)."""</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">keywords</span> <span class="ow">or</span> <span class="p">():</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"="</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"EMPIRICALDISPERSION"</span><span class="p">:</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">_DISPERSION_TAGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">model</span>
+    <span class="n">method</span><span class="p">,</span> <span class="n">slash</span><span class="p">,</span> <span class="n">basis</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"-FC"</span><span class="p">,</span> <span class="s2">"-FULL"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="p">[:</span><span class="o">-</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">tag</span><span class="si">}{</span><span class="n">method</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="n">method</span> <span class="o">+</span> <span class="n">slash</span> <span class="o">+</span> <span class="n">basis</span></div>
+
+
+
+<div class="viewcode-block" id="model_without_dispersion">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.model_without_dispersion">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">model_without_dispersion</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The model without a dispersion correction added by</span>
+<span class="sd">    :func:`model_with_dispersion`."""</span>
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">_DISPERSION_TAGS</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">"-</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
 <div class="viewcode-block" id="standard_names">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.standard_names">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">standard_names</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -1307,11 +1349,10 @@
             <span class="n">MissingReferenceData</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">column</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"U"</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"R"</span><span class="p">)</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="p">)</span>
+        <span class="c1"># A lone atom has no dispersion energy, so the atoms' references are those of</span>
+        <span class="c1"># the model without its dispersion correction</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_without_dispersion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"U"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"R"</span><span class="p">)</span> <span class="k">else</span> <span class="n">model</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
@@ -1393,11 +1434,10 @@
 <span class="sd">        success, and additionally `data["DfH0"]` (kJ/mol) when a</span>
 <span class="sd">        zero-point energy is available (`data["ZPE"]`, Hartree).</span>
 <span class="sd">        """</span>
-        <span class="n">column</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"U"</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"R"</span><span class="p">)</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="p">)</span>
+        <span class="c1"># A lone atom has no dispersion energy, so the atoms' references are those of</span>
+        <span class="c1"># the model without its dispersion correction</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_without_dispersion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"U"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"R"</span><span class="p">)</span> <span class="k">else</span> <span class="n">model</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_system_configuration</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atomic_numbers</span><span class="p">)</span>
@@ -3119,6 +3159,9 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+                <span class="c1"># The dispersion correction changes the energy, so it is part of the</span>
+                <span class="c1"># model, as ORCA's D3ZERO and D3BJ are: B2PLYP-D3(0)-FC/cc-pVTZ</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model_with_dispersion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"model = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">data</span><span class="p">[</span><span class="s2">"model"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Gaussian/"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
 
