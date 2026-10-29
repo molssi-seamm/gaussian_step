@@ -109,6 +109,27 @@ def dehumanize(memory, suffix="B"):
     raise ValueError(f"Don't recognize the units on '{memory}'")
 
 
+def gaussian_memory_for_run(step_memory, global_memory, ce, n_threads):
+    """%Mem in bytes for a run, from the step's and the global memory options
+    ('all', 'available' or an amount) and the computational environment.
+
+    'available' is the share of the threads used (MEM_PER_CPU x threads), 'all'
+    the whole allocation; the global option limits the step's; and whatever was
+    asked, %Mem stays below the job's or task's whole allocation (MEM_PER_NODE),
+    with the headroom of `gaussian_memory`, since the scheduler kills on that.
+    """
+
+    def amount(value):
+        if value == "all":
+            return ce["MEM_PER_NODE"]
+        if value == "available":
+            return ce["MEM_PER_CPU"] * n_threads
+        return dehumanize(value)
+
+    memory = min(amount(step_memory), amount(global_memory))
+    return min(memory, gaussian_memory(ce["MEM_PER_NODE"]))
+
+
 def gaussian_memory(allocation):
     """%Mem for Gaussian given the memory the job or task was allocated (bytes).
 
@@ -2293,33 +2314,10 @@ class Substep(seamm.Node):
             self.logger.debug(f"Gaussian will use {n_threads} threads.")
 
             # How much memory to use
-            ce_memory_node = ce["MEM_PER_NODE"]
-            if seamm_options["memory"] == "all":
-                mem_limit = ce["MEM_PER_NODE"]
-            elif seamm_options["memory"] == "available":
-                # For the default, 'available', use in proportion to number of
-                # cores used
-                mem_limit = ce["MEM_PER_CPU"] * n_threads
-            else:
-                mem_limit = dehumanize(seamm_options["memory"])
-
-            if options["memory"] == "all":
-                memory = ce["MEM_PER_NODE"]
-            elif options["memory"] == "available":
-                # For the default, 'available', use in proportion to number of
-                # cores used
-                memory = ce["MEM_PER_CPU"] * n_threads
-            else:
-                memory = dehumanize(options["memory"])
-
-            memory = min(memory, mem_limit)
+            memory = gaussian_memory_for_run(
+                options["memory"], seamm_options["memory"], ce, n_threads
+            )
             ce["MEM_PER_NODE"] = memory
-            # Whatever was asked, %Mem stays below what the job was given
-            if "all" in (options["memory"], seamm_options["memory"]):
-                allocation = ce_memory_node
-            else:
-                allocation = ce["MEM_PER_CPU"] * n_threads
-            memory = min(memory, gaussian_memory(allocation))
 
             # Apply a minimum of 800 MB
             min_memory = dehumanize("800 MB")
