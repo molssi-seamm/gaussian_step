@@ -152,3 +152,24 @@ def test_energy_step_stores_fingerprints(tmp_path, monkeypatch):
     assert record["files"] == {"input.dat": "# B3LYP/6-31G* INTEGRAL(GRID=ULTRAFINE)"}
     assert record["geometry fingerprint"].startswith("sha256:")
     assert energy == pytest.approx(-76.4087114098, abs=1.0e-6)
+
+
+def test_b2plyp_is_offered_with_gd3():
+    """B2PLYP, the double hybrid of CBH-ANL, with Grimme's D3 (GD3, zero damping)."""
+    from pathlib import Path
+
+    import gaussian_step
+
+    name = "B2PLYP : double hybrid of Grimme, with MP2 correlation"
+    data = gaussian_step.dft_functionals[name]
+    assert data["name"] == "B2PLYP"
+    assert data["dispersion"] == ["none", "GD3BJ", "GD3"]
+    bib = (Path(gaussian_step.__file__).parent / "data" / "references.bib").read_text()
+    for _, key in data["citations"]:
+        assert "{" + key + "," in bib
+    # the dispersion is a setting
+    route = (
+        "# B2PLYP/cc-pVTZ Opt Freq Integral(Grid=UltraFine)\n\nt\n\n0 1\nC 0 0 0\n\n"
+    )
+    with_gd3 = route.replace("Freq", "Freq EmpiricalDispersion=GD3")
+    assert fingerprint(route, spin_prefix="R") != fingerprint(with_gd3, spin_prefix="R")

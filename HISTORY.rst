@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.10.29 -- The double hybrid B2PLYP
+    * Added the double-hybrid functional B2PLYP (Grimme 2006), with the dispersion
+      corrections GD3 (Grimme's D3 with zero damping) and GD3BJ. Gaussian computes its
+      MP2 part with the core frozen, as it does for MP2, and has analytic frequencies
+      for it, so Thermodynamics runs an optimization and analytic frequencies at, for
+      example, B2PLYP/cc-pVTZ with EmpiricalDispersion=GD3, as in the CBH-ANL work.
+
 2026.10.28.1 -- Fingerprints of the settings of calculations; standard names
     * The Energy, Optimization and Thermodynamics sub-steps store, with their results,
       a fingerprint of the settings of the calculation -- ``settings fingerprint``,
