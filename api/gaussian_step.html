@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.29 documentation</title>
+    <title>gaussian_step package &#8212; SEAMM Gaussian Plug-in 2026.10.29.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=1fe4c37e"></script>
+    <script src="../_static/documentation_options.js?v=923375ad"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.29" />
+  <meta name="docsearch:version" content="2026.10.29.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1549,6 +1549,28 @@ SCF runs as the unit. Written beside the records when a run is recorded.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.substep.gaussian_memory">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">gaussian_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allocation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#gaussian_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.gaussian_memory" title="Link to this definition">#</a></dt>
+<dd><p>%Mem for Gaussian given the memory the job or task was allocated (bytes).</p>
+<p>Gaussian allocates all of %Mem at start and needs memory beyond it for its
+executables and buffers, and SEAMM’s own process shares the allocation, so
+%Mem equal to the allocation is killed by the scheduler’s memory limit at
+once (ARC, 2026-10-29: every task OOM-killed within two minutes). Leave 15 %
+or 2 GB, whichever is more.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gaussian_step.substep.gaussian_memory_for_run">
+<span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">gaussian_memory_for_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step_memory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_memory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ce</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#gaussian_memory_for_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.gaussian_memory_for_run" title="Link to this definition">#</a></dt>
+<dd><p>%Mem in bytes for a run, from the step’s and the global memory options
+(‘all’, ‘available’ or an amount) and the computational environment.</p>
+<p>‘available’ is the share of the threads used (MEM_PER_CPU x threads), ‘all’
+the whole allocation; the global option limits the step’s; and whatever was
+asked, %Mem stays below the job’s or task’s whole allocation (MEM_PER_NODE),
+with the headroom of <cite>gaussian_memory</cite>, since the scheduler kills on that.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="gaussian_step.substep.humanize">
 <span class="sig-prename descclassname"><span class="pre">gaussian_step.substep.</span></span><span class="sig-name descname"><span class="pre">humanize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kilo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gaussian_step/substep.html#humanize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gaussian_step.substep.humanize" title="Link to this definition">#</a></dt>
 <dd><p>Scale memory to its proper format e.g:</p>
@@ -2672,6 +2694,8 @@ A SEAMM plug-in for the Gaussian quantum chemistry code</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.TIMING_SPEC"><code class="docutils literal notranslate"><span class="pre">TIMING_SPEC</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.dehumanize"><code class="docutils literal notranslate"><span class="pre">dehumanize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.gaussian_memory"><code class="docutils literal notranslate"><span class="pre">gaussian_memory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.gaussian_memory_for_run"><code class="docutils literal notranslate"><span class="pre">gaussian_memory_for_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.humanize"><code class="docutils literal notranslate"><span class="pre">humanize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.model_with_dispersion"><code class="docutils literal notranslate"><span class="pre">model_with_dispersion()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian_step.substep.model_without_dispersion"><code class="docutils literal notranslate"><span class="pre">model_without_dispersion()</span></code></a></li>

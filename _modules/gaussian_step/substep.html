@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.29 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.29.1 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=1fe4c37e"></script>
+    <script src="../../_static/documentation_options.js?v=923375ad"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.29" />
+  <meta name="docsearch:version" content="2026.10.29.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -591,6 +591,46 @@
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span> <span class="o">*</span> <span class="n">units</span><span class="p">[</span><span class="n">prefix</span><span class="p">])</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Don't recognize the units on '</span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="gaussian_memory_for_run">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.gaussian_memory_for_run">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian_memory_for_run</span><span class="p">(</span><span class="n">step_memory</span><span class="p">,</span> <span class="n">global_memory</span><span class="p">,</span> <span class="n">ce</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""%Mem in bytes for a run, from the step's and the global memory options</span>
+<span class="sd">    ('all', 'available' or an amount) and the computational environment.</span>
+
+<span class="sd">    'available' is the share of the threads used (MEM_PER_CPU x threads), 'all'</span>
+<span class="sd">    the whole allocation; the global option limits the step's; and whatever was</span>
+<span class="sd">    asked, %Mem stays below the job's or task's whole allocation (MEM_PER_NODE),</span>
+<span class="sd">    with the headroom of `gaussian_memory`, since the scheduler kills on that.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">amount</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_NODE"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">"available"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_CPU"</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_threads</span>
+        <span class="k">return</span> <span class="n">dehumanize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">memory</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">amount</span><span class="p">(</span><span class="n">step_memory</span><span class="p">),</span> <span class="n">amount</span><span class="p">(</span><span class="n">global_memory</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">gaussian_memory</span><span class="p">(</span><span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_NODE"</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="gaussian_memory">
+<a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.gaussian_memory">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian_memory</span><span class="p">(</span><span class="n">allocation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""%Mem for Gaussian given the memory the job or task was allocated (bytes).</span>
+
+<span class="sd">    Gaussian allocates all of %Mem at start and needs memory beyond it for its</span>
+<span class="sd">    executables and buffers, and SEAMM's own process shares the allocation, so</span>
+<span class="sd">    %Mem equal to the allocation is killed by the scheduler's memory limit at</span>
+<span class="sd">    once (ARC, 2026-10-29: every task OOM-killed within two minutes). Leave 15 %</span>
+<span class="sd">    or 2 GB, whichever is more.</span>
+<span class="sd">    """</span>
+    <span class="n">headroom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">allocation</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">allocation</span> <span class="o">-</span> <span class="n">headroom</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">allocation</span><span class="p">)</span></div>
 
 
 
@@ -2826,25 +2866,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Gaussian will use </span><span class="si">{</span><span class="n">n_threads</span><span class="si">}</span><span class="s2"> threads."</span><span class="p">)</span>
 
             <span class="c1"># How much memory to use</span>
-            <span class="k">if</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
-                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_NODE"</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"available"</span><span class="p">:</span>
-                <span class="c1"># For the default, 'available', use in proportion to number of</span>
-                <span class="c1"># cores used</span>
-                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_CPU"</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_threads</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">mem_limit</span> <span class="o">=</span> <span class="n">dehumanize</span><span class="p">(</span><span class="n">seamm_options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">])</span>
-
-            <span class="k">if</span> <span class="n">options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
-                <span class="n">memory</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_NODE"</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"available"</span><span class="p">:</span>
-                <span class="c1"># For the default, 'available', use in proportion to number of</span>
-                <span class="c1"># cores used</span>
-                <span class="n">memory</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_CPU"</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_threads</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">memory</span> <span class="o">=</span> <span class="n">dehumanize</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">])</span>
-
-            <span class="n">memory</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">mem_limit</span><span class="p">)</span>
+            <span class="n">memory</span> <span class="o">=</span> <span class="n">gaussian_memory_for_run</span><span class="p">(</span>
+                <span class="n">options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">],</span> <span class="n">seamm_options</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">],</span> <span class="n">ce</span><span class="p">,</span> <span class="n">n_threads</span>
+            <span class="p">)</span>
             <span class="n">ce</span><span class="p">[</span><span class="s2">"MEM_PER_NODE"</span><span class="p">]</span> <span class="o">=</span> <span class="n">memory</span>
 
             <span class="c1"># Apply a minimum of 800 MB</span>
