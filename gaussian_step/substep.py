@@ -265,6 +265,42 @@ def timing_descriptors(keywords, data, log_text=None, configuration=None):
     return d
 
 
+#: The names of the dispersion corrections in models, by Gaussian's keyword: as in
+#: ORCA, D3(0) is Grimme's D3 with zero damping (GD3) and D3(BJ) with Becke-Johnson
+#: damping (GD3BJ)
+_DISPERSION_TAGS = {"GD3": "D3(0)", "GD3BJ": "D3(BJ)", "GD2": "D2", "PFD": "PFD"}
+
+
+def model_with_dispersion(model, keywords):
+    """The model with the dispersion correction the route asks for, if any, after the
+    functional: B2PLYP-FC/cc-pVTZ with EmpiricalDispersion=GD3 is
+    B2PLYP-D3(0)-FC/cc-pVTZ, and B3LYP/6-31G(d) with GD3BJ is B3LYP-D3(BJ)/6-31G(d)."""
+    tag = None
+    for word in keywords or ():
+        name, _, value = str(word).partition("=")
+        if name.strip().upper() == "EMPIRICALDISPERSION":
+            tag = _DISPERSION_TAGS.get(value.strip().upper(), value.strip().upper())
+    if tag is None or model in (None, "", "unknown"):
+        return model
+    method, slash, basis = model.partition("/")
+    for suffix in ("-FC", "-FULL"):
+        if method.upper().endswith(suffix):
+            n = len(suffix)
+            method = f"{method[:-n]}-{tag}{method[-n:]}"
+            break
+    else:
+        method = f"{method}-{tag}"
+    return method + slash + basis
+
+
+def model_without_dispersion(model):
+    """The model without a dispersion correction added by
+    :func:`model_with_dispersion`."""
+    for tag in _DISPERSION_TAGS.values():
+        model = model.replace(f"-{tag}", "")
+    return model
+
+
 def standard_names(data):
     """Add results under the names that the QC plug-ins and the Thermochemistry
     step share: ``total energy`` (beside ``energy``, stored as ``E``) and, at
@@ -803,11 +839,10 @@ class Substep(seamm.Node):
             MissingReferenceData,
         )
 
-        column = (
-            self.model[1:]
-            if self.model.startswith("U") or self.model.startswith("R")
-            else self.model
-        )
+        # A lone atom has no dispersion energy, so the atoms' references are those of
+        # the model without its dispersion correction
+        model = model_without_dispersion(self.model)
+        column = model[1:] if model.startswith("U") or model.startswith("R") else model
 
         _, configuration = self.get_system_configuration(None)
         counts = Counter(configuration.atoms.atomic_numbers)
@@ -886,11 +921,10 @@ class Substep(seamm.Node):
         success, and additionally `data["DfH0"]` (kJ/mol) when a
         zero-point energy is available (`data["ZPE"]`, Hartree).
         """
-        column = (
-            self.model[1:]
-            if self.model.startswith("U") or self.model.startswith("R")
-            else self.model
-        )
+        # A lone atom has no dispersion energy, so the atoms' references are those of
+        # the model without its dispersion correction
+        model = model_without_dispersion(self.model)
+        column = model[1:] if model.startswith("U") or model.startswith("R") else model
 
         _, configuration = self.get_system_configuration(None)
         counts = Counter(configuration.atoms.atomic_numbers)
@@ -2579,6 +2613,9 @@ class Substep(seamm.Node):
                         self.model = model
                 else:
                     self.model = "unknown"
+                # The dispersion correction changes the energy, so it is part of the
+                # model, as ORCA's D3ZERO and D3BJ are: B2PLYP-D3(0)-FC/cc-pVTZ
+                self.model = model_with_dispersion(self.model, keywords)
                 self.logger.debug(f"model = {self.model}")
                 data["model"] = "Gaussian/" + self.model
 

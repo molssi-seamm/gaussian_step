@@ -173,3 +173,20 @@ def test_b2plyp_is_offered_with_gd3():
     )
     with_gd3 = route.replace("Freq", "Freq EmpiricalDispersion=GD3")
     assert fingerprint(route, spin_prefix="R") != fingerprint(with_gd3, spin_prefix="R")
+
+
+def test_dispersion_in_the_model():
+    """The dispersion correction is part of the model, as ORCA's D3ZERO/D3BJ, and
+    the atoms' references are those without it."""
+    from gaussian_step.substep import model_with_dispersion, model_without_dispersion
+
+    gd3 = {"Opt", "EmpiricalDispersion=GD3"}
+    assert model_with_dispersion("B2PLYP-FC/cc-pVTZ", gd3) == "B2PLYP-D3(0)-FC/cc-pVTZ"
+    assert (
+        model_with_dispersion("B3LYP/6-31G(d)", ["EmpiricalDispersion=GD3BJ"])
+        == "B3LYP-D3(BJ)/6-31G(d)"
+    )
+    assert model_with_dispersion("B3LYP/6-31G(d)", ["Opt"]) == "B3LYP/6-31G(d)"
+    assert model_with_dispersion("unknown", gd3) == "unknown"
+    assert model_without_dispersion("B2PLYP-D3(0)-FC/cc-pVTZ") == "B2PLYP-FC/cc-pVTZ"
+    assert model_without_dispersion("B3LYP-D3(BJ)/6-31G(d)") == "B3LYP/6-31G(d)"
