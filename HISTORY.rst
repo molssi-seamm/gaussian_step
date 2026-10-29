@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.10.29.1 -- Bugfix: Gaussian's %Mem now leaves room below the job's memory
+    * %Mem was set to all the memory the job or task was given. Gaussian allocates all of
+      %Mem at start and needs more for itself, so on a cluster with memory limits every
+      run was killed by the scheduler within a minute or two (ARC, 2026-10-29). %Mem is
+      now at most 85 % of the allocation, leaving at least 2 GB; a smaller memory set
+      in the options is kept.
+
 2026.10.29 -- The double hybrid B2PLYP; the dispersion correction in the model
     * Added the double-hybrid functional B2PLYP (Grimme 2006), with the dispersion
       corrections GD3 (Grimme's D3 with zero damping) and GD3BJ. Gaussian computes its

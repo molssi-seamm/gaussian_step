@@ -109,6 +109,19 @@ def dehumanize(memory, suffix="B"):
     raise ValueError(f"Don't recognize the units on '{memory}'")
 
 
+def gaussian_memory(allocation):
+    """%Mem for Gaussian given the memory the job or task was allocated (bytes).
+
+    Gaussian allocates all of %Mem at start and needs memory beyond it for its
+    executables and buffers, and SEAMM's own process shares the allocation, so
+    %Mem equal to the allocation is killed by the scheduler's memory limit at
+    once (ARC, 2026-10-29: every task OOM-killed within two minutes). Leave 15 %
+    or 2 GB, whichever is more.
+    """
+    headroom = max(0.15 * allocation, 2 * 1024**3)
+    return max(allocation - headroom, 0.5 * allocation)
+
+
 _subscript = {
     "0": "\N{SUBSCRIPT ZERO}",
     "1": "\N{SUBSCRIPT ONE}",
@@ -2280,6 +2293,7 @@ class Substep(seamm.Node):
             self.logger.debug(f"Gaussian will use {n_threads} threads.")
 
             # How much memory to use
+            ce_memory_node = ce["MEM_PER_NODE"]
             if seamm_options["memory"] == "all":
                 mem_limit = ce["MEM_PER_NODE"]
             elif seamm_options["memory"] == "available":
@@ -2300,6 +2314,12 @@ class Substep(seamm.Node):
 
             memory = min(memory, mem_limit)
             ce["MEM_PER_NODE"] = memory
+            # Whatever was asked, %Mem stays below what the job was given
+            if "all" in (options["memory"], seamm_options["memory"]):
+                allocation = ce_memory_node
+            else:
+                allocation = ce["MEM_PER_CPU"] * n_threads
+            memory = min(memory, gaussian_memory(allocation))
 
             # Apply a minimum of 800 MB
             min_memory = dehumanize("800 MB")
