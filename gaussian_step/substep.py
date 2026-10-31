@@ -304,6 +304,10 @@ def timing_descriptors(keywords, data, log_text=None, configuration=None):
 #: damping (GD3BJ)
 _DISPERSION_TAGS = {"GD3": "D3(0)", "GD3BJ": "D3(BJ)", "GD2": "D2", "PFD": "PFD"}
 
+#: Functionals with Gaussian's built-in dispersion, as Gaussian names the method:
+#: the functional and the dispersion, so that the model is named as for ORCA
+_BUILTIN_DISPERSION = {"B2PLYPD3": ("B2PLYP", "D3(BJ)")}
+
 
 def model_with_dispersion(model, keywords):
     """The model with the dispersion correction the route asks for, if any, after the
@@ -314,9 +318,16 @@ def model_with_dispersion(model, keywords):
         name, _, value = str(word).partition("=")
         if name.strip().upper() == "EMPIRICALDISPERSION":
             tag = _DISPERSION_TAGS.get(value.strip().upper(), value.strip().upper())
-    if tag is None or model in (None, "", "unknown"):
+    if model in (None, "", "unknown"):
         return model
     method, slash, basis = model.partition("/")
+    # B2PLYPD3-FC is B2PLYP-D3(BJ)-FC
+    for builtin, (functional, builtin_tag) in _BUILTIN_DISPERSION.items():
+        if method.upper().split("-")[0] == builtin:
+            method = functional + method[len(builtin) :]
+            tag = builtin_tag
+    if tag is None:
+        return model
     for suffix in ("-FC", "-FULL"):
         if method.upper().endswith(suffix):
             n = len(suffix)

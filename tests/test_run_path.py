@@ -92,3 +92,68 @@ def test_run_path_with_the_real_gaussian(tmp_path):
         source=SOURCE,
     )
     check_job(job)
+
+
+B2PLYP_SPEC = """\
+title: Gaussian B2PLYP-D3(BJ)
+steps:
+- Water: {}
+- Gaussian:
+    steps:
+    - Energy:
+        functional: "B2PLYP : double hybrid of Grimme, with MP2 correlation"
+        dispersion: GD3BJ
+        basis: 6-31G
+"""
+
+
+def test_b2plyp_d3bj_route_uses_the_builtin_keyword(tmp_path, monkeypatch):
+    """B2PLYP with D3(BJ) runs Gaussian's B2PLYPD3: with EmpiricalDispersion=GD3BJ,
+    Gaussian 09 E.01 uses s6 = 1.0 instead of B2PLYP's 0.64."""
+    bin = tmp_path / "bin"
+    code = fake_program(
+        bin / "g09",
+        files=[DATA / "fort.7", DATA / "gaussian.chk"],
+        stdout=DATA / "output.txt",
+        need_input=False,
+    )
+    fake_program(bin / "formchk", files=[DATA / "gaussian.fchk"], need_input=False)
+    monkeypatch.setenv("PATH", f"{bin}{os.pathsep}{os.environ['PATH']}")
+    job = run_spec(
+        tmp_path,
+        B2PLYP_SPEC,
+        inis={
+            "gaussian": {"code": code, "root-directory": "", "setup-environment": ""}
+        },
+        args=["--ncores", "1"],
+        source=SOURCE,
+    )
+    route = (job / "2" / "1" / "input.dat").read_text().upper()
+    assert "B2PLYPD3" in route
+    assert "EMPIRICALDISPERSION" not in route
+
+
+@pytest.mark.skipif(installed_gaussian() is None, reason="Gaussian is not installed")
+def test_b2plyp_d3bj_with_the_real_gaussian(tmp_path):
+    """Gaussian's B2PLYP-D3(BJ) dispersion is Grimme's, with B2PLYP's s6 = 0.64:
+    simple-dftd3 1.7.0 gives -0.00023429 E_h for this water (and -0.0003197 with the
+    s6 = 1.0 that EmpiricalDispersion=GD3BJ used)."""
+    job = run_spec(
+        tmp_path,
+        B2PLYP_SPEC,
+        inis={"gaussian": installed_gaussian()},
+        args=["--ncores", "1"],
+        source=SOURCE,
+    )
+    log = (job / "2" / "1" / "output.txt").read_text()
+    assert "Normal termination" in log
+    # The dispersion energy is the change in the nuclear repulsion
+    before = after = None
+    for x in log.splitlines():
+        if "nuclear repulsion energy" in x and before is None:
+            before = float(x.split()[3])
+        elif "Nuclear repulsion after empirical dispersion term" in x:
+            after = float(x.split("=")[1].split()[0])
+    energy = after - before
+    assert energy == pytest.approx(-0.00023429, abs=1.0e-8)
+    assert "B2PLYP-D3(BJ)" in (job / "job.out").read_text()
