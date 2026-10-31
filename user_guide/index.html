@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.10.29.1 documentation</title>
+    <title>User Guide &#8212; SEAMM Gaussian Plug-in 2026.10.31 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=923375ad"></script>
+    <script src="../_static/documentation_options.js?v=58b82035"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.29.1" />
+  <meta name="docsearch:version" content="2026.10.31" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -512,6 +512,12 @@ in SEAMM’s user guide.</p>
 example “optimized with {model}”) alongside the usual ones. Flowcharts saved with the
 dispersion correction <code class="docutils literal notranslate"><span class="pre">DG2</span></code>, a misspelling of <code class="docutils literal notranslate"><span class="pre">GD2</span></code> that Gaussian rejects, are read
 as <code class="docutils literal notranslate"><span class="pre">GD2</span></code>.</p>
+<p>The double hybrid B2PLYP is offered with Grimme’s D3(BJ) dispersion only, which runs
+Gaussian’s built-in <code class="docutils literal notranslate"><span class="pre">B2PLYPD3</span></code>, and its results are named B2PLYP-D3(BJ), as ORCA’s.
+With <code class="docutils literal notranslate"><span class="pre">EmpiricalDispersion=GD3</span></code> or <code class="docutils literal notranslate"><span class="pre">GD3BJ</span></code>, Gaussian 09 E.01 uses the parameter s6 =
+1.0 for B2PLYP instead of its 0.64, giving a dispersion energy 36 % of the r⁻⁶ term too
+large (1.4 kJ/mol for octane, against Grimme’s own code), and ignores the IOps that set
+the parameters; a flowchart asking for GD3 with B2PLYP stops with an error.</p>
 </section>
 <section id="results-stored-for-other-steps">
 <h2>Results stored for other steps<a class="headerlink" href="#results-stored-for-other-steps" title="Link to this heading">#</a></h2>

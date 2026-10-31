@@ -29,6 +29,13 @@ example "optimized with {model}") alongside the usual ones. Flowcharts saved wit
 dispersion correction ``DG2``, a misspelling of ``GD2`` that Gaussian rejects, are read
 as ``GD2``.
 
+The double hybrid B2PLYP is offered with Grimme's D3(BJ) dispersion only, which runs
+Gaussian's built-in ``B2PLYPD3``, and its results are named B2PLYP-D3(BJ), as ORCA's.
+With ``EmpiricalDispersion=GD3`` or ``GD3BJ``, Gaussian 09 E.01 uses the parameter s6 =
+1.0 for B2PLYP instead of its 0.64, giving a dispersion energy 36 % of the r⁻⁶ term too
+large (1.4 kJ/mol for octane, against Grimme's own code), and ignores the IOps that set
+the parameters; a flowchart asking for GD3 with B2PLYP stops with an error.
+
 Results stored for other steps
 ==============================
 

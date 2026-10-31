@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.29.1 documentation</title>
+    <title>gaussian_step.substep &#8212; SEAMM Gaussian Plug-in 2026.10.31 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=923375ad"></script>
+    <script src="../../_static/documentation_options.js?v=58b82035"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.29.1" />
+  <meta name="docsearch:version" content="2026.10.31" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -804,6 +804,10 @@
 <span class="c1">#: damping (GD3BJ)</span>
 <span class="n">_DISPERSION_TAGS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"GD3"</span><span class="p">:</span> <span class="s2">"D3(0)"</span><span class="p">,</span> <span class="s2">"GD3BJ"</span><span class="p">:</span> <span class="s2">"D3(BJ)"</span><span class="p">,</span> <span class="s2">"GD2"</span><span class="p">:</span> <span class="s2">"D2"</span><span class="p">,</span> <span class="s2">"PFD"</span><span class="p">:</span> <span class="s2">"PFD"</span><span class="p">}</span>
 
+<span class="c1">#: Functionals with Gaussian's built-in dispersion, as Gaussian names the method:</span>
+<span class="c1">#: the functional and the dispersion, so that the model is named as for ORCA</span>
+<span class="n">_BUILTIN_DISPERSION</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"B2PLYPD3"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"B2PLYP"</span><span class="p">,</span> <span class="s2">"D3(BJ)"</span><span class="p">)}</span>
+
 
 <div class="viewcode-block" id="model_with_dispersion">
 <a class="viewcode-back" href="../../api/gaussian_step.html#gaussian_step.substep.model_with_dispersion">[docs]</a>
@@ -816,9 +820,16 @@
         <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"="</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"EMPIRICALDISPERSION"</span><span class="p">:</span>
             <span class="n">tag</span> <span class="o">=</span> <span class="n">_DISPERSION_TAGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">model</span>
     <span class="n">method</span><span class="p">,</span> <span class="n">slash</span><span class="p">,</span> <span class="n">basis</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+    <span class="c1"># B2PLYPD3-FC is B2PLYP-D3(BJ)-FC</span>
+    <span class="k">for</span> <span class="n">builtin</span><span class="p">,</span> <span class="p">(</span><span class="n">functional</span><span class="p">,</span> <span class="n">builtin_tag</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_BUILTIN_DISPERSION</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">builtin</span><span class="p">:</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="n">functional</span> <span class="o">+</span> <span class="n">method</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">builtin</span><span class="p">)</span> <span class="p">:]</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">builtin_tag</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"-FC"</span><span class="p">,</span> <span class="s2">"-FULL"</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
             <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
