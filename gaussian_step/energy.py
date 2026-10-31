@@ -321,15 +321,33 @@ class Energy(Substep):
         if method == "DFT":
             functional = self.get_functional(P)
             functional_data = gaussian_step.dft_functionals[functional]
+            dispersion = P["dispersion"]
+            offered = functional_data["dispersion"]
+            if len(offered) > 1 and dispersion != "none" and dispersion not in offered:
+                # E.g. GD3 with B2PLYP in an older flowchart: Gaussian would use the
+                # wrong parameters (see the metadata)
+                raise RuntimeError(
+                    f"The dispersion correction {dispersion} is not available with "
+                    f"{functional_data['name']} in Gaussian; use one of "
+                    f"{', '.join(offered)}."
+                )
+            # A functional whose dispersion Gaussian has built in, e.g. B2PLYPD3
+            name = functional_data.get("dispersion keywords", {}).get(
+                dispersion, functional_data["name"]
+            )
             if restricted:
                 if multiplicity == 1:
-                    keywords.add(f"{functional_data['name']}{mopts}/{basis}")
+                    keywords.add(f"{name}{mopts}/{basis}")
                 else:
-                    keywords.add(f"RO{functional_data['name']}{mopts}/{basis}")
+                    keywords.add(f"RO{name}{mopts}/{basis}")
             else:
-                keywords.add(f"U{functional_data['name']}{mopts}/{basis}")
-            if len(functional_data["dispersion"]) > 1 and P["dispersion"] != "none":
-                keywords.add(f"EmpiricalDispersion={P['dispersion']}")
+                keywords.add(f"U{name}{mopts}/{basis}")
+            if (
+                len(offered) > 1
+                and dispersion != "none"
+                and name == functional_data["name"]
+            ):
+                keywords.add(f"EmpiricalDispersion={dispersion}")
             # Set the numerical integration grid
             grid = P["integral grid"]
             if grid == "96,32,64":

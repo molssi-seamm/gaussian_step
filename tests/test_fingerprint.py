@@ -154,8 +154,10 @@ def test_energy_step_stores_fingerprints(tmp_path, monkeypatch):
     assert energy == pytest.approx(-76.4087114098, abs=1.0e-6)
 
 
-def test_b2plyp_is_offered_with_gd3():
-    """B2PLYP, the double hybrid of CBH-ANL, with Grimme's D3 (GD3, zero damping)."""
+def test_b2plyp_is_offered_with_d3bj_only():
+    """B2PLYP, the double hybrid of CBH-ANL, with Grimme's D3(BJ) as Gaussian's
+    built-in B2PLYPD3: EmpiricalDispersion=GD3 or GD3BJ with B2PLYP uses s6 = 1.0
+    instead of 0.64 in G09 E.01 (checked against simple-dftd3, 2026-10-31)."""
     from pathlib import Path
 
     import gaussian_step
@@ -163,7 +165,8 @@ def test_b2plyp_is_offered_with_gd3():
     name = "B2PLYP : double hybrid of Grimme, with MP2 correlation"
     data = gaussian_step.dft_functionals[name]
     assert data["name"] == "B2PLYP"
-    assert data["dispersion"] == ["none", "GD3BJ", "GD3"]
+    assert data["dispersion"] == ["none", "GD3BJ"]
+    assert data["dispersion keywords"] == {"GD3BJ": "B2PLYPD3"}
     bib = (Path(gaussian_step.__file__).parent / "data" / "references.bib").read_text()
     for _, key in data["citations"]:
         assert "{" + key + "," in bib
@@ -190,3 +193,8 @@ def test_dispersion_in_the_model():
     assert model_with_dispersion("unknown", gd3) == "unknown"
     assert model_without_dispersion("B2PLYP-D3(0)-FC/cc-pVTZ") == "B2PLYP-FC/cc-pVTZ"
     assert model_without_dispersion("B3LYP-D3(BJ)/6-31G(d)") == "B3LYP/6-31G(d)"
+    # Gaussian's built-in B2PLYPD3 is B2PLYP with D3(BJ)
+    assert model_with_dispersion("B2PLYPD3-FC/cc-pVTZ", ["Opt"]) == (
+        "B2PLYP-D3(BJ)-FC/cc-pVTZ"
+    )
+    assert model_with_dispersion("B2PLYPD3/STO-3G", None) == "B2PLYP-D3(BJ)/STO-3G"

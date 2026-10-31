@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.31 -- Bugfix: B2PLYP's D3 dispersion used the wrong s6
+    * With ``EmpiricalDispersion=GD3`` or ``GD3BJ``, Gaussian 09 E.01 uses s6 = 1.0 for
+      B2PLYP instead of the 0.64 of Grimme's parameters, and ignores the IOps that set
+      the parameters, so B2PLYP-D3(0) and -D3(BJ) energies were off (1.4 kJ/mol for
+      octane, checked against Grimme's simple-dftd3 and ORCA). B2PLYP is now offered
+      with D3(BJ) only, run as Gaussian's built-in ``B2PLYPD3``, which is right; results
+      are still named B2PLYP-D3(BJ). A flowchart asking for GD3 with B2PLYP stops with
+      an error explaining why.
+
 2026.10.29.1 -- Bugfix: Gaussian's %Mem now leaves room below the job's memory
     * %Mem was set to all the memory the job or task was given. Gaussian allocates all of
       %Mem at start and needs more for itself, so on a cluster with memory limits every

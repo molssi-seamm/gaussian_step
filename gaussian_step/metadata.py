@@ -363,7 +363,12 @@ dft_functionals = {
     },
     "B2PLYP : double hybrid of Grimme, with MP2 correlation": {
         "name": "B2PLYP",
-        "dispersion": ["none", "GD3BJ", "GD3"],
+        # Gaussian's EmpiricalDispersion=GD3 or GD3BJ with B2PLYP uses s6 = 1.0, not
+        # B2PLYP's 0.64 (G09 E.01, checked against simple-dftd3 2026-10-31; the IOps
+        # for the D3 parameters are ignored). Its built-in B2PLYPD3 is right, and is
+        # D3(BJ), so that is the only dispersion offered, run as that keyword.
+        "dispersion": ["none", "GD3BJ"],
+        "dispersion keywords": {"GD3BJ": "B2PLYPD3"},
         "level": "normal",
         "citations": [
             (1, "10.1063/1.2148954"),
