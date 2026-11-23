@@ -1545,6 +1545,26 @@ class Substep(seamm.Node):
                 pass
         return data
 
+    def _failure_message(self, directory, n_lines=15):
+        """Why Gaussian did not complete: the directory, Gaussian's own error
+        lines ("Error termination" and the line before each), or the end of the
+        output when there are none."""
+        path = Path(directory) / "output.txt"
+        lines = path.read_text(errors="replace").splitlines() if path.exists() else []
+        quote = []
+        for i, line in enumerate(lines):
+            if "Error termination" in line:
+                if i > 0 and lines[i - 1].strip():
+                    quote.append(lines[i - 1].strip())
+                quote.append(line.strip())
+        if not quote:
+            quote = [ln.rstrip() for ln in lines[-n_lines:]]
+        text = "\n".join(quote[-n_lines:]) if quote else "(there is no output.txt)"
+        return (
+            f"Gaussian did not complete successfully in {directory}. From "
+            f"output.txt:\n{text}"
+        )
+
     def parse_output(self, path, data={}):
         """Process the output.
 
@@ -2493,8 +2513,11 @@ class Substep(seamm.Node):
                     for line in result["stderr"].split("\n"):
                         printer.normal("\t" + line)
                 if not result:
-                    self.logger.error("There was an error running Gaussian")
-                    return None
+                    # Raise, so the failure is seen: returning None ended a Loop
+                    # quietly.
+                    raise RuntimeError(
+                        f"Gaussian could not be run in {self.directory}."
+                    )
 
                 if chkpoint_ok:
                     (directory / "gaussian.chk").rename(self.chkpt)
@@ -2566,12 +2589,11 @@ class Substep(seamm.Node):
                 self.logger.debug(f"{pprint.pformat(data)}")
                 self.logger.debug(80 * "*")
 
-                success = "success" if "success" in data else False
-
-                if not success:
-                    print("\n\nCould not find 'success' in data:\n")
-                    pprint.pprint(data)
-                    raise RuntimeError("Gaussian did not complete successfully")
+                # The key is always there once cclib has read the output; its
+                # value says whether Gaussian ended normally. (Testing for the key
+                # alone could never fail.)
+                if not data.get("success"):
+                    raise RuntimeError(self._failure_message(directory))
 
                 # Get the data from the formatted checkpoint file
                 if not (directory / "gaussian.fchk").exists():
@@ -2591,10 +2613,9 @@ class Substep(seamm.Node):
                 if path.exists():
                     data = self.parse_output(path, data)
 
-                # Check whether Gaussian ran ok.
-                success = "success" if "success" in data else False
-                if not success:
-                    raise RuntimeError("Gaussian did not complete successfully")
+                # Check whether Gaussian ran ok: "Normal termination" at the end
+                if not data.get("success"):
+                    raise RuntimeError(self._failure_message(directory))
 
                 # Add the requested spin state and charge
                 data["requested spin multiplicity"] = spin_multiplicity

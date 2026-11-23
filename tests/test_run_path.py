@@ -157,3 +157,49 @@ def test_b2plyp_d3bj_with_the_real_gaussian(tmp_path):
     energy = after - before
     assert energy == pytest.approx(-0.00023429, abs=1.0e-8)
     assert "B2PLYP-D3(BJ)" in (job / "job.out").read_text()
+
+
+def test_run_path_error_termination_fails_the_step(tmp_path, monkeypatch):
+    """Gaussian ended with "Error termination", but a .fchk file is there (here
+    from the faked formchk; in practice a stale one). The step's success checks
+    tested only that the key existed, so the job finished; now it fails and
+    quotes Gaussian's error."""
+    broken = tmp_path / "broken"
+    broken.mkdir()
+    lines = (DATA / "output.txt").read_text().splitlines()
+    lines = [ln for ln in lines if "Normal termination" not in ln]
+    lines += [
+        " Convergence failure -- run terminated.",
+        " Error termination via Lnk1e in /g09/l502.exe at Mon Nov 23 2026.",
+    ]
+    (broken / "output.txt").write_text("\n".join(lines) + "\n")
+    bin = tmp_path / "bin"
+    code = fake_program(
+        bin / "g09",
+        files=[DATA / "fort.7", DATA / "gaussian.chk"],
+        stdout=broken / "output.txt",
+        need_input=False,
+    )
+    fake_program(bin / "formchk", files=[DATA / "gaussian.fchk"], need_input=False)
+    monkeypatch.setenv("PATH", f"{bin}{os.pathsep}{os.environ['PATH']}")
+    try:
+        job = run_spec(
+            tmp_path,
+            SPEC,
+            inis={
+                "gaussian": {
+                    "code": code,
+                    "root-directory": "",
+                    "setup-environment": "",
+                }
+            },
+            args=["--ncores", "1"],
+            source=SOURCE,
+        )
+    except AssertionError as e:  # run_spec reports a failed job
+        text = str(e)
+    else:
+        text = (job / "job.out").read_text()
+        pytest.fail("the job should have failed:\n" + text[-2000:])
+    assert "Gaussian did not complete successfully" in text
+    assert "Error termination via Lnk1e" in text
