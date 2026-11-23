@@ -1,7 +1,16 @@
 =======
 History
 =======
-2026.10.31 -- Bugfix: B2PLYP's D3 dispersion used the wrong s6
+2026.11.23 -- Bugfix: a Gaussian run that ended in an error is reported as one
+    * The checks of whether Gaussian ended normally tested only that the result was
+      recorded, not its value, so a run ending in "Error termination" passed whenever
+      a formatted checkpoint file was there. Such a run now stops the step with an
+      error that names the directory and quotes Gaussian's error lines.
+    * When Gaussian could not be run at all, the step returned nothing, which ended a
+      Loop quietly; it now raises an error, and the Loop counts the iteration as
+      failed.
+
+2026.10.31 --Bugfix: B2PLYP's D3 dispersion used the wrong s6
     * With ``EmpiricalDispersion=GD3`` or ``GD3BJ``, Gaussian 09 E.01 uses s6 = 1.0 for
       B2PLYP instead of the 0.64 of Grimme's parameters, and ignores the IOps that set
       the parameters, so B2PLYP-D3(0) and -D3(BJ) energies were off (1.4 kJ/mol for
